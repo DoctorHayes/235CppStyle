@@ -32,7 +32,8 @@ def check_int_for_bool(self, code):
 # New operator spacing function
 def check_operator_spacing(self, code):
     # TODO: Temporary fix to ignore & and * operators in function params
-    if check_if_function(code) or check_if_function_prototype(code): return
+    if check_if_function(code) or check_if_function_prototype(code) or\
+            '#include' in code: return
     # Check normal operators
     # account for *=, %=, /=, +=, -=
     indexes = []
@@ -68,9 +69,9 @@ def check_operator_spacing(self, code):
             # TODO: Add code checking for unary + and - operators
             if code[operator_index] == '!':
                 index = operator_index - 1
+                # Only check for spacing in front of ! (NOT) operator
                 if code[index]:
-                    if code[index] != ' ' and code[index] != '\r' and \
-                        code[index] != '\n' and code[index] != '(':
+                    if code[index] not in [' ', '\r', '\n', '(']:
                             self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': code[operator_index]})
             elif not operator_helper(False, code, operator_index):
                 self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': code[operator_index]})
@@ -93,14 +94,15 @@ def is_pointer_arrow(code, index):
 
 def is_compound_operator(code, index):
     if code[index + 1]:
+        # Check for >=, <=, >>, <<
         if code[index] in ['>', '<']:
             if code[index + 1] == '=' or code[index + 1] == code[index]:
                 return True
-        # Check for +=, -=, *=, /=, %=, >=, <=, ==, !=
+        # Check for +=, -=, *=, /=, %=, ==, !=
         if code[index] in ['*', '/', '+', '-', '!', '=', '%']:
             if code[index + 1] == '=':
                 return True
-        # Check &&, ||
+        # Check &&, ||, &=, |=
         elif code[index] in ['&', '|']:
             if code[index + 1] == code[index] or code[index + 1] == '=':
                 return True
