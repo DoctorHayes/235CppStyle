@@ -264,41 +264,20 @@ def check_if_struct_or_class(code):
 
 def print_success():
     print 'No errors found'
-# DEPRECATED
 
-# def check_operator_spacing_around(code, operator):
-#     """Check for correct spacing around the given operator in the line.
-#
-#     There should be exactly one space on either side of the given operator.
-#     Notice that operators `*` and `&` don't quite follow this rule, since we're
-#     okay with `Foo* foo` or `Foo *foo` for pointers, as long as they're
-#     consistent about it.
-#
-#     :param str code: The line of code to check.
-#     :param str operator: The operator to check, such as "+"
-#     :returns: The column number of the inconsistent operator, or `None`
-#               otherwise. Notice that the column number may be `0`, so you must
-#               not check for falsiness, but rather check that
-#               `result is not None`.
-#     :rtype: int or None
-#
-#     """
-#     operator_regex = re.compile(r"""
-#         (?P<code_left>\S+)
-#         (?P<whitespace_left>\s*)
-#         (?P<operator>{operator})
-#         (?P<whitespace_right>\s*)
-#         (?P<code_right>\S+)
-#     """.format(
-#         operator=re.escape(operator)
-#     ), re.VERBOSE)
-#
-#     whitespace_groups = ["whitespace_left", "whitespace_right"]
-#     for match in operator_regex.finditer(code):
-#         for group in whitespace_groups:
-#             if match.group(group) != " ":
-#                 return match.start("operator")
-#     return None
-#
-#
+def erase_string(code):
+    # remove contents of literal strings
+    code = code.replace("\\\"", "") # remove escaped quotes
+    results = re.findall(r'"(.*?)"', code)
+    for string in results:
+        quote_mark = "\""
+        code = code.replace(quote_mark + string + quote_mark, "\"\"")
 
+    # remove contents of literal chars
+    code = code.replace('\\\\', '') # replace escaped backslash
+    code = code.replace("\\'", "") # remove escaped single quote
+    results = re.findall(r"'(.*?)'", code)
+    for string in results:
+        single_quote_mark = "'"
+        code = code.replace(single_quote_mark + string + single_quote_mark, "''")
+    return code

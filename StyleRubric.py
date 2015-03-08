@@ -18,7 +18,7 @@ import comment_checks
 import multi_line_checks
 import misc_checks
 import single_line_checks
-from single_line_checks import erase_string
+from style_grader_functions import erase_string
 import adjustments
 
 LOCAL_DIR = os.path.dirname(os.path.realpath(__file__))
