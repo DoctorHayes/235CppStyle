@@ -23,7 +23,7 @@ def check_if_function(code):
     args = Word(alphas + '_', alphanums + ',_[]&* ')
     function_open = Literal("{")
     function_close = Literal("}")
-    function_declaration = Optional(srange("[a-z]")) + return_type + function_name + "(" + Optional(args)
+    function_declaration = Optional(srange("[a-z]")) + return_type + function_name + "(" + Optional(args) + Optional(Word(' const'))
     grammar = function_declaration + Optional(function_open)
     if len(grammar.searchString(code)):
         return True
@@ -35,7 +35,7 @@ def check_if_function_prototype(code):
     args = Word(alphanums + ',_[]&* ')
     function_open = Literal("{")
     function_close = Literal("}")
-    function_declaration = return_type + function_name + "(" + Optional(args) + ")" + Optional(" ") + ";"
+    function_declaration = Optional(srange('[a-z]')) + return_type + function_name + "(" + Optional(args) + ")" + Optional(Word(' const')) + Optional(" ") + ";"
     grammar = function_declaration + Optional(function_open)
     if len(grammar.searchString(code)):
         return True

@@ -1,6 +1,6 @@
 from cpplint import GetPreviousNonBlankLine
 from style_grader_classes import DataStructureTracker
-from style_grader_functions import check_if_function,  indent_helper, check_if_struct_or_class, check_if_cout_block
+from style_grader_functions import check_if_function, check_if_function_prototype, indent_helper, check_if_struct_or_class, check_if_cout_block
 import re
 
 def check_statements_per_line(self, clean_lines):
@@ -81,6 +81,7 @@ def check_block_indentation(self, clean_lines):
         self.pop_global_brace()
 
     function = check_if_function(code)
+    prototype = check_if_function_prototype(code)
     struct_or_class = check_if_struct_or_class(code)
     indentation = re.search(r'^( *)\S', code)
     if indentation:
@@ -93,7 +94,7 @@ def check_block_indentation(self, clean_lines):
         data = {'expected': 0, 'found': indentation_size}
         self.add_error(label="BLOCK_INDENTATION", data=data)
 
-    if function:
+    if function and not prototype:
         self.current_line_num = find_function_end(clean_lines.lines, self.current_line_num)
 
     if (function and not self.outside_main) or struct_or_class:

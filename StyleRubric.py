@@ -129,7 +129,7 @@ class StyleRubric(object):
                 if code.find('\t') != -1:
                     self.add_error(label='USING_TABS')
                     break
-                if self.current_line_num == 114:
+                if self.current_line_num == 54:
                     print "stop"
                 for function in self.single_line_checks: function(self, code)
                 for function in self.multi_line_checks: function(self, clean_lines)
@@ -159,10 +159,13 @@ class StyleRubric(object):
         def_above_main_message = temp_err.get_error_message('DEFINITION_ABOVE_MAIN').replace('__error_function__', '')
 
         # Remove any errors that deal with function def above main
+        saved_errors = 0
         for e in self.error_tracker[filename]:
             if def_above_main_message not in e.message:
+                saved_errors += 1
                 new_error_list.append(e)
-        self.error_types['DEFINITION_ABOVE_MAIN'] = 0
+        self.total_errors -= len(self.error_tracker[filename]) - saved_errors
+        self.error_types['DEFINITION_ABOVE_MAIN'] -= len(self.error_tracker[filename]) - saved_errors
         self.error_tracker[filename] = new_error_list
 
     def print_errors(self, error_list):
