@@ -131,7 +131,8 @@ def check_block_indentation(self, clean_lines):
             results = indent_helper(indentation, tab_size, clean_lines, 
                                     data_structure_tracker, temp_line_num)
             for error in results:
-                self.add_error(**error)
+                if not self.contains_error(**error):
+                    self.add_error(**error)
     else:
         return
 

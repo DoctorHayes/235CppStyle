@@ -28,6 +28,10 @@ class StyleError(object):
         self.set_message_from_label(label)
         self.set_type(type)
 
+    def __eq__(self, other):
+        return self.data == other.data and self.line_num == other.line_num and \
+                self.column_num == other.column_num and self.message == other.message
+
     def __str__(self):
         output_str = ''
         if self.get_line_number():

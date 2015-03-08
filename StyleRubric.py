@@ -112,6 +112,10 @@ class StyleRubric(object):
         line = line if (line != -1) else self.current_line_num + 1
         self.error_tracker[self.current_file].append(StyleError(1, label, line, column_num=column, type=type, data=data))
 
+    def contains_error(self, label=None, line=-1, column=0, type='ERROR', data=dict()):
+        temp_err = StyleError(1, label, line, column_num=column, type=type, data=data)
+        return temp_err in self.error_tracker[self.current_file]
+
     def grade_student_file(self, filename):
         extension = filename.split('.')[-1]
         if extension not in ['h', 'cpp']:
