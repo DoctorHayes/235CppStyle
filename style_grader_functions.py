@@ -64,11 +64,20 @@ def check_if_statement(code):
 def check_else_if(code):
     statement = Keyword('else if')
     args = Word(alphanums + ',_[]&* ')
-    grammar = statement + "(" + args + ")"
+    grammar = statement + Optional(" ") + "("
     try:
         grammar.parseString(code)
         return True
     except ParseException:
+        return False
+
+def check_else(code):
+    statement = Keyword('else')
+    grammar = statement + Optional(Word("{"))
+    try:
+        grammar.parseString(code)
+        return True and not check_else_if(code)
+    except:
         return False
 
 def check_if_case_arg(code):
@@ -110,6 +119,7 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
             switch_statement = check_if_switch_statement(clean_lines.lines[temp_line_num])
             if_statement = check_if_statement(clean_lines.lines[temp_line_num])
             else_if = check_else_if(clean_lines.lines[temp_line_num])
+            else_statment = check_else(clean_lines.lines[temp_line_num])
             if not data_structure_tracker.in_cout_block:
                 cout_block = check_if_cout_block(clean_lines.lines[temp_line_num])
 
