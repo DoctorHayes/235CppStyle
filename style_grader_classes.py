@@ -24,6 +24,7 @@ class DataStructureTracker(object):
         self.length_so_far = 0
         self.in_switch = False
         self.switch_brace_stack = []
+        self.switch_case_index = 0
         self.in_class_or_struct = False
         self.in_public_or_private = False
         self.class_or_struct_brace_stack = []

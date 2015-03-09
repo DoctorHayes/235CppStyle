@@ -150,16 +150,18 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
                     # ignore lines such as if () { statement; }
                     continue
 
-                if code.rfind('}') != -1:
-                    data_structure_tracker.pop_brace()
+                if decrease_indentation(code, data_structure_tracker):
+                    if code.rfind('}'):
+                        data_structure_tracker.pop_brace()
                     next_indentation -= tab_size
 
                 if current_indentation != next_indentation:
                     data = {'expected': next_indentation, 'found': current_indentation}
                     results.append({'label': 'BLOCK_INDENTATION', 'line': temp_line_num + 1, 'data': data})
 
-                if code.find('{') != -1:
-                    data_structure_tracker.add_brace('{')
+                if increase_indentation(code, data_structure_tracker):
+                    if code.find('{'):
+                        data_structure_tracker.add_brace('{')
                     next_indentation += tab_size
 
         except IndexError:
@@ -216,11 +218,13 @@ def print_success():
     print 'No errors found'
 
 def decrease_indentation(code, tracker):
-    return (check_if_public_or_private(code) and tracker.in_class_or_struct) or \
-           (check_if_case_arg(code) and tracker.in_switch)
+    return code.rfind('}') != -1 or \
+            (check_if_public_or_private(code) and tracker.in_class_or_struct) or \
+            (check_if_case_arg(code) and tracker.in_switch)
 
 def increase_indentation(code, tracker):
-    return (check_if_case_arg(code) and tracker.in_switch) or \
+    return code.find('{') != -1 or \
+            (check_if_case_arg(code) and tracker.in_switch) or \
             (check_if_public_or_private(code) and tracker.in_class_or_struct)
 
 def erase_string(code):

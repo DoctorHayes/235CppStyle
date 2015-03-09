@@ -25,7 +25,9 @@ bool y = true;
         }
     }
 
-
+    if (x)
+        cout << "Hahah";
+    if (x) cout << "Shouldn't be an issue";
 
     return 0;
 }

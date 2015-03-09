@@ -120,19 +120,20 @@ def check_block_indentation(self, clean_lines):
                 #TODO Figure out what it means to not have braces in the right place
                 pass
         else:
-            temp_line_num = self.current_line_num
-            data_structure_tracker = DataStructureTracker()
+            if not (code.find('{') != -1 and code.rfind('}') != -1 and code.find('{') < code.rfind('}')):
+                temp_line_num = self.current_line_num
+                data_structure_tracker = DataStructureTracker()
 
-            if check_if_struct_or_class(code):
-                data_structure_tracker.add_object_brace("{")
-                data_structure_tracker.in_class_or_struct = True
+                if check_if_struct_or_class(code):
+                    data_structure_tracker.add_object_brace("{")
+                    data_structure_tracker.in_class_or_struct = True
 
-            data_structure_tracker.brace_stack.append('{')
-            results = indent_helper(indentation, tab_size, clean_lines, 
-                                    data_structure_tracker, temp_line_num)
-            for error in results:
-                if not self.contains_error(**error):
-                    self.add_error(**error)
+                data_structure_tracker.brace_stack.append('{')
+                results = indent_helper(indentation, tab_size, clean_lines,
+                                        data_structure_tracker, temp_line_num)
+                for error in results:
+                    if not self.contains_error(**error):
+                        self.add_error(**error)
     else:
         return
 
