@@ -29,5 +29,7 @@ bool y = true;
         cout << "Hahah";
     if (x) cout << "Shouldn't be an issue";
 
+    int z = 0;
+
     return 0;
 }
