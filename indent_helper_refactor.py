@@ -157,6 +157,8 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
                             brace_info = data_structure_tracker.pop_switch_brace()
                             if not data_structure_tracker.in_switch:
                                 next_indentation = brace_info['indentation'] + tab_size # add tab_size to account for -= below
+                        if data_structure_tracker.in_class_or_struct:
+                            data_structure_tracker.pop_object_brace()
                     next_indentation -= tab_size
 
                 if current_indentation != next_indentation:
@@ -165,9 +167,11 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
 
                 if increase_indentation(code, data_structure_tracker):
                     if code.find('{') != -1:
+                        data_structure_tracker.add_brace('{')
                         if data_structure_tracker.in_switch:
                             data_structure_tracker.add_switch_brace('{', current_indentation)
-                        data_structure_tracker.add_brace('{')
+                        if data_structure_tracker.in_class_or_struct:
+                            data_structure_tracker.add_object_brace('{')
                     if data_structure_tracker.in_switch and check_if_case_arg(code):
                         data_structure_tracker.switch_case_index += 1
                     next_indentation += tab_size
@@ -215,7 +219,7 @@ def check_if_break_statement(code):
 def check_if_struct_or_class(code):
     class_type = Keyword('class')
     struct_type = Keyword('struct')
-    name = Word(alphanums + '_')
+    name = Word(alphas + '_', alphanums + '_')
     statement = (class_type + name | struct_type + name)
 
     if len(statement.searchString(code)):

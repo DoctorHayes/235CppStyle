@@ -76,6 +76,10 @@ class RegressionTesting(unittest.TestCase):
     def test_simple_conditional_indent(self): self.assertEqual(5, self.rubric.error_types['BLOCK_INDENTATION'])
     @load_code_segment('indent_switch.cpp')
     def test_simple_switch_indent(self): self.assertEqual(8, self.rubric.error_types['BLOCK_INDENTATION'])
+    @load_code_segment('indent_classes.h')
+    def test_class_indentation_header(self): self.assertEqual(10, self.rubric.error_types['BLOCK_INDENTATION'])
+    @load_code_segment('indent_structs.h')
+    def test_struct_indentation_header(self): self.assertEqual(10, self.rubric.error_types['BLOCK_INDENTATION'])
 
     @load_code_segment('regression_indentation_group.cpp')
     def test_regression_indentation_group(self):
