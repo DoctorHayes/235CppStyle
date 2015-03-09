@@ -1,6 +1,6 @@
 from cpplint import GetPreviousNonBlankLine
 from style_grader_classes import DataStructureTracker
-from style_grader_functions import check_if_function, check_if_function_prototype, indent_helper, check_if_struct_or_class, check_if_cout_block
+from style_grader_functions import check_if_function, check_if_function_prototype, indent_helper, check_if_struct_or_class, check_if_switch_statement, check_if_cout_block
 import re
 
 def check_statements_per_line(self, clean_lines):
@@ -127,6 +127,9 @@ def check_block_indentation(self, clean_lines):
                 if check_if_struct_or_class(code):
                     data_structure_tracker.add_object_brace("{")
                     data_structure_tracker.in_class_or_struct = True
+                elif check_if_switch_statement(code):
+                    data_structure_tracker.in_switch = True
+                    data_structure_tracker.add_switch_brace('{', indentation)
 
                 data_structure_tracker.brace_stack.append('{')
                 results = indent_helper(indentation, tab_size, clean_lines,

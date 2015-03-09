@@ -151,8 +151,12 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
                     continue
 
                 if decrease_indentation(code, data_structure_tracker):
-                    if code.rfind('}'):
+                    if code.rfind('}') != -1:
                         data_structure_tracker.pop_brace()
+                        if data_structure_tracker.in_switch:
+                            brace_info = data_structure_tracker.pop_switch_brace()
+                            if not data_structure_tracker.in_switch:
+                                next_indentation = brace_info['indentation'] + tab_size # add tab_size to account for -= below
                     next_indentation -= tab_size
 
                 if current_indentation != next_indentation:
@@ -160,8 +164,12 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
                     results.append({'label': 'BLOCK_INDENTATION', 'line': temp_line_num + 1, 'data': data})
 
                 if increase_indentation(code, data_structure_tracker):
-                    if code.find('{'):
+                    if code.find('{') != -1:
+                        if data_structure_tracker.in_switch:
+                            data_structure_tracker.add_switch_brace('{', current_indentation)
                         data_structure_tracker.add_brace('{')
+                    if data_structure_tracker.in_switch and check_if_case_arg(code):
+                        data_structure_tracker.switch_case_index += 1
                     next_indentation += tab_size
 
         except IndexError:
@@ -220,7 +228,7 @@ def print_success():
 def decrease_indentation(code, tracker):
     return code.rfind('}') != -1 or \
             (check_if_public_or_private(code) and tracker.in_class_or_struct) or \
-            (check_if_case_arg(code) and tracker.in_switch)
+            (check_if_case_arg(code) and tracker.in_switch and tracker.switch_case_index != 0)
 
 def increase_indentation(code, tracker):
     return code.find('{') != -1 or \
