@@ -72,6 +72,11 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('func_def_no_main.cpp')
     def test_func_def_no_main(self): self.assertEqual(0, self.rubric.error_types['DEFINITION_ABOVE_MAIN'])
 
+    @load_code_segment('indent_conditional.cpp')
+    def test_simple_conditional_indent(self): self.assertEqual(5, self.rubric.error_types['BLOCK_INDENTATION'])
+    @load_code_segment('indent_switch.cpp')
+    def test_simple_switch_indent(self): self.assertEqual(8, self.rubric.error_types['BLOCK_INDENTATION'])
+
     @load_code_segment('regression_indentation_group.cpp')
     def test_regression_indentation_group(self):
         # The input file will throw an error if there's a bug, so we don't
