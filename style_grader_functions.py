@@ -81,7 +81,7 @@ def check_else(code):
         return False
 
 def check_if_case_arg(code):
-    statement = Keyword('case')
+    statement = Keyword('case') | Keyword('default')
     if len(statement.searchString(code)):
         return True
     else:
