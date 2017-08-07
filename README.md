@@ -1,9 +1,11 @@
+[![Build Status](https://travis-ci.org/DoctorHayes/235CppStyle.svg?branch=master)](https://travis-ci.org/DoctorHayes/235CppStyle)
+
 235CppStyle
 ================
 
-Web application *will* aid in evaluating the coding style of students' .cpp and .h files for CSCI 235, a computer science course at [Charleston Southern University](http://www.csuniv.edu/).
+This is a web application that *will* aid in evaluating the coding style of students' .cpp and .h files for CSCI 235, a computer science course at [Charleston Southern University](http://www.csuniv.edu/).
 
-This is a form of [cppStyle](https://github.com/Bwolfing/cppstyle), used at the University of Michigan.
+This is a fork of [cppStyle](https://github.com/Bwolfing/cppstyle), used at the University of Michigan.
 
 ## Setup for Web Development
 
