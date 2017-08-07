@@ -56,7 +56,7 @@ def check_operator_spacing(self, code):
             # skip second operator in compound/increment/decrement operator
             skip_next = False
             continue
-        
+
         if skip_operator(code, operator_index):
             skip_next = True
         elif is_compound_operator(code, operator_index):

@@ -1,39 +1,27 @@
-![alt tag](https://raw.github.com/vianuevm/183_style_grader/master/app/static/img/388.jpg)
+[![Build Status](https://travis-ci.org/DoctorHayes/235CppStyle.svg?branch=master)](https://travis-ci.org/DoctorHayes/235CppStyle)
 
-[![Build Status](https://travis-ci.org/TheWolfA2/cppstyle.png?branch=master)](https://travis-ci.org/thewolfa2/cppstyle)
-[![Coverage Status](https://coveralls.io/repos/thewolfa2/cppstyle/badge.png?branch=master)](https://coveralls.io/r/thewolfa2/cppstyle?branch=master)
-[![Open bugs](https://badge.waffle.io/thewolfa2/cppstyle.png?label=bug&title=Open%20Bugs)](https://waffle.io/thewolfa2/cppstyle)
-[![Stories in Ready](https://badge.waffle.io/thewolfa2/cppstyle.png?label=ready&title=Ready)](http://waffle.io/thewolfa2/cppstyle)
-
-
-183style
+235CppStyle
 ================
 
-Web application grades students' .cpp and .h files for EECS 183, a computer science course at University of Michigan.
+This is a web application that *will* aid in evaluating the coding style of students' .cpp and .h files for CSCI 235, a computer science course at [Charleston Southern University](http://www.csuniv.edu/).
 
-##Setup for Web Development
+This is a fork of [cppStyle](https://github.com/Bwolfing/cppstyle), used at the University of Michigan.
 
-* Download pip the package manager.
-> http://pip.readthedocs.org/en/latest/installing.html
+## Setup for Web Development
 
-* Download virtual environment:
-> pip install virtualenv
+* Download pip the package manager.  
+  http://pip.readthedocs.org/en/latest/installing.html
 
-* Activate the virtual environment
+* Download virtual environment:  
+  `pip install virtualenv`
 
-  > virtualevn ENV
-  
-  
-  > In Windows: ENV\Scripts\activate
-  
-  
-  > On Mac/Linux: source ENV/bin/activate
-  
+* Activate the virtual environment  
+  `virtualevn ENV`  
+  In Windows: `ENV\Scripts\activate`  
+  On Mac/Linux: `source ENV/bin/activate`
 
-* Install Dependencies
+* Install Dependencies  
+  `ENV\Scripts\pip install -r requirements.txt` (Mac replace Scripts with bin)
 
-  > ENV\Scripts\pip install -r requirements.txt (Mac replace Scripts with bin)
-
-
-* From root, ./run.py -- The website is now up and running locally.
-
+* Launch the webapp locally  
+  From root, run `./run.py`

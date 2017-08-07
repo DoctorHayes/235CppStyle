@@ -66,11 +66,11 @@ def check_brace_consistency(self, clean_lines):
             return
 
 def check_block_indentation(self, clean_lines):
-    #TODO: Load from config file? 
+    #TODO: Load from config file?
     tab_size = 4
 
     code = clean_lines.lines[self.current_line_num]
-    print code
+    print (code)
 
     if check_if_struct_or_class(code):
         self.global_in_object = True
@@ -111,7 +111,7 @@ def check_block_indentation(self, clean_lines):
                     self.add_global_brace('{')
                     data_structure_tracker.add_object_brace('{')
 
-                results = indent_helper(indentation, tab_size, clean_lines, 
+                results = indent_helper(indentation, tab_size, clean_lines,
                                         data_structure_tracker, temp_line_num)
 
                 for error in results:

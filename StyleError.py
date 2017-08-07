@@ -80,15 +80,15 @@ class StyleError(object):
 
     def get_error_message(self, label):
         return {
-            "USING_TABS": "Instead of tabs you must use spaces.  Fix and resubmit your code :).",
+            "USING_TABS": "Instead of tabs, you must use spaces (soft tabs).  Fix and resubmit your code :).",
             "OPERATOR_SPACING": "Incorrect spacing around {}. If this is the unary + or - operator, you may ignore this error.".format(self.get_data().get('operator')),
             "BLOCK_INDENTATION": "Incorrect indentation. Expected: {}, found: {}.".format(self.get_data().get('expected'), self.get_data().get('found')),
             "STATEMENTS_PER_LINE": "There should only be one command (statement) on each line.",
             "IF_ELSE_ERROR": "Every If-Else statement should have brackets.",
             "NON_CONST_GLOBAL": "You should never have a non-const global variable.",
             "FUNCTION_LENGTH_ERROR": "Your function is too long. Break it up into separate functions.",
-            "LINE_WIDTH": "Line of {} characters exceeded the limit of 90.".format(self.get_data().get('length')),
-            "INT_FOR_BOOL": "You need to return true or false, instead of an actual number.",
+            "LINE_WIDTH": "Line of {} characters exceeded the limit of 80.".format(self.get_data().get('length')),
+            "INT_FOR_BOOL": "You need to return true or false instead of an actual number.",
             "MAGIC_NUMBER": "Store numbers in variables, so that you can give them meaningful names.",
             "BRACE_CONSISTENCY": "Your braces should be either Egyptian or block style, pick one.",
             "SPACING_ERROR": "Use tabs or spaces, not both.",

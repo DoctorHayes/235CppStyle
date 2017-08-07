@@ -30,13 +30,13 @@ def check_if_function(code):
     return False
 
 def check_if_function_prototype(code):
-    return_type = Word(alphanums + '_[]') # Bad style to have "_" but syntactically valid
-    function_name = Word(alphanums + '_:')
-    args = Word(alphanums + ',_[]&* ')
+    return_type = Word(alphanums + '_[]', alphanums + '_&*') # Bad style to have "_", but syntactically valid
+    function_name = Word(alphanums + '_:', alphanums + '_:><')
+    args = Word(alphanums + ',_[]&* ') # identifiers are not required, just types
     function_open = Literal("{")
     function_close = Literal("}")
     function_declaration = Optional(srange('[a-z]')) + return_type + function_name + "(" + Optional(args) + ")" + Optional(Word(' const')) + Optional(" ") + ";"
-    grammar = function_declaration + Optional(function_open)
+    grammar = function_declaration
     if len(grammar.searchString(code)):
         return True
     return False
@@ -115,7 +115,7 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
         try:
             current_indentation = re.search(r'^( *)\S',
                                         clean_lines.lines[temp_line_num])
-            print clean_lines.lines[temp_line_num]
+            print(clean_lines.lines[temp_line_num])
             switch_statement = check_if_switch_statement(clean_lines.lines[temp_line_num])
             if_statement = check_if_statement(clean_lines.lines[temp_line_num])
             else_if = check_else_if(clean_lines.lines[temp_line_num])
@@ -175,7 +175,7 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
 
                 elif clean_lines.lines[temp_line_num].find("{") != -1:
                     if data_structure_tracker.in_switch:
-                        data_structure_tracker.add_switch_brace("{")
+                        data_structure_tracker.add_switch_brace("{", indentation)
                     if data_structure_tracker.in_class_or_struct:
                         data_structure_tracker.add_object_brace("{")
                     data_structure_tracker.add_brace("{")
@@ -263,7 +263,7 @@ def check_if_struct_or_class(code):
     return False
 
 def print_success():
-    print 'No errors found'
+    print('No errors found')
 
 def erase_string(code):
     # remove contents of literal strings

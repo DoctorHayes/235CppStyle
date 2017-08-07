@@ -3,7 +3,7 @@ Style Grader class with instance-method plugin-based functionality.
 '''
 
 import codecs
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 from collections import defaultdict
 import os
 import sys
@@ -130,11 +130,11 @@ class StyleRubric(object):
             clean_code = clean_lines.lines
             for self.current_line_num, code in enumerate(clean_code):
                 code = erase_string(code)
-                if code.find('\t') != -1:
+                if self.config.get('SINGLE_LINE_CHECKS', 'tab_type').lower() == 'soft' and code.find('\t') != -1:
                     self.add_error(label='USING_TABS')
                     break
                 if self.current_line_num == 54:
-                    print "stop"
+                    print("stop")
                 for function in self.single_line_checks: function(self, code)
                 for function in self.multi_line_checks: function(self, clean_lines)
             # COMMENT CHECKS #TODO
@@ -173,13 +173,13 @@ class StyleRubric(object):
         self.error_tracker[filename] = new_error_list
 
     def print_errors(self, error_list):
-        for filename, errors in self.error_tracker.iteritems():
-            print 'Grading {}...'.format(filename.split('/')[-1])
+        for filename, errors in self.error_tracker.items():
+            print('Grading {}...'.format(filename.split('/')[-1]))
             error_list.append('Grading {}...'.format(filename.split('/')[-1]))
             if not len(errors):
                 print_success()
             for error in errors:
-                print error
+                print(error)
                 error_list.append(str(error))
-            print
+            print()
         return error_list
