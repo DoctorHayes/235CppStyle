@@ -3,7 +3,7 @@ Jinja2
 Werkzeug
 blinker
 decorator
-flup
+flup6
 gunicorn
 configparser
 cov-core

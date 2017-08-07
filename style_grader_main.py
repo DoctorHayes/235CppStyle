@@ -12,9 +12,9 @@ def style_grader_driver(online_files):
     rubric.adjust_errors()
     show_errors = rubric.print_errors(show_errors)
 #For debugging purposes only
-    print "Total Errors: " + str(rubric.total_errors)
+    print("Total Errors: ", str(rubric.total_errors))
     for x, y in rubric.error_types.items():
-        print x, y
+        print(x, y)
 
 
     return show_errors
