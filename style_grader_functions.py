@@ -81,7 +81,7 @@ def check_else(code):
         return False
 
 def check_if_case_arg(code):
-    statement = Keyword('case') | Keyword('default')
+    statement = (Keyword('case') | Keyword('default'))
     if len(statement.searchString(code)):
         return True
     else:
@@ -109,7 +109,6 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
     indentation_size = len(indentation) - len(indentation.strip())
     data_structure_tracker.in_block = True
     next_indentation = indentation_size + tab_size
-    check_in_if = False
     while data_structure_tracker.in_block:
         temp_line_num += 1
         try:
@@ -124,6 +123,7 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
                 cout_block = check_if_cout_block(clean_lines.lines[temp_line_num])
 
             if if_statement or else_if:
+                # Egyptian or Block style bracing on conditional
                 if clean_lines.lines[temp_line_num + 1].find('{') == -1 and clean_lines.lines[temp_line_num].find('{') == -1:
                     data_structure_tracker.in_if = True
                 elif clean_lines.lines[temp_line_num +1].find('{') != -1 and current_indentation != clean_lines.lines[temp_line_num].find('{'):

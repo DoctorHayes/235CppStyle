@@ -17,90 +17,10 @@ def get_indent_level(filename):
             results.append(len(match.group(0))-1)
     return Counter(results).most_common(1)[0] if results else 4
 
-def check_if_function(code):
-    return_type = Word(alphas + '_', alphanums + '_&*') # Bad style to have "_" but syntactically valid
-    function_name = Word(alphas + '_', alphanums + '_:><')
-    args = Word(alphas + '_', alphanums + ',_[]&* ')
-    function_open = Literal("{")
-    function_close = Literal("}")
-    function_declaration = Optional(srange("[a-z]")) + return_type + function_name + "(" + Optional(args) + Optional(Word(' const'))
-    grammar = function_declaration + Optional(function_open)
-    if len(grammar.searchString(code)):
-        return True
-    return False
-
-def check_if_function_prototype(code):
-    return_type = Word(alphanums + '_[]') # Bad style to have "_" but syntactically valid
-    function_name = Word(alphanums + '_:')
-    args = Word(alphanums + ',_[]&* ')
-    function_open = Literal("{")
-    function_close = Literal("}")
-    function_declaration = Optional(srange('[a-z]')) + return_type + function_name + "(" + Optional(args) + ")" + Optional(Word(' const')) + Optional(" ") + ";"
-    grammar = function_declaration + Optional(function_open)
-    if len(grammar.searchString(code)):
-        return True
-    return False
-
-def check_if_switch_statement(code):
-    statement = Keyword('switch')
-    args = Word(alphanums + '_')
-    grammar = statement + Optional(" ") + "(" + args + ")"
-    try:
-        grammar.parseString(code)
-        return True
-    except ParseException:
-        return False
-
-def check_if_statement(code):
-    statement = Keyword('if')
-    args = Word(alphanums + ',_[]&*!=+-%&|/() ')
-    grammar = statement + "("
-    try:
-        grammar.parseString(code)
-        return True
-    except ParseException:
-        return False
-
-def check_else_if(code):
-    statement = Keyword('else if')
-    args = Word(alphanums + ',_[]&* ')
-    grammar = statement + Optional(" ") + "("
-    try:
-        grammar.parseString(code)
-        return True
-    except ParseException:
-        return False
-
-def check_else(code):
-    statement = Keyword('else')
-    grammar = statement + Optional(Word("{"))
-    try:
-        grammar.parseString(code)
-        return True and not check_else_if(code)
-    except:
-        return False
-
-def check_if_case_arg(code):
-    statement = (Keyword('case') | Keyword('default'))
-    if len(statement.searchString(code)):
-        return True
-    else:
-        return False
-
-def check_if_cout_block(code):
-    statement = Keyword('cout')
-    grammar = statement + Optional(" ")
-
-    try:
-        grammar.parseString(code)
-        if code.find(';') == -1:
-            return True
-        else:
-            return False
-    except ParseException:
-        return False
 
 def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, temp_line_num):
+    # This definition is modified from the function in style_grader_functions.py
+
     indentation = re.search(r'^( *)\S', clean_lines.lines[temp_line_num])
     results = list()
     if not indentation:
@@ -194,40 +114,6 @@ def indent_equals(line_num, code, current_indentation):
 
     return line_num
 
-def check_if_public_or_private(code):
-
-    private = Keyword('private')
-    public = Keyword('public')
-
-    grammar = (private | public)
-
-    if len(grammar.searchString(code)) >= 1:
-        return True
-    else:
-        return False
-
-def check_if_break_statement(code):
-
-    statement = Keyword('break')
-    grammar = statement + Optional(" ") + ";"
-    try:
-        grammar.parseString(code)
-        return True
-    except ParseException:
-        return False
-
-def check_if_struct_or_class(code):
-    class_type = Keyword('class')
-    struct_type = Keyword('struct')
-    name = Word(alphas + '_', alphanums + '_')
-    statement = (class_type + name | struct_type + name)
-
-    if len(statement.searchString(code)):
-        return True
-    return False
-
-def print_success():
-    print 'No errors found'
 
 def decrease_indentation(code, tracker):
     return code.rfind('}') != -1 or \
@@ -238,20 +124,3 @@ def increase_indentation(code, tracker):
     return code.find('{') != -1 or \
             (check_if_case_arg(code) and tracker.in_switch) or \
             (check_if_public_or_private(code) and tracker.in_class_or_struct)
-
-def erase_string(code):
-    # remove contents of literal strings
-    code = code.replace("\\\"", "") # remove escaped quotes
-    results = re.findall(r'"(.*?)"', code)
-    for string in results:
-        quote_mark = "\""
-        code = code.replace(quote_mark + string + quote_mark, "\"\"")
-
-    # remove contents of literal chars
-    code = code.replace('\\\\', '') # replace escaped backslash
-    code = code.replace("\\'", "") # remove escaped single quote
-    results = re.findall(r"'(.*?)'", code)
-    for string in results:
-        single_quote_mark = "'"
-        code = code.replace(single_quote_mark + string + single_quote_mark, "''")
-    return code
