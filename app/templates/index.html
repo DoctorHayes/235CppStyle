@@ -4,52 +4,40 @@
 {% block content %}
 	<link href="/static/presentation/index.css" rel="stylesheet">
 	<div>
-		<div>
-			
-			<form id="upload-file" role="form" action="upload" method="post" enctype="multipart/form-data">
-				<!-- <fieldset> -->
-				<div class="col-sm-6 col-md-6">
-					<input id="code-input" type="file" data-filename-placement="inside" title="Select files" multiple name="file[]" class="btn-primary center-block" />
-				</div>
-                <!-- </fieldset> -->
-                <!-- <br> -->
-                <!-- <fieldset> -->
-				<div class="col-sm-6 col-md-6">
-                    <span class="code-submission btn btn-primary center-block"  href="#myModal" id="upload-file-btn" type="button" disabled>Submit to 183 style checker</button>
-                </div>
-                <!-- </fieldset> -->
-			</form>
-			<div>
-				
+		<form id="upload-file" role="form" action="upload" method="post" enctype="multipart/form-data">
+			<!-- <fieldset> -->
+			<div class="col-sm-6 col-md-6">
+				<input id="code-input" type="file" name="file[]" multiple />
+			</div>
+			<!-- </fieldset> -->
+			<!-- <br> -->
+			<!-- <fieldset> -->
+			<div class="col-sm-6 col-md-6">
+				<span class="code-submission btn btn-primary center-block" href="#myModal" id="upload-file-btn" type="button" disabled>Submit to 235 C++ Style Checker</button></span>
+			</div>
+			<!-- </fieldset> -->
+		</form>
+		<div class="modal" id="myModal">
+			<div class="modal-dialog feedBackDialog">
+				<div class="modal-content" id="feedback-window">
+					<div class="modal-header">
 
-				<div class="modal" id="myModal">
-					<div class="modal-dialog feedBackDialog">
-				      <div class="modal-content" id="feedback-window">
-				        <div class="modal-header">
-
-				          <!--<button href="javascript:void();" id="#upload-file" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>-->
-				          <h2 class="modal-title">Feedback</h2>
-				        </div>
-				        <div class="modal-body" id="feedback-body">
-							<ul id="errorlist" class="list-unstyled">
-							</ul>
-				        </div>
-				        <div class="modal-footer">
-				          <a href="#" class="closeBtn btn btn-primary" data-dismiss="modal">Close</a>
-				        </div>
-				      </div>
-				    </div>
+						<!--<button href="javascript:void();" id="#upload-file" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>-->
+						<h2 class="modal-title">Feedback</h2>
+					</div>
+					<div class="modal-body" id="feedback-body" class="prettyprint">
+						<ul id="errorlist" class="list-unstyled">
+						</ul>
+					</div>
+					<div class="modal-footer">
+						<a href="#" class="closeBtn btn btn-primary" data-dismiss="modal">Close</a>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<pre class="col-sm-12 col-md-12 " hidden="true">
 		<ul id="errorlist2" class="list-unstyled">
 		</ul>
 	</pre>
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"></script>
-    <script src="/static/behavior/bootstrap-file-input/bootstrap.file-input.js"></script>
 {% endblock %}

@@ -25,3 +25,10 @@ This is a fork of [cppStyle](https://github.com/Bwolfing/cppstyle), used at the 
 
 * Launch the webapp locally  
   From root, run `./run.py`
+
+## Run Regression Tests
+
+* Install pytest.  
+  `pip install -U pytest`
+* Execute the tests.  
+  `pytest`

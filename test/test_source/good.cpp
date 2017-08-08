@@ -4,7 +4,7 @@
  * First Last
  * uniqname@umich.edu
  *
- * A sample file for EECS 183 Style Grader.
+ * A sample file for CSCI 235 Style Grader.
  *
  * Demonstrates good style.
  */
