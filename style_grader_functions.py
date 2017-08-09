@@ -30,13 +30,10 @@ def check_if_function(code):
     return False
 
 def check_if_function_prototype(code):
-    return_type = Word(alphanums + '_[]', alphanums + '_&*') # Bad style to have "_", but syntactically valid
-    function_name = Word(alphanums + '_:', alphanums + '_:><')
-    args = Word(alphanums + ',_[]&* ') # identifiers are not required, just types
-    function_open = Literal("{")
-    function_close = Literal("}")
-    function_declaration = Optional(srange('[a-z]')) + return_type + function_name + "(" + Optional(args) + ")" + Optional(Word(' const')) + Optional(" ") + ";"
-    grammar = function_declaration
+    return_type = Word(alphanums + '_[]', alphanums + '_:&*') # Bad style to have "_", but syntactically valid
+    function_name = Word(alphanums + '_', alphanums + '_:><')
+    args = Word(alphanums + ':,_[]&* ') # identifiers are not required, just types
+    grammar = Optional(srange('[a-z]')) + return_type + function_name + "(" + Optional(args) + ")" + Optional(Word(' const')) + Optional(" ") + ";"
     if len(grammar.searchString(code)):
         return True
     return False

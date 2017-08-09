@@ -81,7 +81,7 @@ class StyleError(object):
     def get_error_message(self, label):
         return {
             "USING_TABS": "Instead of tabs, you must use spaces (soft tabs).  Fix and resubmit your code :).",
-            "OPERATOR_SPACING": "Incorrect spacing around {}. If this is the unary + or - operator, you may ignore this error.".format(self.get_data().get('operator')),
+            "OPERATOR_SPACING": "Incorrect spacing around {}.".format(self.get_data().get('operator')),
             "BLOCK_INDENTATION": "Incorrect indentation. Expected: {}, found: {}.".format(self.get_data().get('expected'), self.get_data().get('found')),
             "STATEMENTS_PER_LINE": "There should only be one command (statement) on each line.",
             "IF_ELSE_ERROR": "Every If-Else statement should have brackets.",
@@ -91,9 +91,9 @@ class StyleError(object):
             "INT_FOR_BOOL": "You need to return true or false instead of an actual number.",
             "MAGIC_NUMBER": "Store numbers in variables, so that you can give them meaningful names.",
             "BRACE_CONSISTENCY": "Your braces should be either Egyptian or block style, pick one.",
-            "SPACING_ERROR": "Use tabs or spaces, not both.",
+            "SPACING_ERROR": "Use either tabs or spaces for indentation, not both.",
             "UNNECESSARY_BREAK": "Breaks should ONLY be used in switch statements. Fix your logic.",
-            "GOTO": "Never use the goto function.",
+            "GOTO": "Never use the goto statement.",
             "DEFINE_STATEMENT": "While define statements have their applications, we do not allow them in CSCI 235.",
             "EQUALS_TRUE": "It is stylistically preferred to use 'if (value)' instead of 'if (value == true)'.",
             "WHILE_TRUE": "It is almost always preferred to use an explicit conditional instead of 'while(true)'.",

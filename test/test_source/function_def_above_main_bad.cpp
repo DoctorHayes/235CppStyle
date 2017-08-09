@@ -8,6 +8,15 @@ MyType blalkgj132(arr myarray[]) {
     functioncall(void);
 }
 
+std :: string twoLinePrototype (const std::string& currentPhrase,
+	std::string correctLetters) {
+
+}
+
+MyType blalkgj132(arr myarray*) {
+    functioncall(void);
+}
+
 
 int main(void) {
     return 0;

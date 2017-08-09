@@ -31,6 +31,7 @@ int main() {
     !x;
     -x;
     +x;
+    strPtr->name;
 
     return 0;
 }

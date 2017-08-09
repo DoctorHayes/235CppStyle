@@ -1,7 +1,34 @@
 from cpplint import GetPreviousNonBlankLine
 from style_grader_classes import DataStructureTracker
 from style_grader_functions import check_if_function, check_if_function_prototype, indent_helper, check_if_struct_or_class, check_if_switch_statement, check_if_cout_block
+from pyparsing import Literal
 import re
+
+def check_function_def_above_main(self, clean_lines):
+    code = clean_lines.lines[self.current_line_num]
+
+    # Ignore blank lines (obviously not a function definition)
+    if (code.isspace()):
+        return
+
+    # Prototypes and function declarations may have headers that span multiple lines
+    next_line = self.current_line_num + 1
+    while (code.find(';') < 0 and code.find('{') < 0 and code.find('}') < 0 and next_line < len(clean_lines.lines)):
+        code += clean_lines.lines[next_line]
+        next_line += 1
+
+    code = re.sub('[\r\n]', ' ', code) # remove newlines (make code a single line)
+
+    prototype = check_if_function_prototype(code)
+    function = check_if_function(code)
+    inside = Literal("int main")
+    if len(inside.searchString(code)):
+        return
+    elif function and not prototype and self.outside_main:
+        function_regex = re.compile("^\s*(\w+)\s+(\w+)")
+        match = function_regex.search(code)
+        function_name = match.group(2) if match else code # show whole line if function name isn't found
+        self.add_error(label="DEFINITION_ABOVE_MAIN", data={'function': function_name})
 
 def check_statements_per_line(self, clean_lines):
     cleansed_line = clean_lines.lines[self.current_line_num]

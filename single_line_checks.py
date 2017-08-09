@@ -3,17 +3,7 @@ from pyparsing import Literal, Word, Optional, ParseException, Group, SkipTo, al
 import re
 
 
-def check_function_def_above_main(self, code):
-    prototype = check_if_function_prototype(code)
-    function = check_if_function(code)
-    inside = Literal("int main")
-    if len(inside.searchString(code)):
-        return
-    elif function and not prototype and self.outside_main:
-        function_regex = re.compile("^\s*(\w+)\s+(\w+)")
-        match = function_regex.search(code)
-        function_name = match.group(2) if match else "NOT_FOUND"
-        self.add_error(label="DEFINITION_ABOVE_MAIN", data={'function': function_name})
+
 
 
 def check_int_for_bool(self, code):
@@ -32,22 +22,13 @@ def check_int_for_bool(self, code):
 # New operator spacing function
 def check_operator_spacing(self, code):
     # TODO: Temporary fix to ignore & and * operators in function params
-    if check_if_function(code) or check_if_function_prototype(code) or\
+    if check_if_function(code) or check_if_function_prototype(code) or \
             '#include' in code: return
     # Check normal operators
     # account for *=, %=, /=, +=, -=
     indexes = []
-    indexes = findOccurences(code, '+') + \
-              findOccurences(code, '-') + \
-              findOccurences(code, '%') + \
-              findOccurences(code, '*') + \
-              findOccurences(code, '/') + \
-              findOccurences(code, '!') + \
-              findOccurences(code, '>') + \
-              findOccurences(code, '<') + \
-              findOccurences(code, '=') + \
-              findOccurences(code, '&') + \
-              findOccurences(code, '|')
+    for operator in list('+-%*/!><=&|'):
+        indexes += findOccurences(code, operator)
     indexes.sort()  # Force compound operator indexes to be correctly ordered
 
     skip_next = False
@@ -70,27 +51,25 @@ def check_operator_spacing(self, code):
             if code[operator_index] == '!':
                 index = operator_index - 1
                 # Only check for spacing in front of ! (NOT) operator
-                if code[index]:
-                    if code[index] not in [' ', '\r', '\n', '(']:
-                            self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': code[operator_index]})
+                if code[index] and code[index] not in [' ', '\r', '\n', '(']:
+                    self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': code[operator_index]})
             elif not operator_helper(False, code, operator_index):
-                self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': code[operator_index]})
+                operator = code[operator_index]
+                if (operator == '+'):
+                    operator += '. If this is the unary +, you may ignore this error'
+                elif (operator == '-'):
+                    operator += '. If this is the unary -, you may ignore this error'
+                self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': operator})
 
 def skip_operator(code, index):
     # Don't worry about increment/decrement/pointer-arrow operators
     return is_increment_decrement(code, index) or is_pointer_arrow(code, index)
 
 def is_increment_decrement(code, index):
-    if code[index + 1]:
-        if code[index] in ['+', '-'] and code[index + 1] == code[index]:
-            return True
-    return False
+    return code[index + 1] and code[index] in ['+', '-'] and code[index + 1] == code[index]
 
 def is_pointer_arrow(code, index):
-    if code[index + 1]:
-        if code[index] == '-' and code[index + 1] == '>':
-            return True
-    return False
+    return code[index + 1] and code[index:(index+2)] == '->'
 
 def is_compound_operator(code, index):
     if code[index + 1]:
