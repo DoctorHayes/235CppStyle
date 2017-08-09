@@ -1,19 +1,3 @@
-YAHOO.util.Event.onDOMReady(function() {
-
-	// initialize Konami Code
-	if (typeof(Konami) != "undefined")
-	{
-		var konami = new Konami();
-		konami.pattern = "384069696783495651";
-		konami.code = function() {
-			alert("You have unlimited submits!");
-		};
-		konami.load();
-	}
-
-});
-
-
 $(document).ready(function() {
 	"use strict";
 	this.spinner = new Spinner({radius: 30, length: 30}).spin($("#spinner")[0]);
@@ -51,10 +35,9 @@ $(document).ready(function() {
 	}
 
 	function clearFileInput() {
-		$control = $('#code-input');
-		$control.replaceWith($control = $control.clone(true));
+		$('#code-input').fileinput('reset');
+		$('#code-input').val('');
 		$('#upload-file-btn').attr("disabled", "disabled");
-		$control.fileinput('reset');
 	}
 
 	$('input[type=file]').fileinput(
