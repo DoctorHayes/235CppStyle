@@ -81,6 +81,11 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('indent_structs.h')
     def test_struct_indentation_header(self): self.assertEqual(11, self.rubric.error_types['BLOCK_INDENTATION'])
 
+    # Test for too long lines based on the setting in the config (valid for line lengths that are multiples of 10 between 30 and 120)
+    @load_code_segment('long_lines.cpp')
+    def test_check_line_width(self):
+        self.assertEqual(14 - int(StyleRubric().max_line_length / 10), self.rubric.error_types['LINE_WIDTH'])
+
     @load_code_segment('regression_indentation_group.cpp')
     def test_regression_indentation_group(self):
         # The input file will throw an error if there's a bug, so we don't

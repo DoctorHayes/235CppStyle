@@ -5,7 +5,7 @@ def check_line_width(self, line):
     max_length = self.max_line_length
     current_length = len(line)
     if current_length > max_length:
-        self.add_error(label="LINE_WIDTH", data={'length': current_length})
+        self.add_error(label="LINE_WIDTH", data={'length': current_length, 'max_length': max_length})
 
 def check_missing_rme(self, lines):
     function = Word(alphanums + '_')
