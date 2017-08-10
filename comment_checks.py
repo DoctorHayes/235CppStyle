@@ -3,7 +3,7 @@ from pyparsing import Word, Literal, alphanums
 
 def check_line_width(self, line):
     max_length = self.max_line_length
-    current_length = len(line)
+    current_length = len(line.strip('\n').strip('\r')) #remove ending newline from count
     if current_length > max_length:
         self.add_error(label="LINE_WIDTH", data={'length': current_length, 'max_length': max_length})
 

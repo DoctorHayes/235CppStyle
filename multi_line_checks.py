@@ -11,6 +11,10 @@ def check_function_def_above_main(self, clean_lines):
     if (code.isspace()):
         return
 
+    # Ignore statements after main().
+    if len(Literal("int main").searchString(code)):
+        return
+
     # Prototypes and function declarations may have headers that span multiple lines
     next_line = self.current_line_num + 1
     while (code.find(';') < 0 and code.find('{') < 0 and code.find('}') < 0 and next_line < len(clean_lines.lines)):
@@ -21,10 +25,8 @@ def check_function_def_above_main(self, clean_lines):
 
     prototype = check_if_function_prototype(code)
     function = check_if_function(code)
-    inside = Literal("int main")
-    if len(inside.searchString(code)):
-        return
-    elif function and not prototype and self.outside_main:
+
+    if function and not prototype and self.outside_main:
         function_regex = re.compile("^\s*(\w+)\s+(\w+)")
         match = function_regex.search(code)
         function_name = match.group(2) if match else code # show whole line if function name isn't found

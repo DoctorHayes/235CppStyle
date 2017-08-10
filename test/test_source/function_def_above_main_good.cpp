@@ -18,6 +18,9 @@ int* threeLinePrototype (const int& num,
 	std::string num2,
 	Garbage* pointPointer1);
 
+//loads phrases into vector from file
+bool loadPhrasesFromFile(std::vector<PHRASE>& phrases, std::string fileName);
+
 int  main()
 {
 
