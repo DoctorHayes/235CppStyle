@@ -47,18 +47,24 @@ def check_operator_spacing(self, code):
                 self.add_error(label='OPERATOR_SPACING', column=operator_index,
                                 data={'operator': code[operator_index:operator_index + 2]})
         else:
-            # TODO: Add code checking for unary + and - operators
-            if code[operator_index] == '!':
-                index = operator_index - 1
-                # Only check for spacing in front of ! (NOT) operator
-                if code[index] and code[index] not in [' ', '\r', '\n', '(']:
+            # Checking for unary operators (!, +, -)
+            if is_unary_operator(code, operator_index):
+                prev_index = operator_index - 1
+                # Only check for spacing in front of unary operator
+                if code[prev_index] and code[prev_index] not in ['\t', ' ', '\r', '\n', '(']:
+                    self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': code[operator_index]})
+                elif code[operator_index + 1] and code[operator_index + 1] in ['\t', ' ', '\r', '\n']:
+                    # There should be no space after a unary operator
                     self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': code[operator_index]})
             elif not operator_helper(False, code, operator_index):
                 operator = code[operator_index]
-                if (operator == '+'):
-                    operator += '. If this is the unary +, you may ignore this error'
-                elif (operator == '-'):
-                    operator += '. If this is the unary -, you may ignore this error'
+                prev_index = operator_index - 1
+                # If there is a space before a +/- but not after it, then maybe it is a unary operator we missed.
+                if ((not code[prev_index]) or (code[prev_index] in ['\t', ' ', '\r', '\n', '('])):
+                    if (operator == '+'):
+                        operator += '. If this is the unary +, you may ignore this error'
+                    elif (operator == '-'):
+                        operator += '. If this is the unary -, you may ignore this error'
                 self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': operator})
 
 def skip_operator(code, index):
@@ -67,6 +73,12 @@ def skip_operator(code, index):
 
 def is_increment_decrement(code, index):
     return code[index + 1] and code[index] in ['+', '-'] and code[index + 1] == code[index]
+
+def is_unary_operator(code, index):
+    return (code[index] == '!' and code[index + 1] and code[index + 1] != '=') or \
+        re.search('[\(\+\-\*\%<>=\&\|\!]\s*[\-\+]$', code[:index + 1]) is not None  or \
+        re.match('\s*[\+\-]$', code[:index + 1]) is not None or \
+        re.search('return\s+[\-\+]$', code[:index + 1]) is not None
 
 def is_pointer_arrow(code, index):
     return code[index + 1] and code[index:(index+2)] == '->'

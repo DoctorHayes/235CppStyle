@@ -16,11 +16,15 @@ int main() {
     x||true;
 
     // increment/decrement operators
-    x++;
-    x--;
+    x++; // valid
+    x--; // valid
+    ++x; // valid
+    --x; // valid
 
     // normal operators
     x+1;
+    x +1;
+    x+ 1;
     x-1;
     x*2;
     x/1;
@@ -28,9 +32,12 @@ int main() {
     x>1;
     x<1;
     x=1;
-    !x;
-    -x;
-    +x;
+    !x; // valid
+    ! x;
+    -x; // valid
+    - x;
+    +x; // valid
+    (+ x);
 
     return 0;
 }

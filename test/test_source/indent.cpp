@@ -13,7 +13,7 @@ bool y = true;
             x++;
             break;
         case 2:
-        y&&false;
+        y && false;
                 break;
     case 3:
         y++;
