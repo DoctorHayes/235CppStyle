@@ -66,12 +66,10 @@ $(document).ready(function() {
 		updateForm();
 	});
 
-	$('#code-input').val('');
-	updateForm();
-
 	$('#upload-file-btn').click(function() {
-		var form_data = new FormData($('#upload-file')[0]);
 		showSpinner();
+		var form_data = new FormData($('#upload-file')[0]);
+
 		$.ajax({
 			type: 'POST',
 			url: '/uploadajax',
@@ -79,7 +77,7 @@ $(document).ready(function() {
 			contentType: false,
 			cache: false,
 			processData: false,
-			async: false,
+			async: true,
 			error: function() {
 				console.log('Failure!');
 			},
