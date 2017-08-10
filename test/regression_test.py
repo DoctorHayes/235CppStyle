@@ -5,6 +5,8 @@ from StyleRubric import *
 import unittest
 
 class RegressionTesting(unittest.TestCase):
+    styleRubric = StyleRubric()
+
     @load_code_segment('good.cpp')
     def test_good_file(self): self.assertTrue(not len(self.rubric.error_types))
     @load_code_segment('num_of_commands.cpp')
@@ -35,8 +37,13 @@ class RegressionTesting(unittest.TestCase):
     def test_define_bad(self): self.assertEqual(2, self.rubric.error_types['DEFINE_STATEMENT'])
     @load_code_segment('ternary_good.cpp')
     def test_ternary_good(self): self.assertEqual(0, self.rubric.error_types['TERNARY_OPERATOR'])
+
     @load_code_segment('ternary_bad.cpp')
-    def test_ternary_bad(self): self.assertEqual(3, self.rubric.error_types['TERNARY_OPERATOR'])
+    def test_ternary_bad(self):
+        self.assertEqual(\
+            3 if self.styleRubric.config.get('SINGLE_LINE_CHECKS', 'ternary_operator') == 'yes' else 0,\
+            self.rubric.error_types['TERNARY_OPERATOR'])
+
     @load_code_segment('while_true_good.cpp')
     def test_while_true_good(self): self.assertEqual(0, self.rubric.error_types['WHILE_TRUE'])
     @load_code_segment('while_true_bad.cpp')
@@ -84,7 +91,7 @@ class RegressionTesting(unittest.TestCase):
     # Test for too long lines based on the setting in the config (valid for line lengths that are multiples of 10 between 30 and 120)
     @load_code_segment('long_lines.cpp')
     def test_check_line_width(self):
-        self.assertEqual(26 - int(StyleRubric().max_line_length / 5), self.rubric.error_types['LINE_WIDTH'])
+        self.assertEqual(26 - int(self.styleRubric.max_line_length / 5), self.rubric.error_types['LINE_WIDTH'])
 
     @load_code_segment('regression_indentation_group.cpp')
     def test_regression_indentation_group(self):
