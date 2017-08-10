@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/DoctorHayes/235CppStyle.svg?branch=master)](https://travis-ci.org/DoctorHayes/235CppStyle)
-[![license](https://img.shields.io/github/license/DoctorHayes/235CppStyle.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/github/license/DoctorHayes/235CppStyle.svg)](https://opensource.org/licenses/MIT)
 
 235CppStyle
 ================
