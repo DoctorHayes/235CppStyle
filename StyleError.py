@@ -90,7 +90,7 @@ class StyleError(object):
             "LINE_WIDTH": "Line of {} characters exceeded the limit of {}.".format(self.get_data().get('length'), self.get_data().get("max_length")),
             "INT_FOR_BOOL": "You need to return true or false instead of an actual number.",
             "MAGIC_NUMBER": "Store numbers in variables, so that you can give them meaningful names.",
-            "BRACE_CONSISTENCY": "Your braces should be either Egyptian or block style, pick one.",
+            "BRACE_CONSISTENCY": "All of your opening braces, {, should be either be below the conditions/function-headers or next to the conditions/function-headers; be consistent.",
             "SPACING_ERROR": "Use either tabs or spaces for indentation, not both.",
             "UNNECESSARY_BREAK": "Breaks should ONLY be used in switch statements. Fix your logic.",
             "GOTO": "Never use the goto statement.",

@@ -95,8 +95,8 @@ class StyleRubric(object):
     def reset_for_new_file(self, filename):
         self.spacer = SpacingTracker()
         self.outside_main = True
-        self.egyptian = False
-        self.not_egyptian = False
+        self.egyptian = None
+        self.not_egyptian = None
         self.braces_error = False #To prevent multiple braces errors
         self.in_switch = False
         self.current_file = filename

@@ -93,6 +93,14 @@ class RegressionTesting(unittest.TestCase):
     def test_check_line_width(self):
         self.assertEqual(26 - int(self.styleRubric.max_line_length / 5), self.rubric.error_types['LINE_WIDTH'])
 
+    @load_code_segment('brace_consistancy_allman_good.cpp')
+    def test_brace_consistancy_allman_good(self): self.assertEqual(0, self.rubric.error_types['BRACE_CONSISTENCY'])
+    @load_code_segment('brace_consistancy_stroustrup_good.cpp')
+    def test_brace_consistancy_stroustrup_good(self): self.assertEqual(0, self.rubric.error_types['BRACE_CONSISTENCY'])
+    @load_code_segment('brace_consistancy_bad.cpp')
+    def test_brace_consistancy_stroustrup_good(self): self.assertEqual(1, self.rubric.error_types['BRACE_CONSISTENCY'])
+
+
     @load_code_segment('regression_indentation_group.cpp')
     def test_regression_indentation_group(self):
         # The input file will throw an error if there's a bug, so we don't

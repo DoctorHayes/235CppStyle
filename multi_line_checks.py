@@ -49,46 +49,44 @@ def check_statements_per_line(self, clean_lines):
 def check_brace_consistency(self, clean_lines):
     code = clean_lines.lines[self.current_line_num]
     stripped_code = code.strip()
+
     function = check_if_function(code)
+
+    # Check if this is really a function and not just a prototype.
+    if (function):
+        endOfFunctionHeader = self.current_line_num
+        endCode = clean_lines.lines[endOfFunctionHeader].strip()
+        while endCode.find(';') == -1 and endCode.find('{') == -1:
+            endOfFunctionHeader += 1
+            endCode = clean_lines.lines[endOfFunctionHeader].strip()
+
+        semicolonIndex = endCode.find(';')
+        brackIndex = endCode.find('{')
+        if semicolonIndex != -1 and (brackIndex == -1 or semicolonIndex < brackIndex):
+            function = False
+
     if_statement = re.search(r'^if\s*\(\s*', stripped_code)
     else_if_statement = re.search(r'^else\s*\(', code)
     else_statement = re.search(r'^else\s+', code)
     switch_statement = re.search(r'^switch\s*\(', stripped_code)
-    indentation = re.search(r'^( *)\S', code)
-
-    if indentation:
-        indentation = indentation.group()
-        indentation_size = len(indentation) - len(indentation.strip())
-    else:
-        indentation_size = 0
 
     current = self.current_line_num
-    if function or if_statement or else_statement or switch_statement:
+    if function or if_statement or else_if_statement or else_statement or switch_statement:
         try:
-            if function or \
-                else_if_statement or\
-                else_statement  or\
-                switch_statement or\
-                if_statement:
-                    if deep_egyptian_check(clean_lines.lines, indentation_size, current):
-                        self.egyptian = True
-                    else:
-                         self.not_egyptian = True
-
-            elif not self.outside_main:
-                if not self.braces_error:
-                    self.add_error(label="BRACE_CONSISTENCY")
-                    self.braces_error = True
-
-            if self.not_egyptian and self.egyptian and not self.braces_error:
-                 self.add_error(label="BRACE_CONSISTENCY")
-                 self.braces_error = True
+            is_egyptian = deep_egyptian_check(clean_lines.lines, current)
+            if is_egyptian:
+                self.egyptian = True
+                if self.not_egyptian is None:
+                    self.not_egyptian = False
+            elif is_egyptian is not None:
+                 self.not_egyptian = True
+                 if self.egyptian is None:
+                    self.egyptian = False
 
             #if both of these are true, they are not consistent, therefore error.
-            if self.not_egyptian:
-                if self.egyptian and not self.braces_error:
-                    self.add_error(label="BRACE_CONSISTENCY")
-                    self.braces_error = True
+            if self.not_egyptian and self.egyptian and not self.braces_error:
+                self.add_error(label="BRACE_CONSISTENCY")
+                self.braces_error = True
 
         except IndexError:
             # cannot access next line of end of file, rubric properties don't matter
@@ -127,7 +125,7 @@ def check_block_indentation(self, clean_lines):
         self.current_line_num = find_function_end(clean_lines.lines, self.current_line_num)
 
     if (function and not self.outside_main) or struct_or_class:
-        #if not egyptian style
+        #if not Egyptian style
         if code.find('{') == -1:
             if code.find('{'):
                 temp_line_num = self.current_line_num + 1
@@ -179,11 +177,55 @@ def find_function_end(code, current_line):
 
     return current_line
 
-def deep_egyptian_check(code, indentation_size, current_line):
-        while code[current_line].find('{') == -1:
-            current_line += 1
-        indent = code[current_line].find('{')
-        if code[current_line].find('{') != indentation_size:
-            return True
-        else:
-            return False
+# Returns true, false, or None (if unknown)
+def deep_egyptian_check(code, current_line):
+    # Find line where the conditional or argument list ends
+    lineNum = find_end_of_parens(code, current_line)
+
+    # Egyptian if opening curly brace is on the same line as the conditional/args
+    if code[lineNum].find('{') != -1:
+        return True
+
+    # Maybe there are no braces. Check if a semicolon comes first.
+    while code[lineNum].find(';') == -1 and code[lineNum].find('{') == -1:
+        lineNum += 1
+
+    if code[lineNum].find(';') != -1:
+        return None
+
+    return False
+
+
+# Used for brace consistency check
+def find_end_of_parens(code, current_line):
+    pstack = []
+
+    # Find the next line where there is a '('
+    lineNum = current_line
+    try:
+        openParenIndex = code[lineNum].find('(')
+        while openParenIndex == -1:
+            lineNum += 1
+            openParenIndex = code[lineNum].find('(')
+
+        # Look through this line and onward until every '(' is matched with a ')'
+        code_line = code[lineNum]
+        while True:
+            for i, c in enumerate(code_line):
+                if c == '(':
+                    pstack.append(i)
+                elif c == ')':
+                    if len(pstack) == 0:
+                        raise IndexError("No matching closing parens at: " + str(i))
+                    pstack.pop()
+            if len(pstack) == 0:
+                break;
+            else:
+                lineNum += 1
+                code_line = code[lineNum]
+
+    except IndexError:
+        # cannot access next line of end of file or bad parenthesis
+        return lineNum
+
+    return lineNum
