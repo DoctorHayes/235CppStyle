@@ -8,6 +8,8 @@
  */
 bool myFunc(int num);
 
+//enum Color {RED, GREEN, BLUE};
+
 int main ()
 {
 	int x, y;
