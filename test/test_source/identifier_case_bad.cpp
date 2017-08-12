@@ -58,9 +58,14 @@ enum badColorType {RED, GREEN, BLUE};
 
 int fun(const int thisIsFine);
 
+int fineFunc(const std::string& goodConstParam);
+
+void test(int NotOkay); // does not test for this yet.
+
 
 int main ()
 {
+
 	int Bad;
 	int Bad_Name;
 	int good;

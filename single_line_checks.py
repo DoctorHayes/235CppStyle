@@ -198,7 +198,7 @@ def check_identifier_length(self, code):
         return
 
     # check for any parameter or variable declaration that is a type followed by 1 or more identifiers
-    declaration_check = re.compile(r"(?:^|\s+|\(|\{)(?:class|struct|enum|void|bool|char|short|long|int|float|double|string)[\*&\s]+([\w_][\w\d_]*[\[;,\s\(\)\*\&$]+)+")
+    declaration_check = re.compile(r"(?:^|\s+|\(|\{)(?:class|struct|enum|void|bool|char|short|long|int|float|double|string|std::string)[\*&\s]+([\w_][\w\d_]*[\[;,\s\(\)\*\&$]+)+")
     declaration_match = declaration_check.search(code)
 
     if declaration_match:
@@ -237,37 +237,42 @@ def check_first_char(self, code):
         return
 
     # Make sure the first letter of non-const variable names are lowercase.
-    uppercase = re.compile("(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string)\s*[\*\&]*\s*(?:[A-Z]|_)\w+")
+    uppercase = re.compile(r"(?:^|\s+)(?<!const\s)\s*(void|bool|char|short|long|int|float|double|string)\s*[\*\&]*\s*(?:[A-Z]|_)\w+")
     bad_naming = uppercase.search(code)
 
     if bad_naming:
         result = bad_naming.group(0).split()
 
         # Create an expected constant name where underscores are converted to camel case
-        expected = ''
-        var_length = len(result[1])
-        cap_next = False;
-        for i, ch in enumerate(result[1]):
-            if ch == '_':
-                cap_next = True;
-            elif cap_next:
-                expected += ch.upper()
-                cap_next = False
-            else:
-                expected += ch
+        try:
+            expected = ''
+            var_length = len(result[1])
+            cap_next = False;
+            for i, ch in enumerate(result[1]):
+                if ch == '_':
+                    cap_next = True;
+                elif cap_next:
+                    expected += ch.upper()
+                    cap_next = False
+                else:
+                    expected += ch
 
-        if (expected and expected[0] == '_'): # Remove leading _ from expected input
-            expected = expected[1:]
+            if (expected and expected[0] == '_'): # Remove leading _ from expected input
+                expected = expected[1:]
 
-        self.add_error(label="FIRST_CHAR",
-                       data={"keyword": 'non-constant variable or function',
-                             "style": "lowercase",
-                             "expected": ((expected[:1].lower() + expected[1:]) if expected else '') if len(expected) > 1 else "a descriptive name",
-                             "found": str(result[1])})
+            self.add_error(label="FIRST_CHAR",
+                           data={"keyword": 'non-constant variable or function',
+                                 "style": "lowercase",
+                                 "expected": ((expected[:1].lower() + expected[1:]) if expected else '') if len(expected) > 1 else "a descriptive name",
+                                 "found": str(result[1])})
+        except IndexError:
+            # probably means that this is an std:: parameter, they don't need to be capitalized.
+            print("Something weird happened in check_first_char with '", code, "'.")
+            return
         return
     # Make sure const variables are all caps
     if not check_if_function_prototype(code) and not check_if_function(code):
-        const_var = re.compile("(?:^|\s+)const\s+(?:void|bool|char|short|long|int|float|double|string)\s*[\*\&]*\s*(?:[\w]|_)\w+")
+        const_var = re.compile("(?:^|\s+)const\s+(?:void|bool|char|short|long|int|float|double|string|std::string)\s*[\*\&]*\s*(?:[\w]|_)\w+")
         const_var = const_var.search(code)
         if const_var:
             const_var = str(const_var.group(0).split()[2])
