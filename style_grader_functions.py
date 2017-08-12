@@ -2,7 +2,7 @@ from collections import Counter
 import getopt
 import re
 
-from pyparsing import Literal, Word, Optional, ParseException, alphanums, Keyword, srange, alphas
+from pyparsing import Literal, Word, Optional, ParseException, alphanums, Keyword, srange, alphas, NotAny
 
 class EmptyFileException(object):
     pass
@@ -25,7 +25,8 @@ def check_if_function(code):
     function_close = Literal("}")
     function_declaration = Optional(srange("[a-z]")) + return_type + function_name + "(" + Optional(args) + Optional(Word(' const'))
     grammar = function_declaration + Optional(function_open)
-    if len(grammar.searchString(code)):
+    results = grammar.searchString(code)
+    if len(results) and 'new' not in (results[0]).asList():
         return True
     return False
 
@@ -34,7 +35,11 @@ def check_if_function_prototype(code):
     function_name = Word(alphanums + '_', alphanums + '_:><')
     args = Word(alphanums + ':,_[]&*<> ') # identifiers are not required, just types
     grammar = Optional(srange('[a-z]')) + return_type + function_name + "(" + Optional(args) + ")" + Optional(Word(' const')) + Optional(" ") + ";"
-    if len(grammar.searchString(code)):
+
+    results = grammar.searchString(code)
+
+    # should not be preceded by the keyword 'new'
+    if len(results) and 'new' not in (results[0]).asList():
         return True
     return False
 

@@ -24,8 +24,8 @@ int main(int argc, const char * argv[])
     // greet the user
     greet();
     cout << "bye.\'" << '*' << '\\' << '\"' << '\'*' << '-' << '+' << endl;
-    int x;
-    cin >> x;
+    int val;
+    cin >> val;
 
     return 0;
 }

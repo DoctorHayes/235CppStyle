@@ -93,6 +93,7 @@ class RegressionTesting(unittest.TestCase):
     def test_check_line_width(self):
         self.assertEqual(26 - int(self.styleRubric.max_line_length / 5), self.rubric.error_types['LINE_WIDTH'])
 
+    # Test brace consistency
     @load_code_segment('brace_consistancy_allman_good.cpp')
     def test_brace_consistancy_allman_good(self): self.assertEqual(0, self.rubric.error_types['BRACE_CONSISTENCY'])
     @load_code_segment('brace_consistancy_stroustrup_good.cpp')
@@ -100,6 +101,13 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('brace_consistancy_bad.cpp')
     def test_brace_consistancy_stroustrup_good(self): self.assertEqual(1, self.rubric.error_types['BRACE_CONSISTENCY'])
 
+    # Check identifier style
+    @load_code_segment('identifier_case_bad.cpp')
+    def test_identifier_case_bad(self): self.assertEqual(21, self.rubric.error_types['FIRST_CHAR'])
+    @load_code_segment('identifier_length_bad.cpp')
+    def test_check_identifier_length(self):
+        self.assertEqual(10, self.rubric.error_types['IDENTIFIER_LENGTH'])
+        self.assertEqual(1, self.rubric.error_types['IDENTIFIER_I'])
 
     @load_code_segment('regression_indentation_group.cpp')
     def test_regression_indentation_group(self):

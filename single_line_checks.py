@@ -192,17 +192,104 @@ def check_main_syntax(self, code):
                 not len((main_prefix + full_use).searchString(code)):
             self.add_error(label="MAIN_SYNTAX")
 
+# Make sure identifiers are more than 1 character in length
+def check_identifier_length(self, code):
+    if re.match(r'^[\s\}\{\};]*$', code): # skip boring lines
+        return
+
+    # check for any parameter or variable declaration that is a type followed by 1 or more identifiers
+    declaration_check = re.compile(r"(?:^|\s+|\(|\{)(?:class|struct|enum|void|bool|char|short|long|int|float|double|string)[\*&\s]+([\w_][\w\d_]*[\[;,\s\(\)\*\&$]+)+")
+    declaration_match = declaration_check.search(code)
+
+    if declaration_match:
+        #Find all the single-letter identifiers
+        single_letter_ids = re.finditer(r'[\*&\s,]([\w_])[\[;,\s\(\)$]', declaration_match.group(0))
+        single_letter_ids = [match.group(1) for match in single_letter_ids]
+
+        if len(single_letter_ids):
+            result = ', '.join(single_letter_ids)
+            if result == 'i':
+                self.add_error(label="IDENTIFIER_I")
+            else:
+                self.add_error(label="IDENTIFIER_LENGTH", data={"found": str(result)})
 
 def check_first_char(self, code):
+    if code.isspace():
+        return
+
     # check if the first char is lower-case alpha or '_'
-    lowercase = re.compile("(?:^|\s+)(?:class|struct)\s+(?:[a-z]|_)\w+")
+    lowercase = re.compile("(?:^|\s+)(?:class|struct|enum)\s+(?:[a-z]|_)\w*")
     bad_naming = lowercase.search(code)
+
     if bad_naming:
         result = bad_naming.group(0).split()
+        expected = str(result[1])
+
+        if len(expected) == 1:
+            expected = 'A Descriptive Name'
+        if (expected and expected[0] == '_'): # Remove leading _ from expected input
+            expected = expected[1:]
         self.add_error(label="FIRST_CHAR",
                        data={"keyword": result[0],
-                             "expected": str(result[1]).capitalize(),
+                             "style": "capitalized",
+                             "expected": expected[0].capitalize() + (expected[1:] if len(expected) > 1 else ''),
                              "found": str(result[1])})
+        return
+
+    # Make sure the first letter of non-const variable names are lowercase.
+    uppercase = re.compile("(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string)\s*[\*\&]*\s*(?:[A-Z]|_)\w+")
+    bad_naming = uppercase.search(code)
+
+    if bad_naming:
+        result = bad_naming.group(0).split()
+
+        # Create an expected constant name where underscores are converted to camel case
+        expected = ''
+        var_length = len(result[1])
+        cap_next = False;
+        for i, ch in enumerate(result[1]):
+            if ch == '_':
+                cap_next = True;
+            elif cap_next:
+                expected += ch.upper()
+                cap_next = False
+            else:
+                expected += ch
+
+        if (expected and expected[0] == '_'): # Remove leading _ from expected input
+            expected = expected[1:]
+
+        self.add_error(label="FIRST_CHAR",
+                       data={"keyword": 'non-constant variable or function',
+                             "style": "lowercase",
+                             "expected": ((expected[:1].lower() + expected[1:]) if expected else '') if len(expected) > 1 else "a descriptive name",
+                             "found": str(result[1])})
+        return
+    # Make sure const variables are all caps
+    if not check_if_function_prototype(code) and not check_if_function(code):
+        const_var = re.compile("(?:^|\s+)const\s+(?:void|bool|char|short|long|int|float|double|string)\s*[\*\&]*\s*(?:[\w]|_)\w+")
+        const_var = const_var.search(code)
+        if const_var:
+            const_var = str(const_var.group(0).split()[2])
+
+            # Create an expected constant name where camel case is converted to all caps with underscores
+            expected = ''
+            var_length = len(const_var)
+            for i, ch in enumerate(reversed(const_var)):
+                if ch.isupper() and ch != '_' and i < var_length - 1 and i > 0 and const_var[var_length - i - 2] != '_':
+                    expected = '_' + ch + expected
+                else:
+                    expected = ch.upper() + expected
+
+            if (expected and expected[0] == '_'): # Remove leading _ from expected input
+                expected = expected[1:]
+            if not const_var.isupper():
+                self.add_error(label="FIRST_CHAR",
+                       data={"keyword": 'constant variable',
+                             "style": "uppercase",
+                             "expected": expected if len(expected) > 1 else "a descriptive name",
+                             "found": const_var})
+
 
 
 def check_unnecessary_include(self, code):
