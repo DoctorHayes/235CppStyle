@@ -174,7 +174,10 @@ class StyleRubric(object):
                 saved_errors += 1
                 new_error_list.append(e)
         self.total_errors -= len(self.error_tracker[filename]) - saved_errors
-        self.error_types[error_type] -= len(self.error_tracker[filename]) - saved_errors
+        if error_type in self.error_types.keys():
+            self.error_types[error_type] -= len(self.error_tracker[filename]) - saved_errors
+            if self.error_types[error_type] == 0:
+                self.error_types.pop(error_type, None)
         self.error_tracker[filename] = new_error_list
 
     def print_errors(self, error_list):
