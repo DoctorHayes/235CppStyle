@@ -1,3 +1,4 @@
+
 void defineabove(void) {cout << "inline fn" << endl;}
 
 void defineegypt(MyGar Fooby) {
@@ -8,7 +9,18 @@ MyType blalkgj132(arr myarray[]) {
     functioncall(void);
 }
 
-std :: string twoLinePrototype (const std::string& currentPhrase,
+std::string twoLineDef (const std::string& currentPhrase,
+
+std::string ClassName::method()
+{
+
+}
+
+std :: string weirdSpacing( )
+{
+
+}
+
 	std::string correctLetters) {
 
 }

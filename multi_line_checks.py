@@ -27,9 +27,9 @@ def check_function_def_above_main(self, clean_lines):
     function = check_if_function(code)
 
     if function and not prototype and self.outside_main:
-        function_regex = re.compile("^\s*(\w+)\s+(\w+)")
-        match = function_regex.search(code)
-        function_name = match.group(2) if match else code # show whole line if function name isn't found
+        # pattern for return type (with or with ::) and function name (with or without ::)
+        match = re.search(r"^\s*(?:\w+\s*\:\:\s*)*([\w_]+)\s+([\w\d_]+::)*([\w_][\w_\d]*)\s*\(", code)
+        function_name = str(match.group(2)) + match.group(3) + '()' if match else code # show whole line if function name isn't found
         self.add_error(label="DEFINITION_ABOVE_MAIN", data={'function': function_name})
 
 def check_statements_per_line(self, clean_lines):
