@@ -53,6 +53,7 @@ class StyleRubric(object):
         self.max_line_length = int(self.config.get('SETTINGS', 'max_line_length'))
         self.single_line_checks = self.load_functions(single_line_checks)
         self.multi_line_checks = self.load_functions(multi_line_checks)
+        self.detect_unnecessary_break = self.config.get('SETTINGS', 'unnecessary_break') == 'yes'
         self.comment_checks = self.load_functions(comment_checks)
         self.misc_checks = self.load_functions(misc_checks)
         self.adjustments = self.load_functions(adjustments, prefix='adjust')
@@ -133,8 +134,7 @@ class StyleRubric(object):
                 if self.config.get('SINGLE_LINE_CHECKS', 'tab_type').lower() == 'soft' and code.find('\t') != -1:
                     self.add_error(label='USING_TABS')
                     break
-                if self.current_line_num == 54:
-                    print("stop")
+
                 for function in self.single_line_checks: function(self, code)
                 for function in self.multi_line_checks: function(self, clean_lines)
             # COMMENT CHECKS #TODO
@@ -150,17 +150,22 @@ class StyleRubric(object):
             self.error_tracker[filename].sort()
             self.file_has_a_main[filename] = not self.outside_main
             if not self.file_has_a_main[filename]:
-                self.remove_def_above_main_errors(filename)
+                self.remove_error_by_type(filename, 'DEFINITION_ABOVE_MAIN')
+
+            # This is a bit of a hack, to make the setting work.
+            # TODO: make a multi-line check for unnecessary breaks.
+            if not self.detect_unnecessary_break:
+                self.remove_error_by_type(filename, 'UNNECESSARY_BREAK')
 
     def adjust_errors(self):
         for function in self.adjustments:
             function(self)
 
-    def remove_def_above_main_errors(self, filename):
+    def remove_error_by_type(self, filename, error_type='DEFINITION_ABOVE_MAIN'):
         new_error_list = []
         # temp error to generate the DEF_ABOVE_MAIN error message
-        temp_err = StyleError(1, 'DEFINITION_ABOVE_MAIN', data={'function': '__error_function__'})
-        def_above_main_message = temp_err.get_error_message('DEFINITION_ABOVE_MAIN').replace('__error_function__', '')
+        temp_err = StyleError(1, error_type, data={'function': '__error_function__'})
+        def_above_main_message = temp_err.get_error_message(error_type).replace('__error_function__', '')
 
         # Remove any errors that deal with function def above main
         saved_errors = 0
@@ -169,7 +174,7 @@ class StyleRubric(object):
                 saved_errors += 1
                 new_error_list.append(e)
         self.total_errors -= len(self.error_tracker[filename]) - saved_errors
-        self.error_types['DEFINITION_ABOVE_MAIN'] -= len(self.error_tracker[filename]) - saved_errors
+        self.error_types[error_type] -= len(self.error_tracker[filename]) - saved_errors
         self.error_tracker[filename] = new_error_list
 
     def print_errors(self, error_list):

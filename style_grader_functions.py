@@ -116,7 +116,7 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
         try:
             current_indentation = re.search(r'^( *)\S',
                                         clean_lines.lines[temp_line_num])
-            print(clean_lines.lines[temp_line_num])
+            #print(clean_lines.lines[temp_line_num])
             switch_statement = check_if_switch_statement(clean_lines.lines[temp_line_num])
             if_statement = check_if_statement(clean_lines.lines[temp_line_num])
             else_if = check_else_if(clean_lines.lines[temp_line_num])

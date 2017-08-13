@@ -97,7 +97,6 @@ def check_block_indentation(self, clean_lines):
     tab_size = 4
 
     code = clean_lines.lines[self.current_line_num]
-    print (code)
 
     if check_if_struct_or_class(code):
         self.global_in_object = True
@@ -166,7 +165,6 @@ def check_block_indentation(self, clean_lines):
                         self.add_error(**error)
     else:
         return
-
 
 def find_function_end(code, current_line):
     while code[current_line] and code[current_line].find('{') == -1:
