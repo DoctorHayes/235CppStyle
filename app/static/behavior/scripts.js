@@ -84,21 +84,31 @@ $(document).ready(function() {
 			success: function(data) {
 				console.log('Success!');
 
-				for(var i = 0; i < data.errors.length; ++i) {
-					if(data.errors[i + 1] && !data.errors[i].search("Grading ") && !data.errors[i + 1].search("Grading ") ) {
-						$("#errorlist2").append("<li><h4>" + data.errors[i] + "</h4></li>");
-						$("#errorlist2").append("<li class='message-success'>No errors have been found! :)</li>");
-					} else if(!data.errors[i + 1] && !data.errors[i].search("Grading ")) {
-						$("#errorlist2").append("<li><h4>" + data.errors[i] + "</h4></li>");
-						$("#errorlist2").append("<li class='message-success'>No errors have been found! :)</li>");
-					} else if(!data.errors[i].search("Grading ")) {
-						$("#errorlist2").append("<li><h4>" + data.errors[i] + "</h4></li>");
-					} else {
-						$("#errorlist2").append("<li class='message-error'>" + data.errors[i] + "</li>");
+				for(var i in data.files) {
+					var file = data.files[i];
+					var panelEl = $("<div>", {id: "card" + i, "class": "panel panel-default"});
+					panelEl.append('<div class="panel-heading">Analyzing&nbsp; ' + file.filename + ' &hellip;</div>');
+					if (file.errors.length === 0) {
+						panelEl.addClass('panel-success');
+						panelEl.append("<div class='panel-body'>No errors have been found! :)</div>");
 					}
+					else {
+						panelEl.addClass('panel-danger');
+						var tableCode = '<table class="table table-borderless"><thead></thead>';
+						for (var errorIter in file.errors) {
+							var error = file.errors[errorIter];
+							tableCode += '<tr><td>' +
+								error.location + '</td><td><code>' + error.message +
+								"</code></td></tr>";
+						}
+						tableCode += '</table>';
+						panelEl.append(tableCode);
+
+					}
+					$("#errorlist2").append(panelEl);
 				}
 
-				$('pre').show();
+				$('#errorblock').show();
 				hideSpinner();
 			},
 		});

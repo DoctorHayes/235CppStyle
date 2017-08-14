@@ -56,7 +56,7 @@ def add_numbers():
     # db.session.add(sub)
     # db.session.commit()
 
-    return jsonify(errors=response)
+    return jsonify(files=response)
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):

@@ -182,12 +182,24 @@ class StyleRubric(object):
 
     def print_errors(self, error_list):
         for filename, errors in self.error_tracker.items():
-            print('Grading {}...'.format(filename.split('/')[-1]))
-            error_list.append('Grading {}...'.format(filename.split('/')[-1]))
-            if not len(errors):
-                print_success()
+            error_dictionary = {
+                'filename': filename.split('/')[-1],
+                'errors': []
+            }
+
+            print('Analyzing {}...'.format(filename.split('/')[-1]))
+            if len(errors) == 0:
+                 print_success()
             for error in errors:
-                print(error)
-                error_list.append(str(error))
+                location = ''
+                if error.get_line_number():
+                    print(error)
+                    location = str(error.get_line_number())
+                    if error.get_column_number():
+                        location += ':' + str(error.get_column_number())
+                error_dictionary['errors'].append({'location': location, 'message': error.get_message()})
+
+            error_list.append(error_dictionary)
             print()
+
         return error_list

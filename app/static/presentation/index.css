@@ -18,6 +18,12 @@ margin-top: -20;
   width: 100%;
 }
 
+code {
+  font-size: 100%;
+  color: black;
+  background-color: white;
+}
+
 .navbar-inverse {
   background-color: #002855;
   border-color: #A89968;
@@ -182,10 +188,10 @@ a, a:focus, a:hover
   border-bottom-color: #fff;
 }
 
-pre{
+#errorblock {
   /*width: 120%;*/
   /*margin-left: -100;*/
-  margin-top: 30px; /* match spacing between jumbotron and buttons */
+  clear: both;
 }
 
 .modal-body {
@@ -241,3 +247,28 @@ pre{
 	color: green;
 }
 
+#errorlist2 {
+  margin-top: 1em; /* match spacing between buttons and output */
+  padding: 20px;
+}
+
+#errorlist2 table th, td{
+  padding: 1px 0.5em;
+}
+
+#errorlist2 td {
+   text-align: left;
+}
+
+#errorlist2 td:last-child {
+  width:100%;
+}
+
+#errorlist2 td:first-child {
+   text-align: right;
+   white-space:nowrap;
+}
+
+.borderless tbody tr td, .borderless thead tr th {
+    border: none !important;
+}
