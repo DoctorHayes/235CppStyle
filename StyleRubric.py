@@ -175,7 +175,7 @@ class StyleRubric(object):
         fake_out = TextIOWrapper(BytesIO(), sys.stdout.encoding)
         try:
             sys.stderr = fake_out
-            cpplint.ProcessFile(filename.encode('utf-8'), 0)
+            cpplint.ProcessFile(filename, 0)
         except TypeError:
             print('TODO: Fix TypeError: must be unicode, not str in Python 2.x')
         finally:
@@ -235,6 +235,6 @@ class StyleRubric(object):
                 error_dictionary['errors'].append({'location': location, 'message': error.get_message()})
 
             error_list.append(error_dictionary)
-            print()
+            print('')
 
         return error_list
