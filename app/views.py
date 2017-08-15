@@ -39,12 +39,12 @@ def add_numbers():
     for file in uploaded_files:
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join("app/" + app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join("./app/" + app.config['UPLOAD_FOLDER'], filename))
             filenames.append(filename)
 
     list_of_online_files = []
     for filename in filenames:
-        online_file = os.path.join("app/" + app.config['UPLOAD_FOLDER'], filename)
+        online_file = os.path.join("./app/" + app.config['UPLOAD_FOLDER'], filename)
         list_of_online_files.append(online_file)
 
     response = style_grader_driver(list_of_online_files)
