@@ -175,7 +175,9 @@ class StyleRubric(object):
         fake_out = TextIOWrapper(BytesIO(), sys.stdout.encoding)
         try:
             sys.stderr = fake_out
-            cpplint.ProcessFile(filename, 0)
+            cpplint.ProcessFile(filename.encode('utf-8'), 0)
+        except TypeError:
+            print('TODO: Fix TypeError: must be unicode, not str in Python 2.x')
         finally:
             # get output
             sys.stderr.seek(0)      # jump to the start
