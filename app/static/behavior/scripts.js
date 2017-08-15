@@ -38,6 +38,7 @@ $(document).ready(function() {
 		$('#code-input').fileinput('reset');
 		$('#code-input').val('');
 		$('#upload-file-btn').attr("disabled", "disabled");
+		$('#errorlist2').empty();
 	}
 
 	$('input[type=file]').fileinput(

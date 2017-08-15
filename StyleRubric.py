@@ -20,6 +20,7 @@ import misc_checks
 import single_line_checks
 from style_grader_functions import erase_string
 import adjustments
+import cpplint
 
 LOCAL_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -62,6 +63,9 @@ class StyleRubric(object):
         self.global_in_object_index = 0
         self.file_has_a_main = {}
         self.current_file_indentation = 4
+
+        # Load filters for cpplint
+        cpplint.ProcessConfigOverrides('CPPLINT.cfg')
 
         if student_files:
             self.student_files = student_files
@@ -147,6 +151,12 @@ class StyleRubric(object):
                 if self.config.get('COMMENT_CHECKS', 'min_comments').lower() == 'yes':
                     getattr(comment_checks, 'check_min_comments')(self, raw_data, clean_code)
             for function in self.misc_checks: function(self)
+
+            # Run checks directly from cpplint
+            # Filters are configurable from the CPPLINT.cfg file
+            self.cpplint_tests(filename)
+
+            # Organize the error list for this file
             self.error_tracker[filename].sort()
             self.file_has_a_main[filename] = not self.outside_main
             if not self.file_has_a_main[filename]:
@@ -156,6 +166,29 @@ class StyleRubric(object):
             # TODO: make a multi-line check for unnecessary breaks.
             if not self.detect_unnecessary_break:
                 self.remove_error_by_type(filename, 'UNNECESSARY_BREAK')
+
+    def cpplint_tests(self, filename):
+        # Run checks directly from cpplint
+        from io import TextIOWrapper, BytesIO
+        output_string = ''
+        real_stderr =  sys.stderr
+        fake_out = TextIOWrapper(BytesIO(), sys.stdout.encoding)
+        try:
+            sys.stderr = fake_out
+            cpplint.ProcessFile(filename, 0)
+        finally:
+            # get output
+            sys.stderr.seek(0)      # jump to the start
+            output_string = sys.stderr.read() # read output
+
+            # restore stderr
+            sys.stderr = real_stderr
+            fake_out.close()
+        for line in output_string.splitlines():
+            result = re.search(filename + '\:(\d+)\:\s+(.*)', line)
+            if result:
+                line_num = int(result.group(1))
+                self.add_error(label="CPPLINT_ERROR", line=line_num, data={'message': result.group(2)})
 
     def adjust_errors(self):
         for function in self.adjustments:
