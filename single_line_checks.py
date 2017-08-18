@@ -397,3 +397,9 @@ def check_for_loop_semicolon_spacing(self, code):
             label="FOR_LOOP_SEMICOLON_SPACING",
             data={"line": self.current_line_num}
         )
+
+def check_system_call(self, code):
+    # Check for system calls.
+    sys_call = re.search("(?:^|\s+|\}|\{|;)system\s*\(\s*\"", code)
+    if sys_call:
+        self.add_error(label="SYSTEM_CALL")

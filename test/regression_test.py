@@ -109,6 +109,11 @@ class RegressionTesting(unittest.TestCase):
         self.assertEqual(10, self.rubric.error_types['IDENTIFIER_LENGTH'])
         self.assertEqual(1, self.rubric.error_types['IDENTIFIER_I'])
 
+    @load_code_segment('system_call_bad.cpp')
+    def test_bad_system_call(self): self.assertEqual(1, self.rubric.error_types['SYSTEM_CALL'])
+    @load_code_segment('system_call_good.cpp')
+    def test_good_system_call(self): self.assertEqual(0, self.rubric.error_types['SYSTEM_CALL'])
+
     @load_code_segment('regression_indentation_group.cpp')
     def test_regression_indentation_group(self):
         # The input file will throw an error if there's a bug, so we don't

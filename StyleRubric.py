@@ -186,6 +186,8 @@ class StyleRubric(object):
             # restore stderr
             sys.stderr = real_stderr
             fake_out.close()
+
+        # Parse output from cpplint
         for line in output_string.splitlines():
             result = re.search(filename + '\:(\d+)\:\s+(.*)', line)
             if result:

@@ -117,6 +117,7 @@ class StyleError(object):
                                                                                                             'line' if self.get_data().get("lines") == 1 else 'lines'),
             "DEFINITION_ABOVE_MAIN": "{} is implemented above main. Keep function definitions below main or in a separate .cpp file.".format(self.get_data().get("function")),
             "FOR_LOOP_SEMICOLON_SPACING": "The loop on line {} doesn't have consistent spacing around its semicolons.".format(self.get_data().get("line")),
+            "SYSTEM_CALL": "Remove system call, 'system()', because the command is platform specific (will not run on both macOS and Windows).",
             "CPPLINT_ERROR": self.get_data().get('message')
         }[label]
 
