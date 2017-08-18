@@ -21,6 +21,8 @@ int* threeLinePrototype (const int& num,
 //loads phrases into vector from file
 bool loadPhrasesFromFile(std::vector<PHRASE>& phrases, std::string fileName);
 
+#include <iostream>
+
 int  main()
 {
 

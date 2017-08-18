@@ -8,7 +8,8 @@ def check_function_def_above_main(self, clean_lines):
     code = clean_lines.lines[self.current_line_num]
 
     # Ignore blank lines (obviously not a function definition)
-    if re.match(r'^[\s\}\{\};]*$', code): # skip boring lines
+    if re.match(r'^[\s\}\{\};]*$', code) or \
+        re.match(r'(^|\s)+#.+', code):
         return
 
     # Ignore statements after main().
