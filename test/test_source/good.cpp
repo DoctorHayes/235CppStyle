@@ -27,6 +27,11 @@ int main(int argc, const char * argv[])
     int val;
     cin >> val;
 
+    if (val || val)
+    {
+
+    }
+
     return 0;
 }
 

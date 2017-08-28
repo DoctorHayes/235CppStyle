@@ -9,36 +9,36 @@
 bool myFunc(int num);
 
 int main () {
-	int x, y;
-	int array[] = {x, y};
+	int pointX, pointY;
+	int array[] = {pointX, pointY, 0};
 
-	if (x) {
+	if (pointX) {
 		return 0;
 	}
 
-	if (x == y) {
+	if (pointX == pointY) {
 		return 1;
 	}
 
-	if ((x - y) == (y - x)) {
+	if ((pointX - pointY) == (pointY - pointX)) {
 		return 2;
 	}
-	else if (myFunc(x)) {
+	else if (myFunc(pointX)) {
 		while (!something) {
 			// do something
 		}
 	}
 
-	if (x)
+	if (pointX)
 		return 3;
 
-	if ((x - x) == 0 &&
-		x / 2 == 1) {
+	if ((pointX - pointX) == 0 &&
+		pointX / 2 == 1) {
 		return 4;
 	}
 
-	if ((x - x) == 0 &&
-		x / 2 == 1)
+	if ((pointX - pointX) == 0 &&
+		pointX / 2 == 1)
 		return 4;
 
 	return 0;
