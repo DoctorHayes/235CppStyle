@@ -1,11 +1,11 @@
 from cpplint import GetPreviousNonBlankLine
 from style_grader_classes import DataStructureTracker
-from style_grader_functions import check_if_function, check_if_function_prototype, indent_helper, check_if_struct_or_class, check_if_switch_statement, check_if_cout_block
+from style_grader_functions import check_if_function, check_if_function_prototype, indent_helper, check_if_struct_or_class, check_if_switch_statement, check_if_cout_block, get_tab_type
 from pyparsing import Literal
 import re
 
 def check_function_def_above_main(self, clean_lines):
-    code = clean_lines.lines[self.current_line_num]
+    code = clean_lines.elided[self.current_line_num]
 
     # Ignore blank lines (obviously not a function definition)
     if re.match(r'^[\s\}\{\};]*$', code) or \
@@ -17,12 +17,7 @@ def check_function_def_above_main(self, clean_lines):
         return
 
     # Prototypes and function declarations may have headers that span multiple lines
-    next_line = self.current_line_num + 1
-    while (code.find(';') < 0 and code.find('{') < 0 and code.find('}') < 0 and next_line < len(clean_lines.lines)):
-        code += clean_lines.lines[next_line]
-        next_line += 1
-
-    code = re.sub('[\r\n]', ' ', code) # remove newlines (make code a single line)
+    code = get_full_statement(clean_lines.elided, self.current_line_num)
 
     prototype = check_if_function_prototype(code)
     function = check_if_function(code)
@@ -34,7 +29,7 @@ def check_function_def_above_main(self, clean_lines):
         self.add_error(label="DEFINITION_ABOVE_MAIN", data={'function': function_name})
 
 def check_statements_per_line(self, clean_lines):
-    cleansed_line = clean_lines.lines[self.current_line_num]
+    cleansed_line = clean_lines.elided[self.current_line_num]
     # This code is taken directly from cpplint lines 3430-3440
     if (cleansed_line.count(';') > 1 and
        # for loops are allowed two ;'s (and may run over two lines).
@@ -48,7 +43,7 @@ def check_statements_per_line(self, clean_lines):
         self.add_error(label="STATEMENTS_PER_LINE")
 
 def check_brace_consistency(self, clean_lines):
-    code = clean_lines.lines[self.current_line_num]
+    code = clean_lines.elided[self.current_line_num]
     stripped_code = code.strip()
 
     function = check_if_function(code)
@@ -56,10 +51,10 @@ def check_brace_consistency(self, clean_lines):
     # Check if this is really a function and not just a prototype.
     if (function):
         endOfFunctionHeader = self.current_line_num
-        endCode = clean_lines.lines[endOfFunctionHeader].strip()
+        endCode = clean_lines.elided[endOfFunctionHeader].strip()
         while endCode.find(';') == -1 and endCode.find('{') == -1:
             endOfFunctionHeader += 1
-            endCode = clean_lines.lines[endOfFunctionHeader].strip()
+            endCode = clean_lines.elided[endOfFunctionHeader].strip()
 
         semicolonIndex = endCode.find(';')
         brackIndex = endCode.find('{')
@@ -74,7 +69,7 @@ def check_brace_consistency(self, clean_lines):
     current = self.current_line_num
     if function or if_statement or else_if_statement or else_statement or switch_statement:
         try:
-            is_egyptian = deep_egyptian_check(clean_lines.lines, current)
+            is_egyptian = deep_egyptian_check(clean_lines.elided, current)
             if is_egyptian:
                 self.egyptian = True
                 if self.not_egyptian is None:
@@ -94,10 +89,9 @@ def check_brace_consistency(self, clean_lines):
             return
 
 def check_block_indentation(self, clean_lines):
-    #TODO: Load from config file?
-    tab_size = 4
 
-    code = clean_lines.lines[self.current_line_num]
+
+    code = clean_lines.elided[self.current_line_num]
 
     if check_if_struct_or_class(code):
         self.global_in_object = True
@@ -107,22 +101,34 @@ def check_block_indentation(self, clean_lines):
     elif self.global_in_object and code.find('}') != -1:
         self.pop_global_brace()
 
+    indentation = re.search(r'^([ \t]*)\S', code)
+    if not indentation:
+        return
+
     function = check_if_function(code)
     prototype = check_if_function_prototype(code)
     struct_or_class = check_if_struct_or_class(code)
-    indentation = re.search(r'^( *)\S', code)
-    if indentation:
-        indentation = indentation.group()
-        indentation_size = len(indentation) - len(indentation.strip())
+
+    indentation = indentation.group()
+    indentation_size = len(indentation) - len(indentation.strip())
+
+    if indentation[0] in ['\t', ' ']:
+        hard_tabs = indentation[0] == '\t'
     else:
-        return
+        hard_tabs = get_tab_type(clean_lines.elided) == '\t'
+
+    #TODO: Load from config file?
+    if hard_tabs:
+        tab_size = 1
+    else:
+        tab_size = 4
 
     if function and indentation_size != 0 and not self.global_in_object and code.find('else if') == -1:
         data = {'expected': 0, 'found': indentation_size}
         self.add_error(label="BLOCK_INDENTATION", data=data)
 
     if function and not prototype:
-        self.current_line_num = find_function_end(clean_lines.lines, self.current_line_num)
+        self.current_line_num = find_function_end(clean_lines.elided, self.current_line_num)
 
     if (function and not self.outside_main) or struct_or_class:
         #if not Egyptian style
@@ -147,7 +153,9 @@ def check_block_indentation(self, clean_lines):
                 #TODO Figure out what it means to not have braces in the right place
                 pass
         else:
-            if not (code.find('{') != -1 and code.rfind('}') != -1 and code.find('{') < code.rfind('}')):
+            openCurlyLoc = code.find('{')
+            closeCurlyLoc = code.rfind('}')
+            if (openCurlyLoc == -1 or closeCurlyLoc == -1 or openCurlyLoc > closeCurlyLoc):
                 temp_line_num = self.current_line_num
                 data_structure_tracker = DataStructureTracker()
 
@@ -164,11 +172,73 @@ def check_block_indentation(self, clean_lines):
                 for error in results:
                     if not self.contains_error(**error):
                         self.add_error(**error)
-    else:
-        return
+
+
+# New operator spacing function
+def check_operator_spacing(self, clean_lines):
+
+
+    code = get_full_statement(clean_lines.elided, self.current_line_num)
+
+    # Check if this is a continuation of the previous line.
+    first_line = self.current_line_num
+    if(first_line > 1):
+        prev_line = clean_lines.elided[ first_line - 1]
+        if (len(get_full_statement(clean_lines.elided, first_line - 1)) > len(prev_line)):
+            return # Already checked this line
+
+    code = get_full_statement(clean_lines.elided, self.current_line_num)
+
+    # TODO: Temporary fix to ignore & and * operators in function params
+    if check_if_function(code) or check_if_function_prototype(code) or \
+            '#include' in code: return
+    # Check normal operators
+    # account for *=, %=, /=, +=, -=
+    indexes = []
+    for operator in list('+-%*/!><=&|'):
+        indexes += findOccurences(code, operator)
+    indexes.sort()  # Force compound operator indexes to be correctly ordered
+
+    skip_next = False
+    for operator_index in indexes:
+        if skip_next:
+            # skip second operator in compound/increment/decrement operator
+            skip_next = False
+            continue
+
+        if skip_operator(code, operator_index):
+            skip_next = True
+        elif is_compound_operator(code, operator_index):
+            # Always use front char in compound operators, therefore need to skip second char
+            skip_next = True
+            if not operator_helper(True, code, operator_index):
+                self.add_error(label='OPERATOR_SPACING', column=operator_index,
+                                data={'operator': code[operator_index:operator_index + 2]})
+        elif is_cast_operator(code, operator_index):
+            continue # for example: static_cast<int>(x);
+        elif is_unary_operator(code, operator_index):
+            # Checking for unary operators (!, +, -)
+            prev_index = operator_index - 1
+            # Only check for spacing in front of unary operator
+            if code[prev_index] and code[prev_index] not in ['\t', ' ', '\r', '\n', '(']:
+                self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': code[operator_index]})
+            elif code[operator_index + 1] and code[operator_index + 1] in ['\t', ' ', '\r', '\n']:
+                # There should be no space after a unary operator
+                self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': code[operator_index]})
+        elif not operator_helper(False, code, operator_index):
+            operator = code[operator_index]
+            prev_index = operator_index - 1
+            # If there is a space before a +/- but not after it, then maybe it is a unary operator we missed.
+            if ((not code[prev_index]) or (code[prev_index] in ['\t', ' ', '\r', '\n', '('])):
+                if (operator == '+'):
+                    operator += '. If this is the unary +, you may ignore this error'
+                elif (operator == '-'):
+                    operator += '. If this is the unary -, you may ignore this error'
+            self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': operator})
 
 def find_function_end(code, current_line):
-    while code[current_line] and code[current_line].find('{') == -1:
+    # Go to the next line if we are not on the last line and there is no '{'
+    while (current_line < len(code) - 1) and code[current_line].find('{') == -1:
         current_line += 1
 
     if len(code[current_line].strip()) == 1:
@@ -228,3 +298,68 @@ def find_end_of_parens(code, current_line):
         return lineNum
 
     return lineNum
+
+# Returns a single line containing the current line and subsequent lines until the statement ends.
+def get_full_statement(clean_lines, current_line):
+    code = clean_lines[current_line]
+    if code.isspace():
+        return code
+
+    next_line = current_line + 1
+    while (code.find(';') < 0 and code.find('{') < 0 and code.find('}') < 0 and next_line < len(clean_lines)):
+        code += clean_lines[next_line]
+        next_line += 1
+
+    return re.sub('[\r\n]', ' ', code) # remove newlines (make code a single line)
+
+def findOccurences(s, ch):
+    return [i for i, letter in enumerate(s) if letter == ch]
+
+def skip_operator(code, index):
+    # Don't worry about increment/decrement/pointer-arrow operators
+    return is_increment_decrement(code, index) or is_pointer_arrow(code, index)
+
+def is_increment_decrement(code, index):
+    return code[index + 1] and code[index] in ['+', '-'] and code[index + 1] == code[index]
+
+def is_unary_operator(code, index):
+    return (code[index] == '!' and code[index + 1] and code[index + 1] != '=') or \
+        re.search('[\(\+\-\*\%<>=\&\|\!]\s*[\-\+]$', code[:index + 1]) is not None  or \
+        re.match('\s*[\+\-]$', code[:index + 1]) is not None or \
+        re.search('return\s+[\-\+]$', code[:index + 1]) is not None
+
+def is_cast_operator(code, index):
+    check = re.search('(?:const|dynamic|reinterpret|static)_cast\s*(<)\s*[_\w\d]+\s*(>)', code)
+    return check and (check.span(1)[0] == index or check.span(2)[0] == index)
+
+
+def is_pointer_arrow(code, index):
+    return code[index + 1] and code[index:(index+2)] == '->'
+
+def is_compound_operator(code, index):
+    if code[index + 1]:
+        # Check for >=, <=, >>, <<
+        if code[index] in ['>', '<']:
+            if code[index + 1] == '=' or code[index + 1] == code[index]:
+                return True
+        # Check for +=, -=, *=, /=, %=, ==, !=
+        if code[index] in ['*', '/', '+', '-', '!', '=', '%']:
+            if code[index + 1] == '=':
+                return True
+        # Check &&, ||, &=, |=
+        elif code[index] in ['&', '|']:
+            if code[index + 1] == code[index] or code[index + 1] == '=':
+                return True
+    return False
+
+def operator_helper(compound, code, index):
+    correct_spacing = True
+    if compound:
+        correct_spacing = ((len(code) < index + 3) or re.match(r'\s', code[index + 2])) and \
+            ((index == 0) or re.match(r'[ \t]', code[index - 1]))
+    else:
+        if code[index + 1] and code[index + 1] not in [' ', '\t', '\r', '\n']:
+            correct_spacing = False
+        if code[index - 1] and code[index - 1] not in [' ', '\t']:
+            correct_spacing = False
+    return correct_spacing

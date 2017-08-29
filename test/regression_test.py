@@ -72,7 +72,7 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('logical_AND_OR_spacing_good.cpp')
     def test_good_logical_spacing(self): self.assertEqual(0, self.rubric.error_types['OPERATOR_SPACING'])
     @load_code_segment('operator_spacing_bad.cpp')
-    def test_bad_operator_spacing(self): self.assertEqual(23, self.rubric.error_types['OPERATOR_SPACING'])
+    def test_bad_operator_spacing(self): self.assertEqual(24, self.rubric.error_types['OPERATOR_SPACING'])
     @load_code_segment('operator_spacing_good.cpp')
     def test_good_operator_spacing(self): self.assertEqual(0, self.rubric.error_types['OPERATOR_SPACING'])
 
@@ -87,6 +87,10 @@ class RegressionTesting(unittest.TestCase):
     def test_class_indentation_header(self): self.assertEqual(11, self.rubric.error_types['BLOCK_INDENTATION'])
     @load_code_segment('indent_structs.h')
     def test_struct_indentation_header(self): self.assertEqual(11, self.rubric.error_types['BLOCK_INDENTATION'])
+    @load_code_segment('indent_if_good.cpp')
+    def test_indent_if_good(self): self.assertEqual(0, self.rubric.error_types['BLOCK_INDENTATION'])
+    @load_code_segment('indenation_hardtabs.cpp')
+    def test_indent_hardtabs_good(self): self.assertEqual(0, self.rubric.error_types['BLOCK_INDENTATION'])
 
     # Test for too long lines based on the setting in the config (valid for line lengths that are multiples of 10 between 30 and 120)
     @load_code_segment('long_lines.cpp')

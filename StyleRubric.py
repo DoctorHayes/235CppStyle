@@ -132,7 +132,7 @@ class StyleRubric(object):
             raw_data = deepcopy(data)
             RemoveMultiLineComments(filename, data, '')
             clean_lines = CleansedLines(data)
-            clean_code = clean_lines.lines
+            clean_code = clean_lines.elided
             for self.current_line_num, code in enumerate(clean_code):
                 code = erase_string(code)
                 if self.config.get('SINGLE_LINE_CHECKS', 'tab_type').lower() == 'soft' and code.find('\t') != -1:

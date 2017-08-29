@@ -23,7 +23,7 @@ int main(int argc, const char * argv[])
 {
     // greet the user
     greet();
-    cout << "bye.\'" << '*' << '\\' << '\"' << '\'*' << '-' << '+' << endl;
+    cout << "bye.\'" << '*' << '\\' << '\"' << "\'*" << '-' << '+' << endl;
     int val;
     cin >> val;
 

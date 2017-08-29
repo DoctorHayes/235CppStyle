@@ -4,7 +4,8 @@ using namespace std;
 
 int main() {
     bool x = true,
-         y = false;
+        y = false;
+
     if (x && y) {
 
     }
@@ -16,7 +17,10 @@ int main() {
     if (!x) {
 
     }
-    if (1 == 2) {
 
+    if (1 == 2) {
+        assert(1 == 2);
     }
+
+    return 0;
 }

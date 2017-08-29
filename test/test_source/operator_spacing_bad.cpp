@@ -39,5 +39,8 @@ int main() {
     +x; // valid
     (+ x);
 
+    if (dynamic_cast<double>(x)< 2.0)
+        x += 2; // valid
+
     return 0;
 }

@@ -17,6 +17,16 @@ def get_indent_level(filename):
             results.append(len(match.group(0))-1)
     return Counter(results).most_common(1)[0] if results else 4
 
+def get_tab_type(code_lines):
+    indent_re = re.compile(r'^\s+\w')
+    results = []
+    for line in code_lines:
+        match = indent_re.match(line)
+        if match:
+            results.append(match.group(0)[0])
+
+    return max(set(results), key=results.count) if len(results) > 0 else '\t'
+
 def check_if_function(code):
     return_type = Word(alphas + '_', alphanums + '_&*') # Bad style to have "_" but syntactically valid
     function_name = Word(alphas + '_', alphanums + '_:><')
@@ -103,18 +113,18 @@ def check_if_cout_block(code):
         return False
 
 def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, temp_line_num):
-    indentation = re.search(r'^( *)\S', clean_lines.lines[temp_line_num])
+    #indentation = re.match(r'^([ \t]*)\S', clean_lines.lines[temp_line_num])
     results = list()
     if not indentation:
         return results
-    indentation = indentation.group()
+    #indentation = indentation.group()
     indentation_size = len(indentation) - len(indentation.strip())
     data_structure_tracker.in_block = True
     next_indentation = indentation_size + tab_size
     while data_structure_tracker.in_block:
         temp_line_num += 1
         try:
-            current_indentation = re.search(r'^( *)\S',
+            current_indentation = re.match(r'^([ \t]*)\S',
                                         clean_lines.lines[temp_line_num])
             #print(clean_lines.lines[temp_line_num])
             switch_statement = check_if_switch_statement(clean_lines.lines[temp_line_num])
@@ -167,8 +177,9 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
                         next_indentation -= tab_size
                     else:
                         if not data_structure_tracker.in_if:
-                            data = {'expected': next_indentation, 'found': current_indentation}
-                            results.append({'label': 'BLOCK_INDENTATION', 'line': temp_line_num + 1, 'data': data})
+                            results.append({'label': 'BLOCK_INDENTATION', 'line': temp_line_num + 1,
+                                'data': {'expected': next_indentation, 'found': current_indentation}
+                            })
 
 
                 if clean_lines.lines[temp_line_num].find("{") != -1 and clean_lines.lines[temp_line_num].find("}") != -1:

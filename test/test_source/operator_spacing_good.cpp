@@ -43,5 +43,11 @@ int main() {
 
     strPtr->name;
 
+    static_cast<int>(4.9);
+    dynamic_cast<double>(x);
+
+    x = (10 + x)
+        * 2;
+
     return 0;
 }
