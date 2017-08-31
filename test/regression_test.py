@@ -124,6 +124,16 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('system_call_good.cpp')
     def test_good_system_call(self): self.assertEqual(0, self.rubric.error_types['SYSTEM_CALL'])
 
+    @load_code_segment('include_test_good.cpp')
+    def test_includes_good(self): self.assertEqual(0, self.rubric.error_types['UNNECESSARY_INCLUDE'])
+    @load_code_segment('include_test_bad.cpp')
+    def test_includes_good(self):
+        if self.styleRubric.config.get('SINGLE_LINE_CHECKS', 'unnecessary_include') == 'yes':
+            self.assertEqual(3, self.rubric.error_types['UNNECESSARY_INCLUDE'])
+        else:
+            pass
+
+
     @load_code_segment('regression_indentation_group.cpp')
     def test_regression_indentation_group(self):
         # The input file will throw an error if there's a bug, so we don't

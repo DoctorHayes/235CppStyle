@@ -201,14 +201,14 @@ def check_first_char(self, code):
 
 
 def check_unnecessary_include(self, code):
-    grammar = Literal('#') + Literal('include') + Literal('<') + Word(alphanums)
+    grammar = Literal('#') + Literal('include') + Literal('<') + Word(alphanums) + Literal('>')
     try:
         grammar.parseString(code)
         begin = code.find("<")
         end = code.find(">")
         included_library = code[begin + 1:end]
         if included_library not in self.includes:
-            self.add_error(label="UNNECESSARY_INCLUDE")
+            self.add_error(label="UNNECESSARY_INCLUDE", data={"library": included_library})
     except ParseException:
         return
 

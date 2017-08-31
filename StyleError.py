@@ -101,7 +101,7 @@ class StyleError(object):
             "CONTINUE_STATEMENT": "While 'continue' is occasionally appropriate, we discourage its use in CSCI 235.",
             "MAIN_SYNTAX": "Your declaration of main() does not adhere to conventional stylistic guidelines.",
             "STRINGSTREAM": "We disallow the use of stringstreams in this course to ensure mastery of other IO methods.",
-            "UNNECESSARY_INCLUDE": "You have included a library we do not allow.",
+            "UNNECESSARY_INCLUDE": "You have included a library, {}, that we do not allow in CSCI 235.".format(self.get_data().get("library")),
             "FIRST_CHAR": "First character of a {} name must be {}. Expected: {}, found: {}.".format(self.get_data().get("keyword"),
                                                                                                             self.get_data().get("style"),
                                                                                                              self.get_data().get("expected"),
