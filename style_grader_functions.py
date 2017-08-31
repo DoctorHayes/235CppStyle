@@ -1,4 +1,3 @@
-from collections import Counter
 import getopt
 import re
 
@@ -7,18 +6,51 @@ from pyparsing import Literal, Word, Optional, ParseException, alphanums, Keywor
 class EmptyFileException(object):
     pass
 
-def get_indent_level(filename):
-    data = filename.readlines()
-    indent_re = re.compile('^\s+\w')
-    results = []
+# Detects the length of tabs (returns 1 for hard tabs)
+def get_soft_tab_length(file):
+    data = file.readlines()
+    indentRe = re.compile(r'^[ \t]+[^ \t]')
+    indentLengthCount = [0] * 11 # key is space counts and values are number of lines
+    numLinesWithTabs = 0
+    numLinesWithSpaces = 0
+
+    # count the number of spaces at the beginning of each line.
     for line in data:
-        match = indent_re.search(line)
-        if match:
-            results.append(len(match.group(0))-1)
-    return Counter(results).most_common(1)[0] if results else 4
+        firstSpaces = indentRe.match(line)
+        if not firstSpaces:
+            continue
+        firstSpaces = firstSpaces.group(0)
+        spaceChars = len(firstSpaces) - 1
+
+        if firstSpaces[0] == '\t':
+            numLinesWithTabs += 1
+
+        # Assume nobody uses single space indentation
+        elif spaceChars > 1 and spaceChars <= 10:
+            indentLengthCount[spaceChars] += 1
+            numLinesWithSpaces += 1
+
+    if numLinesWithTabs >= numLinesWithSpaces:
+        return 1 # hard tabs have an indent of 1
+
+    # Assume indent of 4 if no indentation found.
+    if all(v == 0 for v in indentLengthCount):
+        return 4
+
+    # Calculate "probability" based on the count of first two levels of indentation
+    weights = {
+        2: indentLengthCount[2] + indentLengthCount[4] / 2,
+        3: indentLengthCount[3] + indentLengthCount[6] / 2,
+        4: indentLengthCount[4] + indentLengthCount[8] / 2,
+        5: indentLengthCount[5] + indentLengthCount[10] / 2
+    }
+
+    # return the value with the max probability
+    return max(weights, key=weights.get)
+
 
 def get_tab_type(code_lines):
-    indent_re = re.compile(r'^\s+\w')
+    indent_re = re.compile(r'^[ \t]+\w')
     results = []
     for line in code_lines:
         match = indent_re.match(line)

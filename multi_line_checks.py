@@ -112,16 +112,7 @@ def check_block_indentation(self, clean_lines):
     indentation = indentation.group()
     indentation_size = len(indentation) - len(indentation.strip())
 
-    if indentation[0] in ['\t', ' ']:
-        hard_tabs = indentation[0] == '\t'
-    else:
-        hard_tabs = get_tab_type(clean_lines.elided) == '\t'
-
-    #TODO: Load from config file?
-    if hard_tabs:
-        tab_size = 1
-    else:
-        tab_size = 4
+    tab_size = self.current_file_indentation
 
     if function and indentation_size != 0 and not self.global_in_object and code.find('else if') == -1:
         data = {'expected': 0, 'found': indentation_size}

@@ -1,3 +1,5 @@
+#ifndef INDENT_CLASSES_H_
+#define INDENT_CLASSES_H_
 class BadClass_All {
     public:
 BadClass1();
@@ -70,3 +72,5 @@ private:
     }
 
 };
+
+#endif
