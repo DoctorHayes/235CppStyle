@@ -25,6 +25,11 @@ def check_equals_true(self, code):
     if len(statement_parser.searchString(code)):
         self.add_error(label="EQUALS_TRUE")
 
+def check_float_type(self, code):
+    # ToDo: Ignores #include<cfloat>, but should find static_cast<float>().
+    floatPattern = re.compile('(?:^|[\s,;\(])float[\s\*&]')
+    for match in floatPattern.finditer(code):
+        self.add_error(label="FLOAT_TYPE", column=match.span()[0]+1)
 
 def check_goto(self, code):
     # Hacky but gets the job done for now - has holes though
