@@ -78,7 +78,7 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('logical_AND_OR_spacing_good.cpp')
     def test_good_logical_spacing(self): self.assertEqual(0, self.rubric.error_types['OPERATOR_SPACING'])
     @load_code_segment('operator_spacing_bad.cpp')
-    def test_bad_operator_spacing(self): self.assertEqual(24, self.rubric.error_types['OPERATOR_SPACING'])
+    def test_bad_operator_spacing(self): self.assertEqual(27, self.rubric.error_types['OPERATOR_SPACING'])
     @load_code_segment('operator_spacing_good.cpp')
     def test_good_operator_spacing(self): self.assertEqual(0, self.rubric.error_types['OPERATOR_SPACING'])
 

@@ -17,7 +17,7 @@ def check_function_def_above_main(self, clean_lines):
         return
 
     # Prototypes and function declarations may have headers that span multiple lines
-    code = get_full_statement(clean_lines.elided, self.current_line_num)
+    code = get_full_statement(clean_lines.elided, self.current_line_num)['statement']
 
     prototype = check_if_function_prototype(code)
     function = check_if_function(code)
@@ -168,21 +168,20 @@ def check_block_indentation(self, clean_lines):
 # New operator spacing function
 def check_operator_spacing(self, clean_lines):
 
-
-    code = get_full_statement(clean_lines.elided, self.current_line_num)
-
     # Check if this is a continuation of the previous line.
     first_line = self.current_line_num
-    if(first_line > 1):
+    if(first_line > 0):
         prev_line = clean_lines.elided[ first_line - 1]
-        if (len(get_full_statement(clean_lines.elided, first_line - 1)) > len(prev_line)):
+        if (len(get_full_statement(clean_lines.elided, first_line - 1)['lineEndings']) > 1):
             return # Already checked this line
 
-    code = get_full_statement(clean_lines.elided, self.current_line_num)
+    statement = get_full_statement(clean_lines.elided, self.current_line_num)
+    code = statement['statement']
 
     # TODO: Temporary fix to ignore & and * operators in function params
     if check_if_function(code) or check_if_function_prototype(code) or \
-            '#include' in code: return
+        '#include' in code: return
+
     # Check normal operators
     # account for *=, %=, /=, +=, -=
     indexes = []
@@ -197,14 +196,18 @@ def check_operator_spacing(self, clean_lines):
             skip_next = False
             continue
 
+        trueLoc = statement_col_to_line(statement, first_line, operator_index)
+
         if skip_operator(code, operator_index):
             skip_next = True
         elif is_compound_operator(code, operator_index):
             # Always use front char in compound operators, therefore need to skip second char
             skip_next = True
             if not operator_helper(True, code, operator_index):
-                self.add_error(label='OPERATOR_SPACING', column=operator_index,
-                                data={'operator': code[operator_index:operator_index + 2]})
+                self.add_error(label='OPERATOR_SPACING',
+                    line = trueLoc['lineNum'],
+                    column=trueLoc['col'],
+                    data={'operator': code[operator_index:operator_index + 2]})
         elif is_cast_operator(code, operator_index):
             continue # for example: static_cast<int>(x);
         elif is_unary_operator(code, operator_index):
@@ -212,10 +215,16 @@ def check_operator_spacing(self, clean_lines):
             prev_index = operator_index - 1
             # Only check for spacing in front of unary operator
             if code[prev_index] and code[prev_index] not in ['\t', ' ', '\r', '\n', '(']:
-                self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': code[operator_index]})
+                self.add_error(label='OPERATOR_SPACING',
+                    line = trueLoc['lineNum'],
+                    column=trueLoc['col'],
+                    data={'operator': code[operator_index]})
             elif code[operator_index + 1] and code[operator_index + 1] in ['\t', ' ', '\r', '\n']:
                 # There should be no space after a unary operator
-                self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': code[operator_index]})
+                self.add_error(label='OPERATOR_SPACING',
+                    line = trueLoc['lineNum'],
+                    column=trueLoc['col'],
+                    data={'operator': code[operator_index]})
         elif not operator_helper(False, code, operator_index):
             operator = code[operator_index]
             prev_index = operator_index - 1
@@ -225,7 +234,32 @@ def check_operator_spacing(self, clean_lines):
                     operator += '. If this is the unary +, you may ignore this error'
                 elif (operator == '-'):
                     operator += '. If this is the unary -, you may ignore this error'
-            self.add_error(label='OPERATOR_SPACING', column=operator_index, data={'operator': operator})
+            self.add_error(label='OPERATOR_SPACING',
+                    line = trueLoc['lineNum'],
+                    column=trueLoc['col'],
+                    data={'operator': operator})
+
+# Find what line a column should be on for a multi-line statement
+def statement_col_to_line(statement, firstLineNum, column):
+    lineEndings = statement['lineEndings']
+    lineNum = firstLineNum
+    lineOffset = 0
+    previousLinesLength = 0
+    for endIndex in lineEndings:
+        if endIndex < column:
+            lineOffset += 1
+            previousLinesLength = endIndex
+        else:
+            break
+
+    return {
+        # line number, not line index in array
+        'lineNum': lineNum + lineOffset + 1,
+
+        # col number, not index. Accounting for 1 extra character per line
+        'col': column - previousLinesLength - lineOffset + 1
+    }
+
 
 def find_function_end(code, current_line):
     # Go to the next line if we are not on the last line and there is no '{'
@@ -293,15 +327,23 @@ def find_end_of_parens(code, current_line):
 # Returns a single line containing the current line and subsequent lines until the statement ends.
 def get_full_statement(clean_lines, current_line):
     code = clean_lines[current_line]
-    if code.isspace():
-        return code
 
+    if not code or code.isspace():
+        return {'statement': code, 'lineEndings': [len(code)]}
+
+    if code[-1] not in ['\r','\n']: code += '\n' # all lines should end with a newline
     next_line = current_line + 1
     while (code.find(';') < 0 and code.find('{') < 0 and code.find('}') < 0 and next_line < len(clean_lines)):
         code += clean_lines[next_line]
         next_line += 1
+        if code[-1] not in ['\r','\n']: code += '\n' # all lines should end with a newline
 
-    return re.sub('[\r\n]', ' ', code) # remove newlines (make code a single line)
+    lineEndings = [m.start() for m in re.finditer(r'\r\n|\r|\n', code)]
+
+    return {
+        'statement': re.sub('[\r\n]', ' ', code), # remove newlines (make code a single line)
+        'lineEndings': lineEndings
+    }
 
 def findOccurences(s, ch):
     return [i for i, letter in enumerate(s) if letter == ch]

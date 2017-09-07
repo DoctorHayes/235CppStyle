@@ -2,45 +2,53 @@
 using namespace std;
 
 int main() {
-    int x = 0;
+    int num = 0;
+
     // check compound operators
-    x+=1;
-    x*=1;
-    x/=1;
-    x%=2;
-    x!=1;
-    x==1;
-    x>=2;
-    x<=2;
-    x&&false;
-    x||true;
+    num+=1;
+    num*=1;
+    num/=1;
+    num%=2;
+    num!=1;
+    num==1;
+    num>=2;
+    num<=2;
+    num&&false;
+    num||true;
+    num<<2;
+    num>>2;
 
     // increment/decrement operators
-    x++; // valid
-    x--; // valid
-    ++x; // valid
-    --x; // valid
+    num++; // valid
+    num--; // valid
+    ++num; // valid
+    --num; // valid
 
     // normal operators
-    x+1;
-    x +1;
-    x+ 1;
-    x-1;
-    x*2;
-    x/1;
-    x%2;
-    x>1;
-    x<1;
-    x=1;
-    !x; // valid
-    ! x;
-    -x; // valid
-    - x;
-    +x; // valid
-    (+ x);
+    num+1;
+    num +1;
+    num+ 1;
+    num-1;
+    num*2;
+    num/1;
+    num%2;
+    num>1;
+    num<1;
+    num=1;
+    !num; // valid
+    ! num;
+    -num; // valid
+    - num;
+    +num; // valid
+    (+ num);
 
-    if (dynamic_cast<double>(x)< 2.0)
-        x += 2; // valid
+    if (dynamic_cast<double>(num)< 2.0)
+        num += 2; // valid
+
+    // Mistake on last line
+    cout << ""          // valid
+        << num << ""    // valid
+        << num << '.' <<endl; // 1 bad spacing
 
     return 0;
 }

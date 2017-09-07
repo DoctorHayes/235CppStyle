@@ -2,52 +2,56 @@
 using namespace std;
 
 int main() {
-    int x = 0;
+    int num = 0;
     // check compound operators
-    x += 1;
-    x *= 1;
-    x /= 1;
-    x %= 2;
-    x != 1;
-    x == 1;
-    x >= 2;
-    x <= 2;
-    x && false;
-    x || true;
+    num += 1;
+    num *= 1;
+    num /= 1;
+    num %= 2;
+    num != 1;
+    num == 1;
+    num >= 2;
+    num <= 2;
+    num && false;
+    num || true;
 
     // increment/decrement operators
-    x++;
-    x--;
+    num++;
+    num--;
 
     // normal operators
-    x + 1;
-    x - 1;
-    x * 2;
-    x / 1;
-    x % 2;
-    x > 1;
-    x < 1;
-    x = 1;
-    !x;
-    -x;
-    +x;
-    (-x);
-    1 + -x;
-    x - -x;
-    x && -x
-    x = -x;
-    x /= -x;
+    num + 1;
+    num - 1;
+    num * 2;
+    num / 1;
+    num % 2;
+    num > 1;
+    num < 1;
+    num = 1;
+    !num;
+    -num;
+    +num;
+    (-num);
+    1 + -num;
+    num - -num;
+    num && -num
+    num = -num;
+    num /= -num;
 
-    if (x < 0)
+    if (num < 0)
         return -1;
 
     strPtr->name;
 
     static_cast<int>(4.9);
-    dynamic_cast<double>(x);
+    dynamic_cast<double>(num);
 
-    x = (10 + x)
+    num = (10 + num)
         * 2;
+
+    cout << ""
+        << num << ""
+        << num << '.' << endl;
 
     return 0;
 }
