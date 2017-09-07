@@ -1,4 +1,8 @@
-
+/*
+ * Example of defining function above main().
+ * A big no-no.
+ */
+//function definition
 void defineabove(void) {cout << "inline fn" << endl;}
 
 void defineegypt(MyGar Fooby) {

@@ -254,6 +254,24 @@ def statement_col_to_line(statement, firstLineNum, column):
         'col': column - previousLinesLength - lineOffset + 1
     }
 
+def check_successive_blank_lines(self, clean_lines):
+    # only run this check once
+    if self.current_line_num != 0:
+        return
+
+    previousBlank = False
+    errorFlagged = False
+
+    for index, rawLine in enumerate(clean_lines.raw_lines):
+        if not rawLine or rawLine.isspace():
+            if previousBlank:
+                if not errorFlagged:
+                    self.add_error(label='SUCCESSIVE_BLANK_LINES',
+                        line = index) #index starts with 0, so this is the first blank line
+                    errorFlagged = True
+            previousBlank = True
+        else:
+            previousBlank = errorFlagged = False
 
 def find_function_end(code, current_line):
     # Go to the next line if we are not on the last line and there is no '{'

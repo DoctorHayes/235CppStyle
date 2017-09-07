@@ -119,6 +119,7 @@ class StyleError(object):
             "FOR_LOOP_SEMICOLON_SPACING": "The loop on line {} doesn't have consistent spacing around its semicolons.".format(self.get_data().get("line")),
             "SYSTEM_CALL": "Remove system call, 'system()', because the command is platform specific (will not run on both macOS and Windows).",
             "FLOAT_TYPE": "Use the double type for all floating-point values. In industry, the float type is only used if there is a compelling reason.",
+            "SUCCESSIVE_BLANK_LINES": "Do NOT have successive multiple blank lines. Separate sections of code with a single blank line.",
             "CPPLINT_ERROR": self.get_data().get('message')
         }[label]
 
