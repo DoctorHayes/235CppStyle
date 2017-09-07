@@ -228,12 +228,6 @@ def check_operator_spacing(self, clean_lines):
         elif not operator_helper(False, code, operator_index):
             operator = code[operator_index]
             prev_index = operator_index - 1
-            # If there is a space before a +/- but not after it, then maybe it is a unary operator we missed.
-            if ((not code[prev_index]) or (code[prev_index] in ['\t', ' ', '\r', '\n', '('])):
-                if (operator == '+'):
-                    operator += '. If this is the unary +, you may ignore this error'
-                elif (operator == '-'):
-                    operator += '. If this is the unary -, you may ignore this error'
             self.add_error(label='OPERATOR_SPACING',
                     line = trueLoc['lineNum'],
                     column=trueLoc['col'],
