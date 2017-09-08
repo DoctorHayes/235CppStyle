@@ -77,7 +77,7 @@ def check_non_const_global(self, code):
     if len(inside.searchString(code)):
         self.outside_main = False
 
-    if self.outside_main:
+    elif self.outside_main:
         function = check_if_function(code)
         variables = variables = re.compile("^(?:\w|_)+\s+(?:\w|_|\[|\])+\s*=\s*.+;")
         keywords = re.compile("^\s*(?:using|class|struct)")

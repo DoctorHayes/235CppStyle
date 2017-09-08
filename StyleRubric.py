@@ -167,6 +167,20 @@ class StyleRubric(object):
             if not self.detect_unnecessary_break:
                 self.remove_error_by_type(filename, 'UNNECESSARY_BREAK')
 
+    def html_escape(self, text):
+        """Produce entities within text."""
+        html_escape_table = {
+            "&": "&amp;",
+            '"': "&quot;",
+            "'": "&apos;",
+            ">": "&gt;",
+            "<": "&lt;",
+        }
+        if text:
+            return "".join(html_escape_table.get(c,c) for c in text)
+        else:
+            return text
+
     def cpplint_tests(self, filename):
         # Run checks directly from cpplint
         from io import TextIOWrapper, BytesIO
@@ -192,7 +206,7 @@ class StyleRubric(object):
             result = re.search(filename + '\:(\d+)\:\s+(.*)', line)
             if result:
                 line_num = int(result.group(1))
-                self.add_error(label="CPPLINT_ERROR", line=line_num, data={'message': result.group(2)})
+                self.add_error(label="CPPLINT_ERROR", line=line_num, data={'message': self.html_escape(result.group(2))})
 
     def adjust_errors(self):
         for function in self.adjustments:

@@ -122,5 +122,3 @@ class StyleError(object):
             "SUCCESSIVE_BLANK_LINES": "Do NOT have successive multiple blank lines. Separate sections of code with a single blank line.",
             "CPPLINT_ERROR": self.get_data().get('message')
         }[label]
-
-
