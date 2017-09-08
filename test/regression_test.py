@@ -68,12 +68,15 @@ class RegressionTesting(unittest.TestCase):
     def test_first_char_good(self): self.assertEqual(0, self.rubric.error_types['FIRST_CHAR'])
     @load_code_segment('first_char_bad.cpp')
     def test_first_char_bad(self): self.assertEqual(6, self.rubric.error_types['FIRST_CHAR'])
+
+    @load_code_segment('semicolon_comma_spacing_bad.cpp')
+    def test_semicolon_spacing_bad1(self): self.assertEqual(4, self.rubric.error_types['ISOLATED_SEMICOLON'])
     @load_code_segment('semicolon_spacing_good1.cpp')
     def test_semicolon_spacing_good1(self): self.assertEqual(0, self.rubric.error_types['FOR_LOOP_SEMICOLON_SPACING'])
     @load_code_segment('semicolon_spacing_good2.cpp')
     def test_semicolon_spacing_good2(self): self.assertEqual(0, self.rubric.error_types['FOR_LOOP_SEMICOLON_SPACING'])
     @load_code_segment('semicolon_spacing_bad.cpp')
-    def test_semicolon_spacing_bad(self): self.assertEqual(4, self.rubric.error_types['FOR_LOOP_SEMICOLON_SPACING'])
+    def test_semicolon_spacing_bad2(self): self.assertEqual(4, self.rubric.error_types['FOR_LOOP_SEMICOLON_SPACING'])
 
     @load_code_segment('logical_AND_OR_spacing_bad.cpp')
     def test_bad_logical_spacing(self): self.assertEqual(3, self.rubric.error_types['OPERATOR_SPACING'])

@@ -231,6 +231,10 @@ def check_local_include(self, code):
     except ParseException:
         return
 
+def check_isolated_semicolon(self, code):
+    isolated = re.compile(r'\s+;')
+    for match in isolated.finditer(code):
+        self.add_error(label="ISOLATED_SEMICOLON",column=match.span()[0]+1)
 
 def check_for_loop_semicolon_spacing(self, code):
     # Match the semicolons and any whitespace around them.

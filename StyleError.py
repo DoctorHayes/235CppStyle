@@ -120,5 +120,6 @@ class StyleError(object):
             "SYSTEM_CALL": "Remove system call, 'system()', because the command is platform specific (will not run on both macOS and Windows).",
             "FLOAT_TYPE": "Use the double type for all floating-point values. In industry, the float type is only used if there is a compelling reason.",
             "SUCCESSIVE_BLANK_LINES": "Do NOT have successive multiple blank lines. Separate sections of code with a single blank line.",
+            "ISOLATED_SEMICOLON": "Remove the space directly preceding the semicolon",
             "CPPLINT_ERROR": self.get_data().get('message')
         }[label]
