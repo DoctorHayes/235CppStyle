@@ -40,19 +40,16 @@ def favicon():
 def add_numbers():
     # Get the name of the uploaded files
     uploaded_files = request.files.getlist("file[]")
-    filenames = []
+    filenames = {}
     for file in uploaded_files:
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join("./app/" + app.config['UPLOAD_FOLDER'], filename))
-            filenames.append(filename)
+            filename = os.path.join("./app/" + app.config['UPLOAD_FOLDER'], filename)
+            filenames[filename] = file.filename
 
-    list_of_online_files = []
-    for filename in filenames:
-        online_file = os.path.join("./app/" + app.config['UPLOAD_FOLDER'], filename)
-        list_of_online_files.append(online_file)
 
-    response = style_grader_driver(list_of_online_files)
+    response = style_grader_driver(filenames)
     # if response != []:
     #     sub = Submission(user_id = g.user.id, passed_grader = False)
     # else:

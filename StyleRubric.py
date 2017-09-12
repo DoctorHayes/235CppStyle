@@ -14,6 +14,7 @@ from cpplint import CleansedLines, RemoveMultiLineComments
 from style_grader_functions import check_if_function, print_success, get_soft_tab_length
 from style_grader_classes import SpacingTracker
 from StyleError import StyleError
+import filename_checks
 import comment_checks
 import multi_line_checks
 import misc_checks
@@ -52,6 +53,7 @@ class StyleRubric(object):
         self.missing_rme = dict()
         self.min_comments_ratio = float(self.config.get('SETTINGS', 'min_comments_ratio'))
         self.max_line_length = int(self.config.get('SETTINGS', 'max_line_length'))
+        self.filename_checks = self.load_functions(filename_checks)
         self.single_line_checks = self.load_functions(single_line_checks)
         self.multi_line_checks = self.load_functions(multi_line_checks)
         self.detect_unnecessary_break = self.config.get('SETTINGS', 'unnecessary_break') == 'yes'
@@ -121,7 +123,7 @@ class StyleRubric(object):
         temp_err = StyleError(1, label, line, column_num=column, type=type, data=data)
         return temp_err in self.error_tracker[self.current_file]
 
-    def grade_student_file(self, filename):
+    def grade_student_file(self, filename, original_filename):
         extension = filename.split('.')[-1]
         if extension not in ['h', 'cpp']:
             sys.stderr.write('Failed to parse {}: incorrect file type.\n'.format(filename))
@@ -133,6 +135,8 @@ class StyleRubric(object):
             RemoveMultiLineComments(filename, data, '')
             clean_lines = CleansedLines(data)
             clean_code = clean_lines.elided
+
+            for function in self.filename_checks: function(self, original_filename)
             for self.current_line_num, code in enumerate(clean_code):
                 code = erase_string(code)
                 if self.config.get('SINGLE_LINE_CHECKS', 'tab_type').lower() == 'soft' and code.find('\t') != -1:
