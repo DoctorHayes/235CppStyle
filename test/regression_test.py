@@ -140,7 +140,7 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('include_test_bad.cpp')
     def test_includes_good(self):
         if self.styleRubric.config.get('SINGLE_LINE_CHECKS', 'unnecessary_include') == 'yes':
-            self.assertEqual(3, self.rubric.error_types['UNNECESSARY_INCLUDE'])
+            self.assertEqual(5, self.rubric.error_types['UNNECESSARY_INCLUDE'])
         else:
             pass
 

@@ -206,7 +206,7 @@ def check_first_char(self, code):
 
 
 def check_unnecessary_include(self, code):
-    grammar = Literal('#') + Literal('include') + Literal('<') + Word(alphanums) + Literal('>')
+    grammar = Literal('#') + Literal('include') + Literal('<') + Word(alphanums + '.' + '_') + Literal('>')
     try:
         grammar.parseString(code)
         begin = code.find("<")
