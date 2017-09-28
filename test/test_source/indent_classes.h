@@ -10,6 +10,9 @@ BadClass1();
     void manipData();
 };
 
+/**
+ * Good class comment.
+ */
 class BadClass_Pub_Priv {
     public:
     BadClass_Pub_Priv();

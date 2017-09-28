@@ -8,6 +8,7 @@ int main() {
 bool y = true;
         x++;
 
+// Comment should be indented
     switch (x) {
         case 1:
             x++;

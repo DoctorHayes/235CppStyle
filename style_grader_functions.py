@@ -40,9 +40,9 @@ def get_soft_tab_length(file):
     # Calculate "probability" based on the count of first two levels of indentation
     weights = {
         2: indentLengthCount[2] + indentLengthCount[4] / 2,
-        3: indentLengthCount[3] + indentLengthCount[6] / 2,
+        3: indentLengthCount[3] + indentLengthCount[6] / 2 - indentLengthCount[1] * 0.75,
         4: indentLengthCount[4] + indentLengthCount[8] / 2,
-        5: indentLengthCount[5] + indentLengthCount[10] / 2
+        5: indentLengthCount[5] + indentLengthCount[10] / 2 - indentLengthCount[1] * 0.75
     }
 
     # return the value with the max probability
@@ -157,7 +157,7 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
         temp_line_num += 1
         try:
             current_indentation = re.match(r'^([ \t]*)\S',
-                                        clean_lines.lines[temp_line_num])
+                                        clean_lines.raw_lines[temp_line_num])
             #print(clean_lines.lines[temp_line_num])
             switch_statement = check_if_switch_statement(clean_lines.lines[temp_line_num])
             if_statement = check_if_statement(clean_lines.lines[temp_line_num])
