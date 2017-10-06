@@ -73,9 +73,13 @@ def check_if_function(code):
     return False
 
 def check_if_function_prototype(code):
+
+    if not code:
+        return False;
+
     return_type = Word(alphanums + '_[]', alphanums + '_:&*') # Bad style to have "_", but syntactically valid
     function_name = Word(alphanums + '_', alphanums + '_:><')
-    args = Word(alphanums + ':,_[]&*<> ') # identifiers are not required, just types
+    args = Word(alphanums + ':,_[]&*<> ="') # identifiers are not required, just types
     grammar = Optional(srange('[a-z]')) + return_type + function_name + "(" + Optional(args) + ")" + Optional(Word(' const')) + Optional(" ") + ";"
 
     results = grammar.searchString(code)

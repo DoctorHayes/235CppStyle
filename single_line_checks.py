@@ -106,7 +106,7 @@ def check_identifier_length(self, code):
         return
 
     # check for any parameter or variable declaration that is a type followed by 1 or more identifiers
-    declaration_check = re.compile(r"(?:^|\s+|\(|\{)(?:class|struct|enum|void|bool|char|short|long|int|float|double|string|std::string)[\*&\s]+([\w_][\w\d_]*[\[;,\s\(\)\*\&$]+)+")
+    declaration_check = re.compile(r"(?:^|\s+|\(|\{)(?:class|struct|enum|void|bool|char|short|long|int|float|double|string|std::string|auto)[\*&\s]+([\w_][\w\d_]*[\[;,\s\(\)\*\&$]+)+")
     declaration_match = declaration_check.search(code)
 
     if declaration_match:
@@ -145,7 +145,7 @@ def check_first_char(self, code):
         return
 
     # Make sure the first letter of non-const variable names are lowercase.
-    uppercase = re.compile(r"(?:^|\s+)(?<!const\s)\s*(void|bool|char|short|long|int|float|double|string)\s*[\*\&]*\s*(?:[A-Z]|_)\w+")
+    uppercase = re.compile(r"(?:^|\s+)(?<!const\s)\s*(void|bool|char|short|long|int|float|double|string|auto)\s*[\*\&]*\s*(?:[A-Z]|_)\w+")
     bad_naming = uppercase.search(code)
 
     if bad_naming:
@@ -180,7 +180,7 @@ def check_first_char(self, code):
         return
     # Make sure const variables are all caps
     if not check_if_function_prototype(code) and not check_if_function(code):
-        const_var = re.compile("(?:^|\s+)const\s+(?:void|bool|char|short|long|int|float|double|string|std::string)\s*[\*\&]*\s*(?:[\w]|_)\w+")
+        const_var = re.compile(r"(?:^|\s+)const\s+(?:void|bool|char|short|long|int|float|double|string|std::string|auto)\s*[\*\&]*\s*(?:[\w]|_)\w+")
         const_var = const_var.search(code)
         if const_var:
             const_var = str(const_var.group(0).split()[2])
