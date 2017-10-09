@@ -24,7 +24,7 @@ class RegressionTesting(unittest.TestCase):
         self.assertEqual(0, self.rubric.error_types['DEFINITION_ABOVE_MAIN'])
         self.assertEqual(1, self.rubric.error_types['SUCCESSIVE_BLANK_LINES'])
     @load_code_segment('function_def_above_main_bad.cpp')
-    def test_def_above_main_bad(self): self.assertEqual(7, self.rubric.error_types['DEFINITION_ABOVE_MAIN'])
+    def test_def_above_main_bad(self): self.assertEqual(8, self.rubric.error_types['DEFINITION_ABOVE_MAIN'])
     @load_code_segment('goto_good.cpp')
     def test_goto_good(self): self.assertEqual(0, self.rubric.error_types['GOTO'])
     @load_code_segment('goto_bad.cpp')
