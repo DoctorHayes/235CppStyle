@@ -13,6 +13,7 @@ def check_line_width(self, line):
         self.add_error(label="LINE_WIDTH", data={'length': current_length, 'max_length': max_length})
 
 def check_missing_rme(self, lines):
+    # RME = A function comment with 3 sections: Requires, Modifies, Effects
     function = Word(alphanums + '_')
     function_syntax = function + Literal('(')
     parsed = function_syntax.searchString(lines[self.current_line_num]).asList()

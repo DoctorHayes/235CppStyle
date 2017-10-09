@@ -33,6 +33,12 @@ MyType blalkgj132(arr myarray*) {
     functioncall(void);
 }
 
+void greet(const string& userName = "Earthling")
+{
+	// Display a greeting with the user's name
+	cout << "Greetings " << userName << "!" << endl;
+}
+
 
 int main(void) {
     return 0;

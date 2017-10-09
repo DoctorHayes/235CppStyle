@@ -79,7 +79,7 @@ def check_if_function_prototype(code):
 
     return_type = Word(alphanums + '_[]', alphanums + '_:&*') # Bad style to have "_", but syntactically valid
     function_name = Word(alphanums + '_', alphanums + '_:><')
-    args = Word(alphanums + ':,_[]&*<> ="') # identifiers are not required, just types
+    args = Word(alphanums + ':,_[]&*<> ="\'') # identifiers are not required, just types
     grammar = Optional(srange('[a-z]')) + return_type + function_name + "(" + Optional(args) + ")" + Optional(Word(' const')) + Optional(" ") + ";"
 
     results = grammar.searchString(code)
@@ -149,7 +149,7 @@ def check_if_cout_block(code):
         return False
 
 def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, temp_line_num):
-    #indentation = re.match(r'^([ \t]*)\S', clean_lines.lines[temp_line_num])
+
     results = list()
     if not indentation:
         return results
@@ -201,7 +201,7 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
                 elif current_indentation != next_indentation and clean_lines.lines[temp_line_num - 1].find('=') != -1 and \
                     clean_lines.lines[temp_line_num - 1].find(';') == -1:
 
-                    temp_line_num = indent_equals(temp_line_num, clean_lines.lines, current_indentation)
+                    temp_line_num = indent_equals(temp_line_num, clean_lines.raw_lines, current_indentation)
 
                 elif current_indentation != next_indentation and line_start.find('}') == -1:
                     #check for public: private: and case: exceptions
@@ -212,7 +212,7 @@ def indent_helper(indentation, tab_size, clean_lines, data_structure_tracker, te
 
                         next_indentation -= tab_size
                     else:
-                        if not data_structure_tracker.in_if:
+                        if not data_structure_tracker.in_if and clean_lines.raw_lines[temp_line_num] != '/**/':
                             results.append({'label': 'BLOCK_INDENTATION', 'line': temp_line_num + 1,
                                 'data': {'expected': next_indentation, 'found': current_indentation}
                             })
@@ -270,7 +270,7 @@ def indent_equals(line_num, code, current_indentation):
     indent_size = current_indentation
     while current_indentation and current_indentation == indent_size:
         line_num += 1
-        current_indentation = re.search(r'^( *)\S',
+        current_indentation = re.search(r'^([ \t]*)\S',
                                     code[line_num])
         if current_indentation:
             line_start = current_indentation.group()
