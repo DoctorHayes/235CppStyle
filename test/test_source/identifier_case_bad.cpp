@@ -75,6 +75,7 @@ int main ()
 	const int GOOD;
 	const short noGood;
 	constval test;
+	auto Bad_Name2 = 3;
 
 	return 0;
 }

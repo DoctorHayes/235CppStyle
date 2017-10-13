@@ -54,5 +54,15 @@ int main() {
         << num << ""
         << num << '.' << endl;
 
+    switch(num % 2)
+    {
+        case 0:
+            cout << "even";
+            break;
+        case 1:
+        case -1: // good
+            cout << "odd";
+    }
+
     return 0;
 }

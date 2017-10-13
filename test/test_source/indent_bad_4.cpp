@@ -25,9 +25,12 @@ bool y = true;
         }
     }
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
             x++;
         }
     }
+
+    int zz = 0;
+    return 0;
 }

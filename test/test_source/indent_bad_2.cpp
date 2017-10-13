@@ -30,4 +30,7 @@ bool y = true;
       x++;
     }
   }
+
+  int zz = 0;
+  return 0;
 }

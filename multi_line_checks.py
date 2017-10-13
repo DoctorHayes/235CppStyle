@@ -2,6 +2,7 @@ from cpplint import GetPreviousNonBlankLine
 from style_grader_classes import DataStructureTracker
 from style_grader_functions import check_if_function, check_if_function_prototype, indent_helper, check_if_struct_or_class, check_if_switch_statement, check_if_cout_block, get_tab_type
 from pyparsing import Literal
+from check_indentation_helper import validate_statement_indentation
 import re
 
 def check_function_def_above_main(self, clean_lines):
@@ -88,6 +89,16 @@ def check_brace_consistency(self, clean_lines):
             # cannot access next line of end of file, rubric properties don't matter
             return
 
+def check_indentation_new(self, code_lines):
+    if self.current_line_num != 0: # only do this check once per file
+        return
+
+    line_index = 0
+    while line_index < code_lines.num_lines:
+        line_index = validate_statement_indentation(self, code_lines, line_index)
+        line_index += 1
+
+
 def check_block_indentation(self, clean_lines):
 
 
@@ -101,8 +112,10 @@ def check_block_indentation(self, clean_lines):
     elif self.global_in_object and code.find('}') != -1:
         self.pop_global_brace()
 
-    indentation = re.search(r'^([ \t]*)\S', code)
-    if not indentation:
+    indentation = re.search(r'^([ \t]*)\S', clean_lines.raw_lines[self.current_line_num])
+
+    # For some reason raw_lines have the spaces removed before /*
+    if not indentation or clean_lines.raw_lines[self.current_line_num] == '/**/':
         return
 
     function = check_if_function(code)
@@ -368,13 +381,15 @@ def is_increment_decrement(code, index):
     return code[index + 1] and code[index] in ['+', '-'] and code[index + 1] == code[index]
 
 def is_unary_operator(code, index):
-    return (code[index] == '!' and code[index + 1] and code[index + 1] != '=') or \
-        re.search('[\(\+\-\*\%<>=\&\|\!]\s*[\-\+]$', code[:index + 1]) is not None  or \
-        re.match('\s*[\+\-]$', code[:index + 1]) is not None or \
-        re.search('return\s+[\-\+]$', code[:index + 1]) is not None
+    return code[index + 1] and (\
+        (code[index] == '!' and code[index + 1] != '=') or \
+        re.search(r'[\(\+\-\*\%<>=\&\|\!]\s*[\-\+]$', code[:index + 1]) is not None  or \
+        re.match(r'\s*[\+\-]$', code[:index + 1]) is not None or \
+        re.search(r'[\t {}):;^](return|case)\s+[\-\+]$', code[:index + 1]) is not None)
 
 def is_cast_operator(code, index):
-    check = re.search('(?:const|dynamic|reinterpret|static)_cast\s*(<)\s*[_\w\d]+\s*(>)', code)
+    # TODO: What about multiple case operations on the same line?
+    check = re.search('(?:const|dynamic|reinterpret|static)_cast\s*(<)\s*[_\w][_\w\d]*\s*(>)', code)
     return check and (check.span(1)[0] == index or check.span(2)[0] == index)
 
 

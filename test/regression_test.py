@@ -24,7 +24,7 @@ class RegressionTesting(unittest.TestCase):
         self.assertEqual(0, self.rubric.error_types['DEFINITION_ABOVE_MAIN'])
         self.assertEqual(1, self.rubric.error_types['SUCCESSIVE_BLANK_LINES'])
     @load_code_segment('function_def_above_main_bad.cpp')
-    def test_def_above_main_bad(self): self.assertEqual(7, self.rubric.error_types['DEFINITION_ABOVE_MAIN'])
+    def test_def_above_main_bad(self): self.assertEqual(8, self.rubric.error_types['DEFINITION_ABOVE_MAIN'])
     @load_code_segment('goto_good.cpp')
     def test_goto_good(self): self.assertEqual(0, self.rubric.error_types['GOTO'])
     @load_code_segment('goto_bad.cpp')
@@ -83,7 +83,7 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('logical_AND_OR_spacing_good.cpp')
     def test_good_logical_spacing(self): self.assertEqual(0, self.rubric.error_types['OPERATOR_SPACING'])
     @load_code_segment('operator_spacing_bad.cpp')
-    def test_bad_operator_spacing(self): self.assertEqual(27, self.rubric.error_types['OPERATOR_SPACING'])
+    def test_bad_operator_spacing(self): self.assertEqual(28, self.rubric.error_types['OPERATOR_SPACING'])
     @load_code_segment('operator_spacing_good.cpp')
     def test_good_operator_spacing(self): self.assertEqual(0, self.rubric.error_types['OPERATOR_SPACING'])
 
@@ -93,7 +93,7 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('indent_conditional.cpp')
     def test_simple_conditional_indent(self): self.assertEqual(4, self.rubric.error_types['BLOCK_INDENTATION'])
     @load_code_segment('indent_switch.cpp')
-    def test_simple_switch_indent(self): self.assertEqual(8, self.rubric.error_types['BLOCK_INDENTATION'])
+    def test_simple_switch_indent(self): self.assertEqual(9, self.rubric.error_types['BLOCK_INDENTATION'])
     @load_code_segment('indent_classes.h')
     def test_class_indentation_header(self): self.assertEqual(11, self.rubric.error_types['BLOCK_INDENTATION'])
     @load_code_segment('indent_structs.h')
@@ -103,11 +103,11 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('indenation_hardtabs.cpp')
     def test_indent_hardtabs_good(self): self.assertEqual(0, self.rubric.error_types['BLOCK_INDENTATION'])
     @load_code_segment('indent_bad_4.cpp')
-    def test_indent_soft4(self): self.assertEqual(9, self.rubric.error_types['BLOCK_INDENTATION'])
+    def test_indent_soft4(self): self.assertEqual(8, self.rubric.error_types['BLOCK_INDENTATION'])
     @load_code_segment('indent_bad_3.cpp')
-    def test_indent_soft3(self): self.assertEqual(9, self.rubric.error_types['BLOCK_INDENTATION'])
+    def test_indent_soft3(self): self.assertEqual(8, self.rubric.error_types['BLOCK_INDENTATION'])
     @load_code_segment('indent_bad_2.cpp')
-    def test_indent_soft2(self): self.assertEqual(11, self.rubric.error_types['BLOCK_INDENTATION'])
+    def test_indent_soft2(self): self.assertEqual(10, self.rubric.error_types['BLOCK_INDENTATION'])
 
     # Test for too long lines based on the setting in the config (valid for line lengths that are multiples of 10 between 30 and 120)
     @load_code_segment('long_lines.cpp')
@@ -124,7 +124,7 @@ class RegressionTesting(unittest.TestCase):
 
     # Check identifier style
     @load_code_segment('identifier_case_bad.cpp')
-    def test_identifier_case_bad(self): self.assertEqual(21, self.rubric.error_types['FIRST_CHAR'])
+    def test_identifier_case_bad(self): self.assertEqual(22, self.rubric.error_types['FIRST_CHAR'])
     @load_code_segment('identifier_length_bad.cpp')
     def test_check_identifier_length(self):
         self.assertEqual(10, self.rubric.error_types['IDENTIFIER_LENGTH'])

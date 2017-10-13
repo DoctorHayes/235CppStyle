@@ -2,11 +2,11 @@
 using namespace std;
 
 int main() {
-    int x;
-    int array[3][3] = {
-        {1, 2, 3},
-        {4, 5, 6},
-        {7, 8, 9},
+    int xx;
+    int array[4][3] = {
+        // {1, 2, 3},
+        // {4, 5, 6},
+        // {7, 8, 9},
         {
             10, 11, 12
         }
@@ -14,7 +14,7 @@ int main() {
     cout << "Hello world";
 
 bool y = true;
-        x++;
+        xx++;
     if (y) {
         cout << "Yes";
     }
@@ -27,23 +27,23 @@ bool y = true;
 
     if (true) {
         if (false) {
-            x++;
+            xx++;
         } else {
             if (true) {
 
             }
-            else if (y) {x--;}
+            else if (y) {xx--;}
         }
     }
 
-    if (x)
+    if (xx)
         cout << "Hahah";
-    if (x) cout << "Shouldn't be an issue";
+    if (xx) cout << "Shouldn't be an issue";
 
-    int z = 0;
+    int zzz = 0;
 
-    if (x == 2 ||
-        x == 3)
+    if (xx == 2 ||
+        xx == 3)
         cout << "Multi-line conditional statements should be fine." << endl;
 
     cout << "This is ok"

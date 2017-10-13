@@ -3,18 +3,18 @@
 using namespace std;
 
 int main() {
-    bool x = true,
-        y = false;
+    bool xx = true,
+        yy = false;
 
-    if (x && y) {
-
-    }
-
-    if (x || y) {
+    if (xx && yy) {
 
     }
 
-    if (!x) {
+    if (xx || yy) {
+
+    }
+
+    if (!xx) {
 
     }
 

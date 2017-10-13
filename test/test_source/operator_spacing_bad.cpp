@@ -50,5 +50,15 @@ int main() {
         << num << ""    // valid
         << num << '.' <<endl; // 1 bad spacing
 
+    switch(num % 2)
+    {
+        case 0:
+            cout << "even";
+            break;
+        case 1:
+        case - 1: // bad
+            cout << "odd";
+    }
+
     return 0;
 }
