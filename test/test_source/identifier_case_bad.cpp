@@ -62,6 +62,8 @@ int fineFunc(const std::string& goodConstParam);
 
 void test(int NotOkay); // does not test for this yet.
 
+void GoodNamespace::goodFunName(int ok);
+void GoodNamespace::BadFunName(int ok);
 
 int main ()
 {
