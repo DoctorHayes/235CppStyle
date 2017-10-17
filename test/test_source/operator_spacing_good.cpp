@@ -46,6 +46,7 @@ int main() {
 
     static_cast<int>(4.9);
     dynamic_cast<double>(num);
+    static_cast<std::string>("test");
 
     num = (10 + num)
         * 2;

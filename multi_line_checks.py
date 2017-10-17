@@ -389,7 +389,7 @@ def is_unary_operator(code, index):
 
 def is_cast_operator(code, index):
     # TODO: What about multiple case operations on the same line?
-    check = re.search('(?:const|dynamic|reinterpret|static)_cast\s*(<)\s*[_\w][_\w\d]*\s*(>)', code)
+    check = re.search('(?:const|dynamic|reinterpret|static)_cast\s*(<)\s*[_\w][_\w\d:]*\s*(>)', code)
     return check and (check.span(1)[0] == index or check.span(2)[0] == index)
 
 

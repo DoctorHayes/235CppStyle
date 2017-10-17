@@ -119,7 +119,7 @@ def indent_line_check(self, code_lines, line_index, indent_min = 0, indent_max =
     #if not isNewStatement:
     #    indent_min = indent_max = indent_min + 1
 
-    if not leading_whitespace: # blank line
+    if not leading_whitespace or code_lines.raw_lines[line_index] == '/**/': # blank line (also raw_lines are not truly raw for multi-line comments)
         # Go to next line
         return indent_line_check(self, code_lines, line_index + 1, indent_min, indent_max, isNewStatement, enclosure_stack)
 
