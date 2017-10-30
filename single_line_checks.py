@@ -40,6 +40,10 @@ def check_goto(self, code):
 
 
 def check_define_statement(self, code):
+    # Skip header files for this check
+    if self.allow_define_in_header and re.search(r'\.h$', self.current_file):
+        return
+
     q_define = re.compile('\".*(?:\s+|^)#\s*define\s+.*\"')
     r_define = re.compile('(?:\s+|^)#\s*define\s+')
     if r_define.search(code) and not q_define.search(code):

@@ -57,6 +57,7 @@ class StyleRubric(object):
         self.single_line_checks = self.load_functions(single_line_checks)
         self.multi_line_checks = self.load_functions(multi_line_checks)
         self.detect_unnecessary_break = self.config.get('SETTINGS', 'unnecessary_break') == 'yes'
+        self.allow_define_in_header = self.config.get('SETTINGS', 'allow_define_in_header') == 'yes'
         self.comment_checks = self.load_functions(comment_checks)
         self.misc_checks = self.load_functions(misc_checks)
         self.adjustments = self.load_functions(adjustments, prefix='adjust')
