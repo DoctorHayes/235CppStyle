@@ -71,7 +71,9 @@ def check_ternary_operator(self, code):
 
 
 def check_while_true(self, code):
-    statement_parser = Literal("while") + Literal("(") + Literal("true") + Literal(")")
+    keyword = Literal("true") | Literal("1")
+
+    statement_parser = Literal("while") + Literal("(") + keyword + Literal(")")
     if len(statement_parser.searchString(code)):
         self.add_error(label="WHILE_TRUE")
 

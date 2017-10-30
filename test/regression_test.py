@@ -49,7 +49,7 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('while_true_good.cpp')
     def test_while_true_good(self): self.assertEqual(0, self.rubric.error_types['WHILE_TRUE'])
     @load_code_segment('while_true_bad.cpp')
-    def test_while_true_bad(self): self.assertEqual(3, self.rubric.error_types['WHILE_TRUE'])
+    def test_while_true_bad(self): self.assertEqual(4, self.rubric.error_types['WHILE_TRUE'])
 
     @load_code_segment('float_type_good.cpp')
     def test_float_type_good(self): self.assertEqual(0, self.rubric.error_types['FLOAT_TYPE'])
