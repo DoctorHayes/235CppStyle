@@ -65,6 +65,15 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
 
+# -------- syllabus -----
+@app.route('/syllabus')
+def syllabus():
+    return render_template('syllabus.html',
+                            title = 'CSCI 235: Syllabus')
+@app.route('/syllabus.pdf')
+def syllabusPDF():
+    return app.send_static_file('syllabus.pdf')
+
 # @app.route('/login', methods = ['GET', 'POST'])
 # @oid.loginhandler
 # def login():

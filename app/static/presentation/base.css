@@ -29,11 +29,6 @@ body
   bottom: 0;
 }
 
-#main-container
-{
-	max-width: 900px;
-}
-
 /*
  * Header
  */
@@ -41,6 +36,11 @@ body
 {
 	padding: 8px;
 	margin-bottom: 64px;
+}
+
+.navbar-inverse {
+  background-color: #002855;
+  border-color: #A89968;
 }
 
 .masthead-brand

@@ -1,43 +1,94 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
+{% block headcontent %}
+<link href="/static/presentation/index.css" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
-	<link href="/static/presentation/index.css" rel="stylesheet">
-	<div class="row-fluid">
-		<form id="upload-file" role="form" action="upload" method="post" enctype="multipart/form-data">
-			<!-- <fieldset> -->
-			<div class="col-sm-6 col-md-6">
-				<input id="code-input" type="file" name="file[]" multiple />
-			</div>
-			<!-- </fieldset> -->
-			<!-- <br /> -->
-			<!-- <fieldset> -->
-			<div class="col-sm-6 col-md-6">
-				<button class="code-submission btn btn-primary center-block" href="#myModal" id="upload-file-btn" type="button" disabled>Submit to 235 C++ Style Checker</button>
-			</div>
-			<!-- </fieldset> -->
-		</form>
+<!-- Header/Jumbotron -->
+            <div class="jumbotron">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 text-center">
+                            <h1>235 C++ Style <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span></h1>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-align">Submit any number of C++ files</p>
+                            <p class="text-align">Receive instant feedback on each line of code</p>
+                            <p class="text-align">Resubmit your code as often as you want</p>
+                        </div>
 
-		<div class="modal" id="myModal">
-			<div class="modal-dialog feedBackDialog">
-				<div class="modal-content" id="feedback-window">
-					<div class="modal-header">
+                        <div id="spinner" class="hidden"></div>
+                    </div>
+                </div>
+            </div>
 
-						<!--<button href="javascript:void();" id="#upload-file" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>-->
-						<h2 class="modal-title">Feedback</h2>
-					</div>
-					<div class="modal-body" id="feedback-body" class="prettyprint">
-						<ul id="errorlist" class="list-unstyled">
-						</ul>
-					</div>
-					<div class="modal-footer">
-						<a href="#" class="closeBtn btn btn-primary" data-dismiss="modal">Close</a>
+            <!-- Main container -->
+            <div class="container" id="main-container">
+                <div class="navigation hidden">
+                    <div class="modal" id="debugModal">
+                        <div class="modal-dialog debugDialog">
+                            <div class="modal-content" id="feedback-window">
+                                <div class="modal-header">
+                                    <h2> Report a bug </h2>
+                                </div>
+                                <div class="modal-body">
+                                    <label for="umich">Unique name</label>
+                                    <input type="text" class="form-control" id="umich" placeholder="Enter umich unique name">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox"> I have verified that the steps below replicate the error.
+                                      </label>
+                                    </div>
+                                    <br>
+                                    <textarea  id="textarea"  placeholder="Detailed steps of how to replicate error"></textarea>
+                                    <br>
+                                    <button class="btn">Submit bug for review</button>
+                                </div>
+                                <div class="modal-footer">
+                                  <a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+		<div class="row-fluid">
+			<form id="upload-file" role="form" action="upload" method="post" enctype="multipart/form-data">
+				<!-- <fieldset> -->
+				<div class="col-sm-6 col-md-6">
+					<input id="code-input" type="file" name="file[]" multiple />
+				</div>
+				<!-- </fieldset> -->
+				<!-- <br /> -->
+				<!-- <fieldset> -->
+				<div class="col-sm-6 col-md-6">
+					<button class="code-submission btn btn-primary center-block" href="#myModal" id="upload-file-btn" type="button" disabled>Submit to 235 C++ Style Checker</button>
+				</div>
+				<!-- </fieldset> -->
+			</form>
+
+			<div class="modal" id="myModal">
+				<div class="modal-dialog feedBackDialog">
+					<div class="modal-content" id="feedback-window">
+						<div class="modal-header">
+
+							<!--<button href="javascript:void();" id="#upload-file" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>-->
+							<h2 class="modal-title">Feedback</h2>
+						</div>
+						<div class="modal-body" id="feedback-body" class="prettyprint">
+							<ul id="errorlist" class="list-unstyled">
+							</ul>
+						</div>
+						<div class="modal-footer">
+							<a href="#" class="closeBtn btn btn-primary" data-dismiss="modal">Close</a>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div id="errorblock" class="row" hidden="hidden">
-		<div id="errorlist2"></div>
+		<div id="errorblock" class="row" hidden="hidden">
+			<div id="errorlist2"></div>
+		</div>
 	</div>
 {% endblock %}

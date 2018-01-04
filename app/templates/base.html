@@ -19,82 +19,43 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/spin.js/1.3.2/spin.min.js"></script>
         <script src="/static/behavior/scripts.js"></script>
+
+        {% block headcontent %}{% endblock %}
     </head>
     <body >
-        <!-- Navbar -->
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/">CSCI 235</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li><a href="/">Style Checker</a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Support <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="https://github.com/DoctorHayes/235CppStyle" target="_blank">Source Code <span class="sr-only">(current)</span></a></li>
+                    <li><a href="https://github.com/DoctorHayes/235CppStyle/issues" target="_blank">Report a Bug</a></li>
+                  </ul>
+                </li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="/syllabus">Course Syllabus</a></li>
+                <li><a href="https://csuniv.blackboard.com/">CSU Blackboard</a></li>
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div>
+        </nav>
+
         <div class="container">
-            <nav class="navbar navbar-inverse navbar-fixed-top">
-                <div class="container-fluid">
-                    <!-- Brand and toggle get grouped for better mobile display -->
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="/">CSCI 235</a>
-                    </div>
-
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <ul class="nav navbar-nav">
-                            <li ><a href="https://github.com/DoctorHayes/235CppStyle" target="_blank">Source Code <span class="sr-only">(current)</span></a></li>
-                            <li><a href="https://github.com/DoctorHayes/235CppStyle/issues" target="_blank">Report a Bug</a></li>
-                        </ul>
-                    </div><!-- /.navbar-collapse -->
-                </div><!-- /.container-fluid -->
-            </nav>
-
-            <!-- Header/Jumbotron -->
-            <div class="jumbotron">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-12 text-center">
-                            <h1>235 C++ Style <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span></h1>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-align">Submit any number of C++ files</p>
-                            <p class="text-align">Receive instant feedback on each line of code</p>
-                            <p class="text-align">Resubmit your code as often as you want</p>
-                        </div>
-
-                        <div id="spinner" class="hidden"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main container -->
-            <div class="container" id="main-container">
-                <div class="navigation hidden">
-                    <div class="modal" id="debugModal">
-                        <div class="modal-dialog debugDialog">
-                            <div class="modal-content" id="feedback-window">
-                                <div class="modal-header">
-                                    <h2> Report a bug </h2>
-                                </div>
-                                <div class="modal-body">
-                                    <label for="umich">Unique name</label>
-                                    <input type="text" class="form-control" id="umich" placeholder="Enter umich unique name">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox"> I have verified that the steps below replicate the error.
-                                      </label>
-                                    </div>
-                                    <br>
-                                    <textarea  id="textarea"  placeholder="Detailed steps of how to replicate error"></textarea>
-                                    <br>
-                                    <button class="btn">Submit bug for review</button>
-                                </div>
-                                <div class="modal-footer">
-                                  <a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% block content %}{% endblock %}
-            </div>
+            {% block content %}{% endblock %}
         </div>
     </body>
 </html>
