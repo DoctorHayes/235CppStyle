@@ -12,6 +12,11 @@ body
     margin-bottom: 40px;
 }
 
+#main-container
+{
+  margin-top:52px;
+}
+
 #footer
 {
 	font-size: smaller;
