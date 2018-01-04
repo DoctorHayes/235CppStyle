@@ -27,7 +27,21 @@ Currently the app supports use with both Python 2.7 and 3.6.
   `pip install -r requirements.txt` (Mac replace Scripts with bin)
 
 * Launch the webapp locally  
-  run `./run.py`
+  `python ./run.py`
+
+* Run the application in debug mode (in Windows)  
+  ```batch
+  SET FLASK_APP=run.py
+  SET FLASK_DEBUG=1
+  python -m flask run
+  ```
+
+* Run the application in debug mode (in Linux)  
+  ```shell
+  export FLASK_APP=main.py
+  export FLASK_DEBUG=1
+  python -m flask run
+  ```
 
 ## Run Regression Tests
 

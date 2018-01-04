@@ -74,6 +74,12 @@ def syllabus():
 def syllabusPDF():
     return app.send_static_file('syllabus.pdf')
 
+# -------- Style Guide -----
+@app.route('/style-guide')
+def style_guide():
+    return render_template('style-guide.html',
+                            title = 'CSCI 235: C++ Style Guide')
+
 # @app.route('/login', methods = ['GET', 'POST'])
 # @oid.loginhandler
 # def login():
