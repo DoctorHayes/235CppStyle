@@ -9,12 +9,6 @@
 		}
 	}
 
-	@media (min-width: 1550px) {
-		#page-nav{
-			padding-right:100px;
-		}
-	}
-
 	#page-nav div {
 		border: solid 1px rgb(204, 204, 204);
 		border-radius: 4px;
@@ -40,7 +34,7 @@
 {% endblock %}
 {% block content %}
 <div class="row">
-	<div id="page-nav" class="col-lg-2 col-md-3 col-sm-3"><div>
+	<div id="page-nav" class="col-lg-2 col-md-2 col-sm-3"><div>
 		<h4>Table of Contents</h4>
 		<ul class="nav">
 				<li><a href="#_comments">Comments</a></li>
@@ -50,15 +44,16 @@
 				<li><a href="#_switches">Switches</a></li>
 				<li><a href="#_loops">Loops</a></li>
 				<li><a href="#_functions">Functions</a></li>
+				<li><a href="#_data_types">New Data Types (enums and structs)</a></li>
 				<li><a href="#_other">Other</a></li>
 			</ul>
-		</div></div>
+		</div>
 	</div>
 
-	<div class="col-lg-2 col-md-3 col-sm-3">
+	<div class="col-lg-3 col-md-3 col-sm-3">
 		<!-- Placeholder - keep empty -->
 	</div>
-	<div id="content" class="col-lg-10 col-md-9 col-sm-9 fill">
+	<div id="content" class="col-lg-9 col-md-9 col-sm-9 fill">
 		<h1>Style Guide</h1>
 		<div class="details">
 			<span id="author" class="author">CSCI 235. Spring 2018.</span><br>
@@ -115,6 +110,7 @@ double celsius = 5.0 / 9.0 * (fahr - 32.0);</code></pre>
 					<p>Certainly don&rsquo;t do this:</p>
 					<pre class="language-cpp bad"><code>count+=(a+b)*c/d+random();</code></pre>
 			</ul>
+
 			<h3>Indentation</h3>
 			<p>Indent your code with one hard tabs (or four spaces) at a time to make clear which blocks of code are inside of others.</p>
 
@@ -131,9 +127,6 @@ double celsius = 5.0 / 9.0 * (fahr - 32.0);</code></pre>
 				</li>
 				<li>
 					<p>Place a line break after every <code>{</code> .</p>
-				</li>
-				<li>
-					<p>Do not place more than one statement on the same line.</p>
 				</li>
 			</ul>
 			<p>Here&rsquo;s an example of well-indented code:</p>
@@ -176,10 +169,50 @@ return 0;
 					<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-check"></span> <b>Tip:</b>
 						Xcode will automatically re-indent selected code if you press <strong>Control-I</strong> (or choose <strong>Editor &gt; Structure &gt; Re-Indent</strong> from the file menu).
 					</div>
+<h3>New Lines</h3>
+			<p>Always put a newline after a semicolon (we’ll talk about one exception to the rule when we get to for loops).</p>
+
+<p>Bad:</p>
+<pre class="language-cpp bad"><code>int age; double weight, height; string name;
+cout << "Enter your age: "; cin >> age;
+</code></pre>
+
+<p>Good:</p>
+<pre class="language-cpp good"><code>int age;
+
+cout << "Enter your age: ";
+cin >> age;
+</code></pre>
+				<p>Do not place more than one statement on the same line.</p>
+				<p>Nothing goes on the same line after an opening curly brace (<code>{</code>).<br />
+				Noting goes on the same line before a closing curly brace (<code>}</code>).</p>
+
+				<p>Bad:</p>
+<pre class="language-cpp bad"><code>int main()
+{   cout << "Hi" << endl;
+    return 0; }</code></pre>
+
+				<p>Good:</p>
+<pre class="language-cpp"><code>int main()
+{
+    cout << "Hi" << endl;
+    return 0;
+}</code></pre>
+
 
 
 			<h3>Long Lines</h3>
-			<p>When any line is longer than 80 characters, break it into two lines by pressing Enter after an operator and resuming on the next line. Indent the trailing second part, for example:</p>
+			<p>If a statement is really long (more than 80 characters), split the statement into multiple lines, with each subsequent line indented.</p>
+
+			<p>This is bad:</p>
+			<pre class="language-cpp bad"><code>cout &lt;&lt; "This is a really long line " &lt;&lt; 5 * 10 / denom &lt;&lt; " and more text." &lt;&lt; endl;</code></pre>
+			<p>This is how the previous line should look:</p>
+<pre class="language-cpp"><code>cout &lt;&lt; "This is a really long line "
+    &lt;&lt; 5 * 10 / denom
+    &lt;&lt; " and more text." &lt;&lt; endl;</code></pre>
+
+
+			<p>Good example of a function prototype:</p>
 <pre class="language-cpp"><code>void reallyLongFunctionName(int with, int lots,
 	int of, int parameters);</code></pre>
 			<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-check"></span> <b>Tip:</b>
@@ -189,100 +222,85 @@ Add this line to your custom settings on the right: <code>"editor.rulers": [80],
 
 
 		<div class="sect1">
-			<h2 id="_variables_and_constants">Variables and Constants</h2>
-			<p><em>Details will be posted soon.</em></p>
-			<!--
 			<div class="sectionbody">
-				<div class="ulist">
-					<ul>
-						<li>
-							<p>Variables should have meaningful names, such as <code>numberOfGames</code>. <code>herp</code> and <code>derp</code> are funny, but not helpful. The exception to this, perhaps, is <code>i</code> or <code>j</code> in a loop.</p>
-						</li>
-						<li>
-							<p>Declare variables in the smallest scope possible.</p>
-						</li>
-						<li>
-							<p>Choose appropriate data types for your variables. If a given variable can store only integers, give it type <code>int</code> rather than <code>double</code>. If a variable stores characters, make it a <code>char</code> instead of an <code>int</code>.</p>
-						</li>
-						<li>
-							<p>Never use <code>0</code> and <code>1</code> with <code>bool</code> variables. <code>true</code> and <code>false</code> exist for a reason.</p>
-						</li>
-						<li>
-							<p>Initialize variables at declaration when appropriate:</p>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-kt">int</span> <span class="tok-n">count</span> <span class="tok-o">=</span> <span class="tok-mi">0</span><span class="tok-p">;</span></code></pre>
-								</div>
-							</div>
-							<div class="paragraph">
-								<p>In other words, don&rsquo;t do this:</p>
-							</div>
-							<div class="listingblock bad">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-kt">int</span> <span class="tok-n">count</span><span class="tok-p">;</span>
-									<span class="tok-p">...</span>
-									<span class="tok-n">count</span> <span class="tok-o">=</span> <span class="tok-mi">0</span><span class="tok-p">;</span></code></pre>
-								</div>
-							</div>
-						</li>
-						<li>
-							<p>Choose <code>camelCase</code> or <code>snake_case</code> for variable and function names, and stay consistent!</p>
-						</li>
-						<li>
-							<p>Use <code>PascalCase</code> for struct names and class names. (Notice how the first letter is capitalized.)</p>
-						</li>
-						<li>
-							<p>If a variable&rsquo;s value doesn&rsquo;t change throughout the code, it should be declared as a constant and be named in all caps <code>LIKE_THIS</code>:</p>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">const</span> <span class="tok-kt">int</span> <span class="tok-n">NUMBER_OF_PROJECTS</span> <span class="tok-o">=</span> <span class="tok-mi">5</span><span class="tok-p">;</span></code></pre>
-								</div>
-							</div>
-						</li>
-						<li>
-							<p>Global variables (those declared outside of functions, including <code>main</code>) must never be used. They lead to unintentional bugs and often caused by poor design. Instead, you should be passing variables via functions.</p>
-						</li>
-						<li>
-							<p>Global constants are acceptable when needed.</p>
-						</li>
-						<li>
-							<p><strong>Magic numbers</strong><sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup> are seemingly random constants within your program, numbers whose appearance in code isn&rsquo;t clear from the outset. You should avoid magic numbers at all costs. Fortunately, C++ provides us with an easy way to do so by storing such numbers in constants. So, don&rsquo;t write</p>
-							<div class="listingblock bad">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-kt">double</span> <span class="tok-n">area</span> <span class="tok-o">=</span> <span class="tok-mf">3.141592</span> <span class="tok-o">*</span> <span class="tok-n">radius</span> <span class="tok-o">*</span> <span class="tok-n">radius</span><span class="tok-p">;</span></code></pre>
-								</div>
-							</div>
-							<div class="paragraph">
-								<p>Instead, store the number in a constant:</p>
-							</div>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">const</span> <span class="tok-kt">double</span> <span class="tok-n">PI</span> <span class="tok-o">=</span> <span class="tok-mf">3.141592</span><span class="tok-p">;</span>
-									<span class="tok-kt">double</span> <span class="tok-n">area</span> <span class="tok-o">=</span> <span class="tok-n">PI</span> <span class="tok-o">*</span> <span class="tok-n">radius</span> <span class="tok-o">*</span> <span class="tok-n">radius</span><span class="tok-p">;</span></code></pre>
-								</div>
-							</div>
-							<div class="paragraph">
-								<p>However, don&rsquo;t do something like</p>
-							</div>
-							<div class="listingblock bad">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">const</span> <span class="tok-kt">int</span> <span class="tok-n">TWO</span> <span class="tok-o">=</span> <span class="tok-mi">2</span><span class="tok-p">;</span>
-									<span class="tok-p">...</span>
-									<span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-n">n</span> <span class="tok-o">%</span> <span class="tok-n">TWO</span><span class="tok-p">)</span>
-									<span class="tok-p">...</span></code></pre>
-								</div>
-							</div>
-							<div class="paragraph">
-								<p>This adds no meaning to your code.</p>
-							</div>
-							<div class="paragraph">
-								<p>The reason is that we want to make it clear both to the compiler and to readers of the program that this quantity can&rsquo;t be changed. The compiler can often produce better machine code with that knowledge. And the reader gets a more precise understanding of the program’s behavior. Moreover, if the programmer (you!) decides to ever change that value, he or she will have do that just in one place!</p>
-							</div>
-						</li>
-					</ul>
-				</div>
+			<h2 id="_variables_and_constants">Variables and Constants</h2>
+			<h4>Identifiers</h4>
+			<p>In programming languages, names you give to things are called <em>identifiers</em>.
+			<ul>
+				<li>Identifiers should be meaningful, such as <code>numberOfGames</code>. Identifiers like <code>herp</code> and <code>derp</code> are funny, but not helpful.
+				</li>
+				<li><p>A single letter cannot be a descriptive identifier. Avoid even the commonly used loop variables like <code>i</code> and <code>j</code>. Good alternatives are <code>index</code> or <code>iter</code>.</p>
+				<div>Bad example names: <pre class="language-cpp bad"><code>int x, y, i, clr lineW;</code></pre></div>
+				<div>Good example names: <pre class="language-cpp good"><code>int xCoord, yCoord, index, color,  lineWidth;</code></pre></div>
+				</li>
+				<li><p>Unless constant or a new data type (see below), all identifiers should start with a lowercase letter and each subsequent word should start with a capital letter (i,e., camel case).</p>
+
+					<p>Bad examples:</p>
+<pre class="language-cpp bad"><code>int Time;
+double percent_increase;
+string FirstName;</code></pre>
+					<p>Good examples:</p>
+<pre class="language-cpp good"><code>int time;
+double percentIncrease;
+string firstName;</code></pre>
+				</li>
+			</ul>
+			<h4>Naming Constants</h4>
+				<p>Constants should be named in all caps with each word separated by an underscore (<code class="language-cpp">_</code>).</p>
+
+				<p>Good examples:</p>
+<pre class="language-cpp"><code>const double PI = 3.14159;
+const double INCH_TO_CM = 2.54;
+const double CM_TO_INCH = 1.0 / INCH_TO_CM;
+const int MAX_SCORE = 1000;</code></pre>
+
+			<h4>Variable Declaration and Assignment</h4>
+				<ul>
+					<li>Declare variables in the smallest scope possible.</li>
+
+					<li>Choose appropriate data types for your variables. If a given variable can store only integers, give it type <code>int</code> rather than <code>double</code>. If a variable stores characters, make it a <code>char</code> instead of an <code>int</code>.</li>
+
+					<li>Never use <code>0</code> and <code>1</code> with <code>bool</code> variables. <code>true</code> and <code>false</code> exist for a reason.</li>
+
+					<li>
+						<p>Initialize variables at declaration when appropriate:</p>
+						<pre class="language-cpp"><code>int count = 0;</code></pre>
+						<p>In other words, don&rsquo;t do this:</p>
+						<pre class="language-cpp bad"><code>int count;
+...
+count = 0;</code></pre>
+					</li>
+					<li>
+						<p>If a variable&rsquo;s value doesn&rsquo;t change throughout the code, it should be declared as a constant and be named in all caps <code>LIKE_THIS</code>:</p>
+						<pre class="language-cpp"><code data-lang="c++">const int NUMBER_OF_PROJECTS = 5;</code></pre>
+					</li>
+				</ul>
+				<h4>Global Variables and "Magic" Numbers</h4>
+				<ul>
+					<li>
+						<p>Non-constant global variables (those declared outside of functions, including <code>main()</code>) must never be used. They lead to unintentional bugs and often caused by poor design. Instead, you should be passing variables via functions.</p>
+					</li>
+					<li>
+						<p>Global constants are acceptable when needed.</p>
+					</li>
+					<li>
+						<p><strong>Magic numbers</strong><sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup> are seemingly random constants within your program, numbers whose appearance in code isn&rsquo;t clear from the outset. You should avoid magic numbers at all costs. Fortunately, C++ provides us with an easy way to do so by storing such numbers in constants. So, don&rsquo;t write:</p>
+						<pre class="language-cpp bad"><code>double area = 3.141592 * radius * radius;</code></pre>
+						<p>Instead, store the number in a constant:</p>
+<pre class="language-cpp"><code>const double PI = 3.141592;
+double area = PI * radius * radius;</code></pre>
+						<p>However, don&rsquo;t just restate the value with your identifiers:</p>
+<pre class="language-cpp bad"><code>const int TWO = 2;
+...
+if (n % TWO)
+...</code></pre>
+
+						<p>This adds no meaning to your code.</p>
+
+						<p>The reason is that we want to make it clear both to the compiler and to readers of the program that this quantity can&rsquo;t be changed. The compiler can often produce better machine code with that knowledge. And the reader gets a more precise understanding of the program’s behavior. Moreover, if the programmer (you!) decides to ever change that value, he or she will have do that just in one place!</p>
+					</li>
+				</ul>
 			</div>
-			-->
 		</div>
 
 
@@ -290,164 +308,90 @@ Add this line to your custom settings on the right: <code>"editor.rulers": [80],
 
 		<div class="sect1">
 			<h2 id="_conditions">Conditions</h2>
-			<p><em>Details will be posted soon.</em></p>
-		<!--
 			<div class="sectionbody">
-				<div class="ulist">
 					<ul>
 						<li>
 							<p>Always use curly braces (even when not necessary) and use consistent brace style. In other words, do either this:</p>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-n">x</span> <span class="tok-o">&gt;</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
-									<span class="tok-p">{</span>
-											<span class="tok-n">cout</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s">&quot;x is positive.&quot;</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">endl</span><span class="tok-p">;</span>
-									<span class="tok-p">}</span></code></pre>
-								</div>
-							</div>
-							<div class="paragraph">
-								<p>or this:</p>
-							</div>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-n">x</span> <span class="tok-o">&gt;</span> <span class="tok-mi">0</span><span class="tok-p">)</span> <span class="tok-p">{</span>
-											<span class="tok-n">cout</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s">&quot;x is positive.&quot;</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">endl</span><span class="tok-p">;</span>
-									<span class="tok-p">}</span></code></pre>
-								</div>
-							</div>
-							<div class="paragraph">
-								<p>But don&rsquo;t do this:</p>
-							</div>
-							<div class="listingblock bad">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-n">x</span> <span class="tok-o">&gt;</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
-									<span class="tok-n">cout</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s">&quot;x is positive.&quot;</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">endl</span><span class="tok-p">;</span></code></pre>
-								</div>
-							</div>
+<pre class="language-cpp"><code>if (x > 0)
+{
+	cout &lt;&lt; "x is positive." &lt;&lt; endl;
+}</code></pre>
+							<p>But avoid doing this:</p>
+
+<pre class="language-cpp bad"><code>if (x > 0)
+	cout &lt;&lt; "x is positive." &lt;&lt; endl;</code></pre>
 							<div class="paragraph">
 								<p>or</p>
 							</div>
-							<div class="listingblock bad">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-n">x</span> <span class="tok-o">&gt;</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
-											<span class="tok-p">{</span>
-											<span class="tok-n">cout</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s">&quot;x is positive.&quot;</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">endl</span><span class="tok-p">;</span>
-									<span class="tok-p">}</span></code></pre>
-								</div>
-							</div>
+<pre class="language-cpp bad"><code data-lang="c++">if (x > 0)
+	{
+	cout << "x is positive." << endl;
+	}</code></pre>
 						</li>
 						<li>
 							<p>Don&rsquo;t ever test whether a <code>bool</code> value is <code>==</code> or <code>!=</code> to <code>true</code> or <code>false</code>. Don&rsquo;t do</p>
-							<div class="listingblock bad">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-n">isValid</span> <span class="tok-o">==</span> <span class="tok-nb">true</span><span class="tok-p">)</span></code></pre>
-								</div>
-							</div>
-							<div class="paragraph">
-								<p>or</p>
-							</div>
-							<div class="listingblock bad">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-n">isValid</span> <span class="tok-o">==</span> <span class="tok-nb">false</span><span class="tok-p">)</span></code></pre>
-								</div>
-							</div>
-							<div class="paragraph">
-								<p>Do check if a variable is <code>true</code> or <code>false</code> as in:</p>
-							</div>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-n">isValid</span><span class="tok-p">)</span></code></pre>
-								</div>
-							</div>
-							<div class="paragraph">
-								<p>or</p>
-							</div>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-o">!</span><span class="tok-n">isValid</span><span class="tok-p">)</span></code></pre>
-								</div>
-							</div>
+							<pre class="language-cpp bad"><code data-lang="c++">if (isValid == true)</code></pre>
+							<p>or</p>
+
+							<pre class="language-cpp bad"><code data-lang="c++">if (isValid == false)</code></pre>
+							<p>Do check if a variable is <code>true</code> or <code>false</code> as in:</p>
+							<pre class="language-cpp"><code data-lang="c++">if (isValid)</code></pre>
+							<p>or</p>
+							<pre class="language-cpp"><code data-lang="c++">if (!isValid)</code></pre>
 						</li>
 						<li>
 							<p>If you have an if/else statement that returns a <code>bool</code> value based on a test, such as this one:</p>
-							<div class="listingblock bad">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">if</span> <span class="tok-p">(</span><span class="tok-n">score1</span> <span class="tok-o">==</span> <span class="tok-n">score2</span><span class="tok-p">)</span> <span class="tok-p">{</span>
-											<span class="tok-k">return</span> <span class="tok-nb">true</span><span class="tok-p">;</span>
-									<span class="tok-p">}</span> <span class="tok-k">else</span> <span class="tok-p">{</span>
-											<span class="tok-k">return</span> <span class="tok-nb">false</span><span class="tok-p">;</span>
-									<span class="tok-p">}</span></code></pre>
-								</div>
-							</div>
-							<div class="paragraph">
-								<p>replace it with a single statement that just directly returns the test&rsquo;s result:</p>
-							</div>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">return</span> <span class="tok-n">score1</span> <span class="tok-o">==</span> <span class="tok-n">score2</span><span class="tok-p">;</span></code></pre>
-								</div>
-							</div>
+<pre class="language-cpp"><code data-lang="c++">if (score1 == score2)
+{
+		return true;
+}
+else
+{
+		return false;
+}</code></pre>
+							<p>replace it with a single statement that just directly returns the test&rsquo;s result:</p>
+									<pre class="pygments highlight"><code data-lang="c++">return score1 == score2;</code></pre>
 						</li>
 					</ul>
-				</div>
-			</div>
-			-->
 		</div>
 		<div class="sect1">
 
 
 
 			<h2 id="_switches">Switches</h2>
-			<p><em>Details will be posted soon.</em></p>
-			<!--
 			<div class="sectionbody">
-				<div class="ulist">
 					<ul>
 						<li>
-							<p>Indent your switch statements like this (of course, feel free to put the curly brace on a new line):</p>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">switch</span> <span class="tok-p">(</span><span class="tok-n">n</span><span class="tok-p">)</span> <span class="tok-p">{</span>
-											<span class="tok-k">case</span> <span class="tok-o">-</span><span class="tok-mi">1</span><span class="tok-o">:</span>
-													<span class="tok-n">cout</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s">&quot;n is -1&quot;</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">endl</span><span class="tok-p">;</span>
-													<span class="tok-k">break</span><span class="tok-p">;</span>
-											<span class="tok-k">case</span> <span class="tok-mi">1</span><span class="tok-o">:</span>
-													<span class="tok-n">cout</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s">&quot;n is 1&quot;</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">endl</span><span class="tok-p">;</span>
-													<span class="tok-k">break</span><span class="tok-p">;</span>
-											<span class="tok-k">default</span><span class="tok-o">:</span>
-													<span class="tok-n">cout</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s">&quot;n is neither -1 nor 1&quot;</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">endl</span><span class="tok-p">;</span>
-													<span class="tok-k">break</span><span class="tok-p">;</span>
-									<span class="tok-p">}</span></code></pre>
-								</div>
-							</div>
+							<p>Indent your switch statements like this:</p>
+<pre class="language-cpp"><code data-lang="c++">switch (val)
+{
+	case -1:
+		cout << "value is -1" << endl;
+		break;
+	case 1:
+		cout << "value is 1" << endl;
+		break;
+	default:
+		cout << "value is neither -1 nor 1" << endl;
+		break;
+}</code></pre>
 						</li>
+
+						<div class="alert alert-warning">
+							<span class="glyphicon glyphicon-warning-sign"></span> <strong>Warning:</strong> Generally, switch statements should be the only place where you use <code>break;</code>.
+						</div>
 					</ul>
-				</div>
-				<div class="admonitionblock warning">
-					<table>
-						<tr>
-							<td class="icon">
-								<i class="fa icon-warning" title="Warning"></i>
-							</td>
-							<td class="content">
-								Switch statements should be the only place where you use <code>break</code>!
-							</td>
-						</tr>
-					</table>
-				</div>
 			</div>
-			-->
 		</div>
 
 		<div class="sect1">
 			<h2 id="_loops">Loops</h2>
-			<p><em>Details will be posted soon.</em></p>
-			<!--
 			<div class="sectionbody">
-				<div class="ulist">
+				<p><em>Details will be posted soon.</em></p>
+				<!--
 					<ul>
 						<li>
-							<p>Whenever you need temporary variables for iteration, use <code>i</code>, then <code>j</code>, then <code>k</code>, unless more specific names would make your code more readable:</p>
+							<p>Whenever you a counting variable, use more specific names than <code>i</code>, <code>j</code, &hellip;.</p>
 							<div class="listingblock good">
 								<div class="content">
 									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">for</span> <span class="tok-p">(</span><span class="tok-kt">int</span> <span class="tok-n">column</span> <span class="tok-o">=</span> <span class="tok-mi">0</span><span class="tok-p">;</span> <span class="tok-n">column</span> <span class="tok-o">&lt;</span> <span class="tok-n">numberOfColumns</span><span class="tok-p">;</span> <span class="tok-n">column</span><span class="tok-o">++</span><span class="tok-p">)</span> <span class="tok-p">{</span>
@@ -494,17 +438,41 @@ Add this line to your custom settings on the right: <code>"editor.rulers": [80],
 							</div>
 						</li>
 					</ul>
-				</div>
+				-->
 			</div>
-		-->
 		</div>
 
 		<div class="sect1">
 			<h2 id="_functions">Functions</h2>
 			<p><em>Details will be posted soon.</em></p>
-			<!--
 			<div class="sectionbody">
-				<div class="ulist">
+				<p>Like non-constant variables, function names should be camel case (i.e., start with a lowercase letter and each subsequent word should start with a capital letter).</p>
+
+				<p>Value-returning functions should be named after what they return and void functions after what they do.</p>
+
+				<div>Good examples:
+<pre class="language-cpp"><code>bool isPrime(int num);
+
+void displayStats (double average, int median, int min, int max);
+
+void spinSpinner (int numberOfTurns);</code></pre></div>
+
+
+				<p>Always include function prototypes before the <code class="language-cpp">main()</code> function and function definitions below <code class="language-cpp">main()</code>.</p>
+
+<p>Every function should except <code class="language-cpp">main()</code> should have function prototype that is declared before <code class="language-cpp">main()</code>. Function definitions should be defined below <code class="language-cpp">main()</code>.</p>
+
+				<h4>Function Prototype Comments</h4>
+				<p>Each function prototype (except `main()`) should be directly preceded by a comment describing what the function does and how to use (call) it.</p>
+
+<p>Good example:</p>
+<pre class="language-cpp"><code>/**
+ * A function that draws a spinning animation
+ * @param numberOfTurns the number of times the spinner spins.
+ */
+void spinSpinner(int numberOfTurns);</code></pre>
+
+				<!--
 					<ul>
 						<li>
 							<p>Above each function you create, write a multi-line comment that addresses these questions:</p>
@@ -538,82 +506,80 @@ Add this line to your custom settings on the right: <code>"editor.rulers": [80],
 						<li>
 							<p>Be sure to place RME comments above functions' declarations (prototypes), not above (or below) functions' definitions.</p>
 						</li>
+					-->
+					<h4>Function Decomposition</h4>
+					<ul>
 						<li>
 							<p>Often you might find yourself writing similar blocks of code. Utilize functions to decompose your program and minimize redundancy in code.</p>
-							<div class="listingblock bad">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-n">cout</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s">&quot;What is your first name?&quot;</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">endl</span><span class="tok-p">;</span>
-									<span class="tok-n">cin</span> <span class="tok-o">&gt;&gt;</span> <span class="tok-n">firstName</span><span class="tok-p">;</span>
-									<span class="tok-p">...</span>
-									<span class="tok-n">cout</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s">&quot;What is your last name?&quot;</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">endl</span><span class="tok-p">;</span>
-									<span class="tok-n">cin</span> <span class="tok-o">&gt;&gt;</span> <span class="tok-n">lastName</span><span class="tok-p">;</span>
-									<span class="tok-p">...</span>
-									<span class="tok-n">cout</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-s">&quot;What is your email?&quot;</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">endl</span><span class="tok-p">;</span>
-									<span class="tok-n">cin</span> <span class="tok-o">&gt;&gt;</span> <span class="tok-n">email</span><span class="tok-p">;</span></code></pre>
-								</div>
-							</div>
+<pre class="language-cpp bad"><code>cout << "What is your first name?" << endl;
+cin >> firstName;
+...
+cout << "What is your last name?" << endl;
+cin >> lastName;
+...
+cout << "What is your email?" << endl;
+cin >> email;</code></pre>
 						</li>
 						<li>
 							<p>Instead create and use helper functions that incorporate the common functionality:</p>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-n">firstName</span> <span class="tok-o">=</span> <span class="tok-n">getInfo</span><span class="tok-p">(</span><span class="tok-s">&quot;What is your first name?&quot;</span><span class="tok-p">);</span>
-									<span class="tok-p">...</span>
-									<span class="tok-n">lastName</span> <span class="tok-o">=</span> <span class="tok-n">getInfo</span><span class="tok-p">(</span><span class="tok-s">&quot;What is your last name?&quot;</span><span class="tok-p">);</span>
-									<span class="tok-p">...</span>
-									<span class="tok-n">email</span> <span class="tok-o">=</span> <span class="tok-n">getInfo</span><span class="tok-p">(</span><span class="tok-s">&quot;What is your email?&quot;</span><span class="tok-p">);</span>
-									<span class="tok-p">...</span>
-									<span class="tok-n">string</span> <span class="tok-n">getInfo</span><span class="tok-p">(</span><span class="tok-n">string</span> <span class="tok-n">prompt</span><span class="tok-p">)</span>
-									<span class="tok-p">{</span>
-											<span class="tok-n">cout</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">prompt</span> <span class="tok-o">&lt;&lt;</span> <span class="tok-n">endl</span><span class="tok-p">;</span>
-											<span class="tok-n">string</span> <span class="tok-n">input</span><span class="tok-p">;</span>
-											<span class="tok-n">cin</span> <span class="tok-o">&gt;&gt;</span> <span class="tok-n">input</span><span class="tok-p">;</span>
-											<span class="tok-k">return</span> <span class="tok-n">input</span><span class="tok-p">;</span>
-									<span class="tok-p">}</span></code></pre>
-								</div>
-							</div>
+<pre class="language-cpp"><code>firstName = getInfo("What is your first name?");
+...
+lastName = getInfo("What is your last name?");
+...
+email = getInfo("What is your email?");
+...
+string getInfo(const string&amp; prompt)
+{
+		cout << prompt << endl;
+		string input;
+		cin >> input;
+		return input;
+}</code></pre>
 						</li>
 						<li>
 							<p>If you have a single function that is very long, break it apart into smaller sub-functions. The definition of &ldquo;very long&rdquo; is vague, but let&rsquo;s say a function longer than 40-50 lines is pushing it. If you try to describe the function&rsquo;s purpose and find yourself using the word &ldquo;and&rdquo; a lot, that probably means the function does too many things and should be split into sub-functions.</p>
 						</li>
 					</ul>
-				</div>
 			</div>
-			-->
+		</div>
+		<div class="sect1">
+			<h2 id="_data_types">New Data Types (enums, structs, etc.)</h2>
+			<div class="sectionbody">
+				<p>Use <code>PascalCase</code> for enum and struct names and class names. (Notice how the first letter is capitalized.)</p>
+			</div>
 		</div>
 		<div class="sect1">
 			<h2 id="_other">Other</h2>
-			<p><em>Details will be posted soon.</em></p>
-			<!--
 			<div class="sectionbody">
 				<div class="ulist">
 					<ul>
-						<li>
-							<p>Never use <code>ignore</code> to get past characters in the input stream. <code>getline</code> is a far superior choice.</p>
-						</li>
-						<li>
-							<p>C++ contains an <code>exit</code> function that immediately exits your entire program. You should never call this function in this course. Your program should always exit naturally by reaching the end of your <code>main</code> function and returning.</p>
-						</li>
-						<li>
-							<p>Never use <code>goto</code> to go to another line of code. Instead, make use of functions and loops!</p>
-						</li>
-						<li>
-							<p>Never use <code>stringstream</code> for this course.</p>
-						</li>
+						<!--
+							<li>
+								<p>Never use <code>ignore</code> to get past characters in the input stream. <code>getline</code> is a far superior choice.</p>
+							</li>
+						-->
+						<li>C++ contains an <code>exit()</code> function that immediately exits your entire program. You should <strong>never</strong> call this function in this course. Your program should always exit naturally by reaching the end of your <code>main</code> function and returning.</li>
+						<li>Never use <code>goto</code> to go to another line of code. Instead, make use of functions and loops!</li>
+						<li>Never use <code>stringstream</code> for this course.</li>
 					</ul>
 				</div>
 			</div>
 		</div>
-		<div id="footnotes">
-			<hr>
-			<div class="footnote" id="_footnote_1">
-				<a href="#_footnoteref_1">1</a>. <a href="http://thedailywtf.com/articles/Magic-Number-7" class="bare" target="_blank">http://thedailywtf.com/articles/Magic-Number-7</a>
-			</div>
-		</div>
 
-		-->
 		<h3>Platform Specific Code</h3>
+		<p>All programs should compile and run on any system. We want our code to be "portable", meaning able to be compiled and run on multiple systems.</p>
+
 		<h3>Avoid System Calls</h3>
+		<p>A system call is when your program calls another program on the system. In C++ this is commonly done through a function called <code>system()</code>. These calls are tempting, because they provide additional features to your program without having to learn the programming to do them.</p>
+
+		<p>Bad:</p>
+<pre class="language-cpp bad"><code>system("PAUSE"); // Windows-only way to pause execution.
+system("CLS"); // Windows-only way to clear the screen.</code></pre>
+
+		<p>Good example to pause execution using C++</p>
+		<pre class="language-cpp good"><code>cout << "Press enter to continue . . .";
+		cin.ignore(INT_MAX, '\n'); // ignore everything typed until user hits enter.</code></pre>
+
 		<h3>Non-standard libraries / includes</h3>
 		<p>Avoid the user of operating system specific libraries. We want code that compiles on all operating systems.</p>
 		<p>Example of Bad Code:</p>
@@ -638,8 +604,16 @@ Add this line to your custom settings on the right: <code>"editor.rulers": [80],
 			<li><a href="http://www.cplusplus.com/reference/random/">random</a></li>
 			<li><a href="http://www.cplusplus.com/reference/thread/">thread</a></li>
 		</ul>
+		<div id="footnotes">
+			<hr />
+			<div class="footnote" id="_footnote_1">
+				<a href="#_footnoteref_1">1</a>. <a href="http://thedailywtf.com/articles/Magic-Number-7" class="bare" target="_blank">http://thedailywtf.com/articles/Magic-Number-7</a>
+			</div>
+		</div>
+		<footer>Last updated 2018-1-4 EDT</footer>
 	</div>
-	<footer>Last updated 2018-1-4 EDT</footer>
+
+
 </div>
 
 	<script src="static/behavior/prism.js"></script>
