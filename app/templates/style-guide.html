@@ -1,28 +1,117 @@
 {% extends "base.html" %}
 {% block headcontent %}
 <style>
-	@media (min-width: 767px) {
-		#page-nav{
-			position: fixed;
-			padding-right:33px;
-			margin-top: 20px;
-		}
-	}
-
-	#page-nav div {
-		border: solid 1px rgb(204, 204, 204);
-		border-radius: 4px;
-	}
-	#page-nav h4 {
-		text-align: center;
-	}
-
 	pre[class*="language-"].bad>code {
 		position: relative;
 		border-left: 10px solid #dc3545;
 		box-shadow: -1px 0px 0px 0px #dc3545, 0px 0px 0px 1px #dfdfdf;
 		background-image: linear-gradient(transparent 50%, rgba(220, 75, 89, 0.06) 50%);
 	}
+
+	.sect1 h2 {
+		padding-top: 52px;
+	}
+
+
+
+
+
+	/* make sidebar nav vertical */
+	.sidebar-nav h4 {
+		text-align: center;
+	}
+@media (min-width: 768px){
+
+		.affix-content .content .page-header{
+		margin-top: 0;
+	}
+	.sidebar-nav{
+			position:fixed;
+			/*width:100%;*/
+	}
+	.affix-sidebar{
+		padding-right:0;
+		font-size:small;
+		padding-left: 0;
+	}
+	.affix-row, .affix-container, .affix-content{
+		height: 100%;
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.affix-content{
+		background-color:white;
+	}
+	.sidebar-nav .navbar .navbar-collapse {
+		padding: 0;
+		max-height: none;
+	}
+	.sidebar-nav .navbar{
+		border-radius:0;
+		margin-bottom:0;
+		border:0;
+	}
+	.sidebar-nav .navbar ul {
+		float: none;
+		display: block;
+	}
+	.sidebar-nav .navbar li {
+		float: none;
+		display: block;
+	}
+	.sidebar-nav .navbar li a {
+		padding-top: 12px;
+		padding-bottom: 12px;
+	}
+}
+
+@media (min-width: 769px){
+		.affix-content .content .page-header{
+		margin-top: 0;
+	}
+}
+
+@media (min-width: 992px){
+		.affix-content .content .page-header{
+		margin-top: 0;
+	}
+}
+
+@media (min-width: 1220px){
+	.affix-row{
+		overflow: hidden;
+	}
+
+	.affix-content{
+		overflow: auto;
+	}
+
+
+	.affix-content .content .page-header{
+		margin-top: 0;
+	}
+	.affix-content{
+		padding-right: 30px;
+		padding-left: 30px;
+	}
+	.affix-title{
+		border-bottom: 1px solid #ecf0f1;
+		padding-bottom:10px;
+	}
+	.navbar-nav {
+		margin: 0;
+	}
+	.navbar-collapse{
+		padding: 0;
+	}
+	.sidebar-nav .navbar li a:hover {
+		background-color: #428bca;
+		color: white;
+	}
+	.sidebar-nav .navbar li a > .caret {
+		margin-top: 8px;
+	}
+}
 
 </style>
 <script>
@@ -33,39 +122,48 @@
 <link href="/static/presentation/prism.css" rel="stylesheet">
 {% endblock %}
 {% block content %}
-<div class="row">
-	<div id="page-nav" class="col-lg-2 col-md-2 col-sm-3"><div>
-		<h4>Table of Contents</h4>
-		<ul class="nav">
-				<li><a href="#_comments">Comments</a></li>
-				<li><a href="#_whitespace_and_indentation">Whitespace and Indentation</a></li>
-				<li><a href="#_variables_and_constants">Variables and Constants</a></li>
-				<li><a href="#_conditions">Conditions</a></li>
-				<li><a href="#_switches">Switches</a></li>
-				<li><a href="#_loops">Loops</a></li>
-				<li><a href="#_functions">Functions</a></li>
-				<li><a href="#_data_types">New Data Types (enums and structs)</a></li>
-				<li><a href="#_other">Other</a></li>
-			</ul>
+<div class="row affix-row">
+	<div class="col-sm-3 col-md-2 affix-sidebar">
+		<div class="sidebar-nav">
+			<div class="navbar navbar-default" role="navigation">
+				<h4>Table of Contents</h4>
+				<ul class="nav navbar-nav" id="sidenav01">
+					<li><a href="#_comments">Comments</a></li>
+					<li><a href="#_whitespace_and_indentation">Whitespace &amp; Indentation</a></li>
+					<li><a href="#_variables_and_constants">Variables &amp; Constants</a></li>
+					<li><a href="#_conditions">Conditions</a></li>
+					<li><a href="#_switches">Switches</a></li>
+					<li><a href="#_loops">Loops</a></li>
+					<li><a href="#_functions">Functions</a></li>
+					<li><a href="#_data_types">Enums and Structs</a></li>
+					<li><a href="#_platform_specific">Platform Specific Code</a></li>
+					<li><a href="#_other">Other</a></li>
+				</ul>
+			</div>
 		</div>
 	</div>
+	<div class="col-sm-9 col-md-10 affix-content">
+		<div class="content">
 
-	<div class="col-lg-3 col-md-3 col-sm-3">
-		<!-- Placeholder - keep empty -->
-	</div>
-	<div id="content" class="col-lg-9 col-md-9 col-sm-9 fill">
-		<h1>Style Guide</h1>
-		<div class="details">
-			<span id="author" class="author">CSCI 235. Spring 2018.</span><br>
-		</div>
-		<p>Each coding assignment must follow this standard. Using one style consistently throughout the source code lets us focus on other (more important) issues.</p>
+			<div class="page-header">
+				<h1><span class="glyphicon glyphicon glyphicon-console"></span> Style Guide</h1>
+				<div class="details">
+					<span id="author" class="author">CSCI 235. Spring 2018.</span><br>
+				</div>
+			</div>
 
-		<p>There&rsquo;s no one, right way to write code. But there are definitely a lot of wrong (or, at least, bad) ways. Certainly it is possible to write &ldquo;correct&rdquo; code that violates the guidelines below. Even so, we ask that you adhere to these conventions for CSCI 235 to motivate consistency and readability in your personal coding style.</p>
+			<p>Each coding assignment must follow this standard. Using one style consistently throughout the source code lets us focus on other (more important) issues.</p>
 
-		<p>Companies typically adopt their own, company-wide conventions for style. Learning to carefully obey a style guide, and writing code with a group of other developers where the style is consistent among them, are valuable job skills.</p>
+			<p>There&rsquo;s no one, right way to write code. But there are definitely a lot of wrong (or, at least, bad) ways. Certainly it is possible to write &ldquo;correct&rdquo; code that violates the guidelines below. Even so, we ask that you adhere to these conventions for CSCI 235 to motivate consistency and readability in your personal coding style.</p>
 
-		<hr />
-		<div class="sect1">
+			<p>Companies typically adopt their own, company-wide conventions for style. Learning to carefully obey a style guide, and writing code with a group of other developers where the style is consistent among them, are valuable job skills.</p>
+
+			<hr />
+
+
+
+			<!-- New Section -->
+			<div class="sect1">
 			<h2 id="_comments">Comments</h2>
 			<div class="sectionbody">
 				<h3>Comment Style</h3>
@@ -102,8 +200,11 @@ double celsius = 5.0 / 9.0 * (fahr - 32.0);</code></pre>
 				</div>
 			</div>
 
-			<h2 id="_whitespace_and_indentation">Whitespace and Indentation</h2>
 
+			<!-- New Section -->
+			<div class="sect1">
+			<h2 id="_whitespace_and_indentation">Whitespace and Indentation</h2>
+			<div class="sectionbody">
 			<p>Use a single space between operators and their operands:</p>
 					<pre class="language-cpp good"><code>count += (a + b) * c / d + random();</code></pre>
 
@@ -190,13 +291,13 @@ cin >> age;
 				<p>Bad:</p>
 <pre class="language-cpp bad"><code>int main()
 {   cout << "Hi" << endl;
-    return 0; }</code></pre>
+		return 0; }</code></pre>
 
 				<p>Good:</p>
 <pre class="language-cpp"><code>int main()
 {
-    cout << "Hi" << endl;
-    return 0;
+		cout << "Hi" << endl;
+		return 0;
 }</code></pre>
 
 
@@ -208,8 +309,8 @@ cin >> age;
 			<pre class="language-cpp bad"><code>cout &lt;&lt; "This is a really long line " &lt;&lt; 5 * 10 / denom &lt;&lt; " and more text." &lt;&lt; endl;</code></pre>
 			<p>This is how the previous line should look:</p>
 <pre class="language-cpp"><code>cout &lt;&lt; "This is a really long line "
-    &lt;&lt; 5 * 10 / denom
-    &lt;&lt; " and more text." &lt;&lt; endl;</code></pre>
+		&lt;&lt; 5 * 10 / denom
+		&lt;&lt; " and more text." &lt;&lt; endl;</code></pre>
 
 
 			<p>Good example of a function prototype:</p>
@@ -219,13 +320,15 @@ cin >> age;
 			To add a line to Visual Studio Code indicating the 80 character mark, go to <strong>File > Preferences > User/Workspace settings</strong>
 Add this line to your custom settings on the right: <code>"editor.rulers": [80],</code>
 			</div>
+		</div>
+	</div>
 
-
-		<div class="sect1">
+			<!-- New Section -->
+			<div class="sect1">
 			<div class="sectionbody">
 			<h2 id="_variables_and_constants">Variables and Constants</h2>
 			<h4>Identifiers</h4>
-			<p>In programming languages, names you give to things are called <em>identifiers</em>.
+			<p>In programming languages, names you give to things are called <em>identifiers</em>.</p>
 			<ul>
 				<li>Identifiers should be meaningful, such as <code>numberOfGames</code>. Identifiers like <code>herp</code> and <code>derp</code> are funny, but not helpful.
 				</li>
@@ -306,6 +409,9 @@ if (n % TWO)
 
 
 
+
+
+		<!-- New Section -->
 		<div class="sect1">
 			<h2 id="_conditions">Conditions</h2>
 			<div class="sectionbody">
@@ -354,7 +460,14 @@ else
 						</li>
 					</ul>
 		</div>
-		<div class="sect1">
+	</div>
+
+
+
+
+
+				<!-- New Section -->
+				<div class="sect1">
 
 
 
@@ -384,67 +497,63 @@ else
 			</div>
 		</div>
 
+
+
+		<!-- New Section -->
 		<div class="sect1">
 			<h2 id="_loops">Loops</h2>
 			<div class="sectionbody">
-				<p><em>Details will be posted soon.</em></p>
-				<!--
-					<ul>
-						<li>
-							<p>Whenever you a counting variable, use more specific names than <code>i</code>, <code>j</code, &hellip;.</p>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">for</span> <span class="tok-p">(</span><span class="tok-kt">int</span> <span class="tok-n">column</span> <span class="tok-o">=</span> <span class="tok-mi">0</span><span class="tok-p">;</span> <span class="tok-n">column</span> <span class="tok-o">&lt;</span> <span class="tok-n">numberOfColumns</span><span class="tok-p">;</span> <span class="tok-n">column</span><span class="tok-o">++</span><span class="tok-p">)</span> <span class="tok-p">{</span>
-											<span class="tok-k">for</span> <span class="tok-p">(</span><span class="tok-kt">int</span> <span class="tok-n">row</span> <span class="tok-o">=</span> <span class="tok-mi">0</span><span class="tok-p">;</span> <span class="tok-n">row</span> <span class="tok-o">&lt;</span> <span class="tok-n">numberOfRows</span><span class="tok-p">;</span> <span class="tok-n">row</span><span class="tok-o">++</span><span class="tok-p">)</span> <span class="tok-p">{</span>
-													<span class="tok-c1">// do something</span>
-											<span class="tok-p">}</span>
-									<span class="tok-p">}</span></code></pre>
-								</div>
+				<ul>
+					<li>
+						<p>Whenever you a counting variable, use more specific names than <code>i</code>, <code>j</code>, &hellip;.</p>
+						<div class="listingblock good">
+							<div class="content">
+<pre class="language-cpp"><code data-lang="c++">for (int rowIeter = 0; rowIeter < rowCount; rowIeter++)
+{
+	for (int colIter = 0; colIter < colCount; colIter++)
+	{
+		// do something
+	}
+}</code></pre>
 							</div>
-							<div class="paragraph">
-								<p>If you find yourself in need of more than three variables inside a loop, you should reconsider your design!</p>
-							</div>
-						</li>
-						<li>
-							<p>A <code>for</code> loop should look like the one above, while a <code>while</code> loop should resemble this one below:</p>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-k">while</span> <span class="tok-p">(</span><span class="tok-n">n</span> <span class="tok-o">&lt;</span> <span class="tok-mi">0</span><span class="tok-p">)</span> <span class="tok-p">{</span>
-											<span class="tok-n">cin</span> <span class="tok-o">&gt;&gt;</span> <span class="tok-n">n</span><span class="tok-p">;</span>
-									<span class="tok-p">}</span></code></pre>
-								</div>
-							</div>
-						</li>
-						<li>
-							<p>Never use <code>break</code> or <code>continue</code> statements in loops. Loops should be controlled by a condition and should terminate when that condition is met. <code>break</code> should only be used inside of a <code>switch</code>.</p>
-						</li>
-						<li>
-							<p>Never write endless loops, such as <code>while (true)</code>.</p>
-						</li>
-						<li>
-							<p>Use a <code>for</code> loop when the number of repetitions is known (definite); use a <code>while</code> loop when the number of repetitions is unknown (indefinite).</p>
-							<div class="listingblock good">
-								<div class="content">
-									<pre class="pygments highlight"><code data-lang="c++"><span class="tok-c1">// repeat exactly size times</span>
-									<span class="tok-k">for</span> <span class="tok-p">(</span><span class="tok-kt">int</span> <span class="tok-n">i</span> <span class="tok-o">=</span> <span class="tok-mi">0</span><span class="tok-p">;</span> <span class="tok-n">i</span> <span class="tok-o">&lt;</span> <span class="tok-n">size</span><span class="tok-p">;</span> <span class="tok-n">i</span><span class="tok-o">++</span><span class="tok-p">)</span> <span class="tok-p">{</span>
-											<span class="tok-c1">// do something</span>
-									<span class="tok-p">}</span>
-									<span class="tok-c1">// repeat until there are no more lines</span>
-									<span class="tok-n">string</span> <span class="tok-n">str</span><span class="tok-p">;</span>
-									<span class="tok-k">while</span> <span class="tok-p">(</span><span class="tok-n">cin</span> <span class="tok-o">&gt;&gt;</span> <span class="tok-n">str</span><span class="tok-p">)</span> <span class="tok-p">{</span>
-											<span class="tok-c1">// do something</span>
-									<span class="tok-p">}</span></code></pre>
-								</div>
-							</div>
-						</li>
-					</ul>
-				-->
+						</div>
+							<p>If you find yourself in need of more than three levels of nested loops, you should reconsider your design!</p>
+					</li>
+					<li>
+						<p>A <code>for</code> loop should look like the one above, while a <code>while</code> loop should resemble this one below:</p>
+<pre class="language-cpp"><code data-lang="c++">while (num &lt; 0)
+{
+	cin &gt;&gt; num;
+}</code></pre>
+					</li>
+					<li>Avoid <code>break</code> statements and never use <code>continue</code> statements in loops. Loops should be controlled by a condition and should terminate when that condition is met. Generally, <code>break</code> should only be used inside of a <code>switch</code>.
+					</li>
+					<li>Never write endless loops, such as <code>while (true)</code>.</li>
+					<li>
+						<p>Use a <code>for</code> loop when the number of repetitions is known (definite); use a <code>while</code> loop when the number of repetitions is unknown (indefinite).</p>
+<pre class="language-cpp good"><code>// repeat exactly size times
+for (int i = 0; i < size; i++)
+{
+	// do something
+}
+
+// repeat until there are no more lines
+string str;
+while (cin >> str)
+{
+	// do something
+}</code></pre>
+					</li>
+				</ul>
 			</div>
 		</div>
 
-		<div class="sect1">
+
+
+
+			<!-- New Section -->
+			<div class="sect1">
 			<h2 id="_functions">Functions</h2>
-			<p><em>Details will be posted soon.</em></p>
 			<div class="sectionbody">
 				<p>Like non-constant variables, function names should be camel case (i.e., start with a lowercase letter and each subsequent word should start with a capital letter).</p>
 
@@ -542,12 +651,69 @@ string getInfo(const string&amp; prompt)
 					</ul>
 			</div>
 		</div>
+
+
+
+
+		<!-- New Section -->
 		<div class="sect1">
-			<h2 id="_data_types">New Data Types (enums, structs, etc.)</h2>
+			<h2 id="_data_types">Enums and Structs</h2>
 			<div class="sectionbody">
-				<p>Use <code>PascalCase</code> for enum and struct names and class names. (Notice how the first letter is capitalized.)</p>
+				<ul>
+					<li>Use <code>PascalCase</code> for enum, struct, and class names. (Notice how the first letter is capitalized.)</li>
+					<li>A comment should directly precede each enum or struct declaration describing the purpose of the data type.</li>
+					<li>The values an enum should named in all caps with each word separated by an underscore (<code class="language-cpp">_</code>).</li>
+				</ul>
 			</div>
 		</div>
+
+
+
+
+		<!-- New Section -->
+		<div class="sect1">
+			<h2 id="_platform_specific">Platform Specific Code</h2>
+			<div class="sectionbody">
+				<p>All programs should compile and run on any system. We want our code to be "portable", meaning able to be compiled and run on multiple systems.</p>
+
+				<h3>Avoid System Calls</h3>
+				<p>A system call is when your program calls another program on the system. In C++ this is commonly done through a function called <code>system()</code>. These calls are tempting, because they provide additional features to your program without having to learn the programming to do them.</p>
+
+				<p>Bad:</p>
+<pre class="language-cpp bad"><code>system("PAUSE"); // Windows-only way to pause execution.
+system("CLS"); // Windows-only way to clear the screen.</code></pre>
+
+				<p>Good example to pause execution using C++</p>
+<pre class="language-cpp good"><code>cout << "Press enter to continue . . .";
+cin.ignore(INT_MAX, '\n'); // ignore everything typed until user hits enter.</code></pre>
+
+				<h3>Non-standard libraries / includes</h3>
+				<p>Avoid the user of operating system specific libraries. We want code that compiles on all operating systems.</p>
+				<p>Example of Bad Code:</p>
+				<pre class="language-cpp bad"><code>#include &lt;windows.h&gt;</code></pre>
+				<p>Use of following standard libraries is encourage:</p>
+				<ul>
+					<li><a href="http://www.cplusplus.com/reference/cassert/">cassert</a></li>
+					<li><a href="http://www.cplusplus.com/reference/cctype/">cctype</a></li>
+					<li><a href="http://www.cplusplus.com/reference/cfloat/">cfloat</a></li>
+					<li><a href="http://www.cplusplus.com/reference/chrono/">chrono</a></li>
+					<li><a href="http://www.cplusplus.com/reference/climits/">climits</a></li>
+					<li><a href="http://www.cplusplus.com/reference/cmath/">cmath</a></li>
+					<li><a href="http://www.cplusplus.com/reference/cstddef/">cstddef</a></li>
+					<li><a href="http://www.cplusplus.com/reference/cstdlib/">cstdlib</a></li>
+					<li><a href="http://www.cplusplus.com/reference/cstring/">cstring</a></li>
+					<li><a href="http://www.cplusplus.com/reference/ctime/">ctime</a></li>
+					<li><a href="http://www.cplusplus.com/reference/fstream/">fstream</a></li>
+					<li><a href="http://www.cplusplus.com/reference/string/">string</a></li>
+					<li><a href="http://www.cplusplus.com/reference/iostream/">iostream</a></li>
+					<li><a href="http://www.cplusplus.com/reference/iomanip/">iomanip</a></li>
+					<li><a href="http://www.cplusplus.com/reference/ostream/">ostream</a></li>
+					<li><a href="http://www.cplusplus.com/reference/random/">random</a></li>
+					<li><a href="http://www.cplusplus.com/reference/thread/">thread</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- New Section -->
 		<div class="sect1">
 			<h2 id="_other">Other</h2>
 			<div class="sectionbody">
@@ -565,56 +731,15 @@ string getInfo(const string&amp; prompt)
 				</div>
 			</div>
 		</div>
-
-		<h3>Platform Specific Code</h3>
-		<p>All programs should compile and run on any system. We want our code to be "portable", meaning able to be compiled and run on multiple systems.</p>
-
-		<h3>Avoid System Calls</h3>
-		<p>A system call is when your program calls another program on the system. In C++ this is commonly done through a function called <code>system()</code>. These calls are tempting, because they provide additional features to your program without having to learn the programming to do them.</p>
-
-		<p>Bad:</p>
-<pre class="language-cpp bad"><code>system("PAUSE"); // Windows-only way to pause execution.
-system("CLS"); // Windows-only way to clear the screen.</code></pre>
-
-		<p>Good example to pause execution using C++</p>
-		<pre class="language-cpp good"><code>cout << "Press enter to continue . . .";
-		cin.ignore(INT_MAX, '\n'); // ignore everything typed until user hits enter.</code></pre>
-
-		<h3>Non-standard libraries / includes</h3>
-		<p>Avoid the user of operating system specific libraries. We want code that compiles on all operating systems.</p>
-		<p>Example of Bad Code:</p>
-		<pre class="language-cpp bad"><code>#include &lt;windows.h&gt;</code></pre>
-		<p>Use of following standard libraries is encourage:</p>
-		<ul>
-			<li><a href="http://www.cplusplus.com/reference/cassert/">cassert</a></li>
-			<li><a href="http://www.cplusplus.com/reference/cctype/">cctype</a></li>
-			<li><a href="http://www.cplusplus.com/reference/cfloat/">cfloat</a></li>
-			<li><a href="http://www.cplusplus.com/reference/chrono/">chrono</a></li>
-			<li><a href="http://www.cplusplus.com/reference/climits/">climits</a></li>
-			<li><a href="http://www.cplusplus.com/reference/cmath/">cmath</a></li>
-			<li><a href="http://www.cplusplus.com/reference/cstddef/">cstddef</a></li>
-			<li><a href="http://www.cplusplus.com/reference/cstdlib/">cstdlib</a></li>
-			<li><a href="http://www.cplusplus.com/reference/cstring/">cstring</a></li>
-			<li><a href="http://www.cplusplus.com/reference/ctime/">ctime</a></li>
-			<li><a href="http://www.cplusplus.com/reference/fstream/">fstream</a></li>
-			<li><a href="http://www.cplusplus.com/reference/string/">string</a></li>
-			<li><a href="http://www.cplusplus.com/reference/iostream/">iostream</a></li>
-			<li><a href="http://www.cplusplus.com/reference/iomanip/">iomanip</a></li>
-			<li><a href="http://www.cplusplus.com/reference/ostream/">ostream</a></li>
-			<li><a href="http://www.cplusplus.com/reference/random/">random</a></li>
-			<li><a href="http://www.cplusplus.com/reference/thread/">thread</a></li>
-		</ul>
-		<div id="footnotes">
-			<hr />
-			<div class="footnote" id="_footnote_1">
-				<a href="#_footnoteref_1">1</a>. <a href="http://thedailywtf.com/articles/Magic-Number-7" class="bare" target="_blank">http://thedailywtf.com/articles/Magic-Number-7</a>
+			<div id="footnotes">
+				<hr />
+				<div class="footnote" id="_footnote_1">
+					<a href="#_footnoteref_1">1</a>. <a href="http://thedailywtf.com/articles/Magic-Number-7" class="bare" target="_blank">http://thedailywtf.com/articles/Magic-Number-7</a>
+				</div>
 			</div>
+			<footer>Last updated 2018-1-10 EDT</footer>
 		</div>
-		<footer>Last updated 2018-1-4 EDT</footer>
 	</div>
-
-
 </div>
-
 	<script src="static/behavior/prism.js"></script>
 {% endblock %}

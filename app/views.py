@@ -29,7 +29,7 @@ def index():
             filename = filename,
             type = file.content_type)
     return render_template('index.html',
-                            title = 'Home')
+                            title = 'CSCI 235: Style Checker')
 
 @app.route('/favicon.ico')
 def favicon():
