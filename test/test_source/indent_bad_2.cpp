@@ -1,8 +1,10 @@
 #include <iostream>
 using namespace std;
 
+		const int MAX = 4;
+
 int main() {
-    int x;
+		int x;
     cout << "Hello world";
 
 bool y = true;

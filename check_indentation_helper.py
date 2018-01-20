@@ -92,9 +92,33 @@ def is_complete_expression(line_index, code_lines, isPreviousStatementNew):
 def indent_line_check(self, code_lines, line_index, indent_min = 0, indent_max = 0, isNewStatement = True, enclosure_stack = []):
     tab_size = self.current_file_indentation
 
+
+    def count_whitespace(str):
+        counts = {'space': 0, 'tab': 0}
+        for ch in list(str):
+            if ch == ' ':
+                counts['space'] += 1
+            elif ch == '\t':
+                counts['tab'] += 1
+
+        return counts
+
     # Checks if indent is in range, adds error as necessary, return the indention (thresholded)
     def check_indent(line, min, max, found, tab_size = tab_size):
-        found_level = found / tab_size
+
+        found_level = 0
+        tab_type = ''
+        other_type = ''
+
+        if (tab_size == 1):
+            found_level = found['tab']
+            tab_type = ' tabs'
+            other_type = 'space'
+        else:
+            found_level = found['space'] / tab_size
+            tab_type = ' spaces'
+            other_type = 'tab'
+
         if (found_level < min):
             expected = min
         elif (found_level > max):
@@ -102,9 +126,17 @@ def indent_line_check(self, code_lines, line_index, indent_min = 0, indent_max =
         else:
             expected = int(found_level)
 
-        if (found_level < min or found_level > max):
+        found_msg = ''
+        if (found['tab'] > 0 and found['space'] > 0):
+            found_msg = str(found['tab']) + ' tabs and ' + str(found['space']) + ' spaces'
+        elif (found['tab'] > 0):
+            found_msg = str(found['tab']) + ' tabs'
+        else:
+            found_msg = str(found['space']) + ' spaces'
+
+        if (found_level < min or found_level > max or found[other_type] > 0):
             self.add_error(label="BLOCK_INDENTATION", line=line+1, data={
-                'expected': min * tab_size, 'found': found})
+                'expected': str(min * tab_size) + tab_type, 'found': found_msg})
 
         return expected
 
@@ -114,7 +146,7 @@ def indent_line_check(self, code_lines, line_index, indent_min = 0, indent_max =
 
     # TODO Make the check its own function.
     leading_whitespace = re.match(r'^(\t*|\s+)\S', code_lines.raw_lines[line_index])
-    indent_len = len(leading_whitespace.group()) - 1 if leading_whitespace else 0
+    indent_len = count_whitespace(leading_whitespace.group() if leading_whitespace else '')
 
     #if not isNewStatement:
     #    indent_min = indent_max = indent_min + 1
