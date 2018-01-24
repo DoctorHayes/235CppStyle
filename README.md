@@ -51,5 +51,5 @@ Currently the app supports use with both Python 2.7 and 3.6.
   `pytest`
 * To stop at first failed assertion.  
   `pytest -x`
-* Example of running a one specific test.  
-  `pytest test/regression_test.py -k test_good_operator_spacing`
+* Example of running one specific test.  
+  `pytest -k test_good_operator_spacing`
