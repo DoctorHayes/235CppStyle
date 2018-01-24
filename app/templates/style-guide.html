@@ -183,13 +183,15 @@
 				<p>Comments should be present throughout your code. They make code more readable, not only for others like your instructor but also for you.</p>
 
 				<p><em>How much and how often to comment?</em> Commenting too little is bad. Commenting too much is bad. Commenting every few lines of code (i.e., interesting blocks) that actually do something is a decent rule of thumb. Put a comment above every code block (e.g., above if statements, loops, etc.). Also, try to write comments that explain the meaning of non-obvious code and describe why you implemented a block in a certain way. Keep comments short (try to keep them to 1 line each, unless you are explaining something complex).</p>
-				<pre class="language-cpp good"><code>// convert Fahrenheit to Celsius
-double celsius = 5.0 / 9.0 * (fahr - 32.0);</code></pre>
+				<pre class="language-cpp good"><code>const double TEMP_RATIO = 5.0 / 9.0; // ratio of Celsius to Fahrenheit
 
-				<p>Place comments their own line(s), preceding whatever you are explaining, rather than after (on the same line or next line). In other words, <strong>don&rsquo;t</strong> do this:</p>
-				<pre class="language-cpp bad"><code>double celsius = 5.0 / 9.0 * (fahr - 32.0); // convert Fahrenheit to Celsius</code></pre>
-				<p>or this:</p>
-				<pre class="language-cpp bad"><code>double celsius = 5.0 / 9.0 * (fahr - 32.0);
+// convert Fahrenheit to Celsius
+double celsius = TEMP_RATIO * (fahr - 32.0);</code></pre>
+
+
+				<p>Place comments their own line(s), preceding whatever you are explaining, or on the same line (if it is very brief), but <strong>not</strong> or next line. In other words, <strong>don&rsquo;t</strong> do this:</p>
+
+				<pre class="language-cpp bad"><code>double celsius = TEMP_RATIO * (fahr - 32.0);
 // convert Fahrenheit to Celsius</code></pre>
 
 				<h3>Function Prototype Comments</h3>
@@ -206,10 +208,10 @@ double celsius = 5.0 / 9.0 * (fahr - 32.0);</code></pre>
 			<h2 id="_whitespace_and_indentation">Whitespace and Indentation</h2>
 			<div class="sectionbody">
 			<p>Use a single space between operators and their operands:</p>
-					<pre class="language-cpp good"><code>count += (a + b) * c / d + random();</code></pre>
+					<pre class="language-cpp good"><code>count += (point1 - point2) * unit / time + random();</code></pre>
 
 					<p>Certainly don&rsquo;t do this:</p>
-					<pre class="language-cpp bad"><code>count+=(a+b)*c/d+random();</code></pre>
+					<pre class="language-cpp bad"><code>count+=(point1-point2)*unit/time+random();</code></pre>
 			</ul>
 
 			<h3>Indentation</h3>
@@ -233,14 +235,15 @@ double celsius = 5.0 / 9.0 * (fahr - 32.0);</code></pre>
 			<p>Here&rsquo;s an example of well-indented code:</p>
 <pre class="language-cpp"><code>int main()
 {
-	int x = 0;
-	if (x > 0)
+	int val = 0;
+	if (val > 0)
 	{
-		cout << "x is positive." << endl;
+		cout << "The value is positive." << endl;
 	}
 	else
 	{
-		for (int i = 0; i < 3; i++)
+		// Display 3 stars
+		for (int iter = 0; iter < 3; iter++)
 		{
 			cout << "*";
 		}
@@ -252,15 +255,16 @@ double celsius = 5.0 / 9.0 * (fahr - 32.0);</code></pre>
 					<p>And here&rsquo;s an example of bad indentation:</p>
 
 <pre class="language-cpp bad"><code>int main()
-int x = 0;
+int val = 0;
 
-if (x > 0)
+if (xval > 0)
 {
-cout << "x is positive." << endl;
+cout << "The value is positive." << endl;
 }
 else
 {
-for (int i = 0; i < 3; i++)
+// Display 3 stars
+for (int iter = 0; iter < 3; iter++)
 {
 cout << "*";
 }
@@ -268,19 +272,21 @@ cout << "*";
 return 0;
 }</code></pre>
 					<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-check"></span> <b>Tip:</b>
-						Xcode will automatically re-indent selected code if you press <strong>Control-I</strong> (or choose <strong>Editor &gt; Structure &gt; Re-Indent</strong> from the file menu).
+						<strong>Visual Studio Code</strong> will automatically re-indent select code if you press <kbd>Shift + Alt + F</kbd> on Windows or <kbd>Shift + Option + F</kbd> on macOS.<br />
+						<strong>Xcode</strong> will automatically re-indent selected code if you press <kbd>Control + I</kbd> (or choose <strong>Editor &gt; Structure &gt; Re-Indent</strong> from the file menu).
 					</div>
 <h3>New Lines</h3>
 			<p>Always put a newline after a semicolon (we’ll talk about one exception to the rule when we get to for loops).</p>
 
 <p>Bad:</p>
 <pre class="language-cpp bad"><code>int age; double weight, height; string name;
-cout << "Enter your age: "; cin >> age;
+cout << "Enter your age: "; cin >> age; // Get the user's age
 </code></pre>
 
 <p>Good:</p>
 <pre class="language-cpp good"><code>int age;
 
+// Get the user's age
 cout << "Enter your age: ";
 cin >> age;
 </code></pre>
