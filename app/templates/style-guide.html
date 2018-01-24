@@ -296,14 +296,14 @@ cin >> age;
 
 				<p>Bad:</p>
 <pre class="language-cpp bad"><code>int main()
-{   cout << "Hi" << endl;
-		return 0; }</code></pre>
+{	cout << "Hi" << endl;
+	return 0; }</code></pre>
 
 				<p>Good:</p>
 <pre class="language-cpp"><code>int main()
 {
-		cout << "Hi" << endl;
-		return 0;
+	cout << "Hi" << endl;
+	return 0;
 }</code></pre>
 
 
@@ -315,8 +315,8 @@ cin >> age;
 			<pre class="language-cpp bad"><code>cout &lt;&lt; "This is a really long line " &lt;&lt; 5 * 10 / denom &lt;&lt; " and more text." &lt;&lt; endl;</code></pre>
 			<p>This is how the previous line should look:</p>
 <pre class="language-cpp"><code>cout &lt;&lt; "This is a really long line "
-		&lt;&lt; 5 * 10 / denom
-		&lt;&lt; " and more text." &lt;&lt; endl;</code></pre>
+	&lt;&lt; 5 * 10 / denom
+	&lt;&lt; " and more text." &lt;&lt; endl;</code></pre>
 
 
 			<p>Good example of a function prototype:</p>
@@ -423,21 +423,21 @@ if (n % TWO)
 			<div class="sectionbody">
 					<ul>
 						<li>
-							<p>Always use curly braces (even when not necessary) and use consistent brace style. In other words, do either this:</p>
-<pre class="language-cpp"><code>if (x > 0)
+							<p>Always use curly braces (even when not necessary) and use consistent brace style. In other words, do this:</p>
+<pre class="language-cpp"><code>if (val > 0)
 {
-	cout &lt;&lt; "x is positive." &lt;&lt; endl;
+	cout &lt;&lt; val &lt;&lt; " is positive." &lt;&lt; endl;
 }</code></pre>
 							<p>But avoid doing this:</p>
 
-<pre class="language-cpp bad"><code>if (x > 0)
-	cout &lt;&lt; "x is positive." &lt;&lt; endl;</code></pre>
+<pre class="language-cpp bad"><code>if (val > 0)
+	cout &lt;&lt; val &lt;&lt; " is positive." &lt;&lt; endl;</code></pre>
 							<div class="paragraph">
-								<p>or</p>
+								<p>and</p>
 							</div>
-<pre class="language-cpp bad"><code data-lang="c++">if (x > 0)
+<pre class="language-cpp bad"><code data-lang="c++">if (val > 0)
 	{
-	cout << "x is positive." << endl;
+	cout &lt;&lt; val &lt;&lt; " is positive." << endl;
 	}</code></pre>
 						</li>
 						<li>
