@@ -143,10 +143,3 @@ class RegressionTesting(unittest.TestCase):
             self.assertEqual(5, self.rubric.error_types['UNNECESSARY_INCLUDE'])
         else:
             pass
-
-
-    @load_code_segment('regression_indentation_group.cpp')
-    def test_regression_indentation_group(self):
-        # The input file will throw an error if there's a bug, so we don't
-        # actually need to test for anything.
-        pass

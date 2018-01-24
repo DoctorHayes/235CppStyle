@@ -3,6 +3,12 @@ using namespace std;
 
 int main() {
     int num = 0;
+
+    // Check floating-point notation
+    5.0279e-31;
+    1.020E+003;
+    5.e-31;
+
     // check compound operators
     num += 1;
     num *= 1;
@@ -17,7 +23,9 @@ int main() {
 
     // increment/decrement operators
     num++;
+    ++num;
     num--;
+    --num;
 
     // normal operators
     num + 1;

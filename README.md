@@ -47,7 +47,9 @@ Currently the app supports use with both Python 2.7 and 3.6.
 
 * Install pytest.  
   `pip install -U pytest`
-* Execute the tests.  
+* Execute all the tests.  
   `pytest`
-* To stop at first fiailed assertion.  
+* To stop at first failed assertion.  
   `pytest -x`
+* Example of running a one specific test.  
+  `pytest test/regression_test.py -k test_good_operator_spacing`

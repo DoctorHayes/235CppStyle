@@ -223,16 +223,19 @@ def check_operator_spacing(self, clean_lines):
                     data={'operator': code[operator_index:operator_index + 2]})
         elif is_cast_operator(code, operator_index):
             continue # for example: static_cast<int>(x);
+        elif is_floating_point_notation(code, operator_index):
+            continue # for example 5.0279e-31;
         elif is_unary_operator(code, operator_index):
             # Checking for unary operators (!, +, -)
             prev_index = operator_index - 1
+
             # Only check for spacing in front of unary operator
-            if code[prev_index] and code[prev_index] not in ['\t', ' ', '\r', '\n', '(']:
+            if code[prev_index] and code[prev_index] not in list('\t \r\n('):
                 self.add_error(label='OPERATOR_SPACING',
                     line = trueLoc['lineNum'],
                     column=trueLoc['col'],
                     data={'operator': code[operator_index]})
-            elif code[operator_index + 1] and code[operator_index + 1] in ['\t', ' ', '\r', '\n']:
+            elif code[operator_index + 1] and code[operator_index + 1] in list('\t \r\n('):
                 # There should be no space after a unary operator
                 self.add_error(label='OPERATOR_SPACING',
                     line = trueLoc['lineNum'],
@@ -396,6 +399,9 @@ def is_cast_operator(code, index):
 def is_pointer_arrow(code, index):
     return code[index + 1] and code[index:(index+2)] == '->'
 
+def is_floating_point_notation(code, index):
+    return index >= 2 and re.match(r'^[\d\.][Ee][\+\-]\d$', code[(index-2):(index+2)]) != None
+
 def is_compound_operator(code, index):
     if code[index + 1]:
         # Check for >=, <=, >>, <<
@@ -413,13 +419,9 @@ def is_compound_operator(code, index):
     return False
 
 def operator_helper(compound, code, index):
-    correct_spacing = True
     if compound:
-        correct_spacing = ((len(code) < index + 3) or re.match(r'\s', code[index + 2])) and \
+        return ((len(code) < index + 3) or re.match(r'\s', code[index + 2])) and \
             ((index == 0) or re.match(r'[ \t]', code[index - 1]))
     else:
-        if code[index + 1] and code[index + 1] not in [' ', '\t', '\r', '\n']:
-            correct_spacing = False
-        if code[index - 1] and code[index - 1] not in [' ', '\t']:
-            correct_spacing = False
-    return correct_spacing
+        return (not code[index + 1] or code[index + 1] in list(' \t\r\n')) and \
+            (not code[index - 1] or code[index - 1] in [' ', '\t'])
