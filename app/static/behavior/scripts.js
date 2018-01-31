@@ -1,6 +1,7 @@
-$(document).ready(function() {
+$(function() {
 	"use strict";
-	this.spinner = new Spinner({radius: 30, length: 30}).spin($("#spinner")[0]);
+	var spinnerEl = $("#spinner")[0];
+	var spinner = new Spinner({radius: 30, length: 30});
 
 	function updateForm() {
 		if ($('#code-input').val() !== undefined && $('#code-input').val() !== '') {
@@ -9,19 +10,20 @@ $(document).ready(function() {
 			$('#upload-file-btn').attr("disabled", '');
 		}
 
+		$(':checkbox:checked').prop('checked',false);
 	}
 
 	$('.code-submission').click(function(){
 		closeFeedback();
 	});
 
-	var showSpinner = function() {
-		$("#spinner").removeClass();
-	};
+	function showSpinner() {
+		spinner.spin(spinnerEl);
+	}
 
-	var hideSpinner = function() {
-		$("#spinner").addClass("hide");
-	};
+	function hideSpinner() {
+		spinner.stop();
+	}
 
 	function closeFeedback() {
 		var ul = document.getElementById("errorlist2");
@@ -63,11 +65,29 @@ $(document).ready(function() {
 
 	});
 
+	$('#agreementCheck').change(function() {
+		if(this.checked) {
+			$('#agreementDiv').removeClass('has-error has-danger');
+		}
+		else
+		{
+			$('#agreementDiv').addClass('has-error has-danger');
+		}
+	});
+
 	$('#code-input').on("change", function(){
 		updateForm();
 	});
 
 	$('#upload-file-btn').click(function() {
+		var checkbox = $('#agreementCheck');
+		if (!checkbox.is(':checked'))
+		{
+			//checkbox.addClass('is-invalid');
+			$('#agreementDiv').addClass('has-error has-danger');
+			return;
+		}
+
 		showSpinner();
 		var form_data = new FormData($('#upload-file')[0]);
 

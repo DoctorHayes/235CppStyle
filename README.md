@@ -38,7 +38,7 @@ Currently the app supports use with both Python 2.7 and 3.6.
 
 * Run the application in debug mode (in Linux)  
   ```shell
-  export FLASK_APP=main.py
+  export FLASK_APP=run.py
   export FLASK_DEBUG=1
   python -m flask run
   ```
