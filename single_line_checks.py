@@ -153,8 +153,9 @@ def check_first_char(self, code):
     # Make sure the first letter of non-const variable names are lowercase.
     uppercase = re.compile(r'(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto)[\*\&\s]+(?:[\w\d_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\(\)\{;=]')
     bad_naming = uppercase.search(code)
+    uppercase_unsigned = re.compile(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:bool|char|short|long|int|float|double)[\*\&\s]+(?:[\w\d_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\(\)\{;=]')
 
-    if bad_naming:
+    if bad_naming and not uppercase_unsigned.search(code):
         result = bad_naming.group(1)
 
         # Create an expected constant name where underscores are converted to camel case
@@ -184,12 +185,17 @@ def check_first_char(self, code):
             print("Something weird happened in check_first_char with '", code, "'.")
             return
         return
+
     # Make sure const variables are all caps
     if not check_if_function_prototype(code) and not check_if_function(code):
         const_var = re.compile(r"(?:^|\s+)const\s+(?:void|bool|char|short|long|int|float|double|string|std::string|auto)\s*[\*\&]*\s*(?:[\w]|_)\w+")
         const_var = const_var.search(code)
-        if const_var:
-            const_var = str(const_var.group(0).split()[2])
+        unsigned_const_var = re.search(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:char|short|long|long\s+long|int)\s*[\*\&]*\s*(?:[\w]|_)\w+', code)
+        if const_var or unsigned_const_var:
+            if const_var:
+                const_var = str(const_var.group(0).split()[2])
+            else:
+                const_var = str(unsigned_const_var.group(0).split()[-1])
 
             # Create an expected constant name where camel case is converted to all caps with underscores
             expected = ''

@@ -79,6 +79,11 @@ int main ()
 	constval test;
 	auto Bad_Name2 = 3;
 
+	string Name;
+	const string name;
+	const int max = 2;
+	//const unsigned int seed = static_cast<unsigned int>(time(nullptr));
+
 	return 0;
 }
 

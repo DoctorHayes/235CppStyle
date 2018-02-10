@@ -11,4 +11,3 @@ struct _smallClassStruct {};
 struct _____ {};
 
 class ______ {};
-
