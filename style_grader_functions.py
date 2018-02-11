@@ -1,7 +1,7 @@
 import getopt
 import re
 
-from pyparsing import Literal, Word, Optional, ParseException, alphanums, Keyword, srange, alphas, NotAny
+from pyparsing import Forward, Group, Suppress, Literal, Word, Optional, ParseException, alphanums, Keyword, srange, alphas, NotAny, delimitedList, ParseResults
 
 class EmptyFileException(object):
     pass
@@ -59,13 +59,39 @@ def get_tab_type(code_lines):
 
     return max(set(results), key=results.count) if len(results) > 0 else '\t'
 
+# Not currently used, but will be very useful for operator spacing
+def parse_template_expression(input: str):
+    '''
+    reads template expression like std::shared_ptr<std::vector<std::map<std::string, int>>>
+    >>> parse_template_expression("std::map<std::string, int>")
+    ('std::map', ('std::string', 'int'))
+    https://gist.github.com/fHachenberg/6cb2a44a904cd62934ef0825660bdc67
+    '''
+
+    cpp_name = Word(alphanums + "_:")
+    open_bracket  = Literal("<")
+    close_bracket = Literal(">")
+
+    expr = Forward()
+    expr << cpp_name + Optional(Group(Suppress(open_bracket) + delimitedList(expr) + Suppress(close_bracket)))
+
+    result = expr.parseString(input, parseAll=True)
+    def rec_mktpl(lst):
+        if isinstance(lst, ParseResults):
+            return tuple([rec_mktpl(l) for l in lst])
+        else:
+            return lst
+    return rec_mktpl(result)
+
 def check_if_function(code):
+    identifier = Word(alphas + '_', alphanums + '_:')
     return_type = Word(alphas + '_', alphanums + '_&*') # Bad style to have "_" but syntactically valid
-    function_name = Word(alphas + '_', alphanums + '_:><')
+    function_name = Word(alphas + '_', alphanums + '_:')
+    template = Optional(Group(Suppress(Literal("<")) + identifier + Suppress(Literal(">"))))
     args = Word(alphas + '_', alphanums + ',_[]&*<> ')
     function_open = Literal("{")
     function_close = Literal("}")
-    function_declaration = Optional(srange("[a-z]")) + return_type + function_name + "(" + Optional(args) + Optional(Word(' const'))
+    function_declaration = Optional(srange("[a-z]")) + return_type + function_name + Optional(template) + "(" + Optional(args) + Optional(Word(' const'))
     grammar = function_declaration + Optional(function_open)
     results = grammar.searchString(code)
     if len(results) and 'new' not in (results[0]).asList():

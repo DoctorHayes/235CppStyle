@@ -1,6 +1,6 @@
 from cpplint import GetPreviousNonBlankLine
 from style_grader_classes import DataStructureTracker
-from style_grader_functions import check_if_function, check_if_function_prototype, indent_helper, check_if_struct_or_class, check_if_switch_statement, check_if_cout_block, get_tab_type
+from style_grader_functions import check_if_function, check_if_function_prototype, parse_template_expression, indent_helper, check_if_struct_or_class, check_if_switch_statement, check_if_cout_block, get_tab_type
 from pyparsing import Literal
 from check_indentation_helper import validate_statement_indentation
 import re
@@ -388,13 +388,14 @@ def is_unary_operator(code, index):
         (code[index] == '!' and code[index + 1] != '=') or \
         re.search(r'[\(\+\-\*\%<>=\&\|\!]\s*[\-\+]$', code[:index + 1]) is not None  or \
         re.match(r'\s*[\+\-]$', code[:index + 1]) is not None or \
-        re.search(r'[\t {}):;^](return|case)\s+[\-\+]$', code[:index + 1]) is not None)
+        re.search(r'[\s{}):;^](return|case)\s+[\-\+\&\*]$', code[:index + 1]) is not None or \
+        re.search(r'(=\s|[,\(\{;])\s*[\&\*]$', code[:index + 1]) is not None)
 
 def is_cast_operator(code, index):
-    # TODO: What about multiple case operations on the same line?
-    check = re.search('(?:const|dynamic|reinterpret|static)_cast\s*(<)\s*[_\w][_\w\d:]*\s*(>)', code)
-    return check and (check.span(1)[0] == index or check.span(2)[0] == index)
-
+    indexes = [(m.start(1), m.start(2)) for m in \
+        re.finditer(r'(?:const|dynamic|reinterpret|static)_cast\s*(<)\s*(?:signed\s+|unsigned\s+)?[_\w][_\w\d:]*\s*[\*\&]?\s*(>)', code)]
+    indexes = [item for items in indexes for item in items] # flatten list of list
+    return index in indexes
 
 def is_pointer_arrow(code, index):
     return code[index + 1] and code[index:(index+2)] == '->'

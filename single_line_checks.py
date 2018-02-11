@@ -188,12 +188,12 @@ def check_first_char(self, code):
 
     # Make sure const variables are all caps
     if not check_if_function_prototype(code) and not check_if_function(code):
-        const_var = re.compile(r"(?:^|\s+)const\s+(?:void|bool|char|short|long|int|float|double|string|std::string|auto)\s*[\*\&]*\s*(?:[\w]|_)\w+")
+        const_var = re.compile(r"(?:^|\s+)const\s+(?:void|bool|char|short|long|int|float|double|string|std::string|auto)\s*[\*\&\s]*\s*(?:[\w]|_)\w+")
         const_var = const_var.search(code)
-        unsigned_const_var = re.search(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:char|short|long|long\s+long|int)\s*[\*\&]*\s*(?:[\w]|_)\w+', code)
+        unsigned_const_var = re.search(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:char|short|long|long\s+long|int)\s*[\*\&\s]*\s*(?:[\w]|_)\w+', code)
         if const_var or unsigned_const_var:
             if const_var:
-                const_var = str(const_var.group(0).split()[2])
+                const_var = str(const_var.group(0).split()[-1])
             else:
                 const_var = str(unsigned_const_var.group(0).split()[-1])
 

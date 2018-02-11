@@ -42,7 +42,7 @@ int main() {
     (-num);
     1 + -num;
     num - -num;
-    num && -num
+    num && -num;
     num = -num;
     num /= -num;
     num % +2;
@@ -55,6 +55,21 @@ int main() {
     static_cast<int>(4.9);
     dynamic_cast<double>(num);
     static_cast<std::string>("test");
+    static_cast<unsigned int>(time(nullptr));
+    dynamic_cast<double>(num) + static_cast<double>(num);
+    static_cast<unsigned int>(static_cast<char>(2));
+
+    //// Pointers and references are not handled properly yet
+    //// Here are some test examples to fix in the future.
+    // union Un {
+    //     int aa;
+    //     double bb;
+    // };
+    // Un un;
+    // void* xx = &un;                        // xx's value is "pointer to un"
+    //double* yy = static_cast<double* >(xx); // yy's value points to un.bb
+    // char* zz = static_cast<char*>(xx);     // zz's value is "pointer to un"
+
 
     num = (10 + num)
         * 2;
@@ -63,8 +78,7 @@ int main() {
         << num << ""
         << num << '.' << endl;
 
-    switch(num % 2)
-    {
+    switch(num % 2) {
         case 0:
             cout << "even";
             break;
