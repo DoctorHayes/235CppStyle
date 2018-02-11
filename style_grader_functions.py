@@ -60,7 +60,7 @@ def get_tab_type(code_lines):
     return max(set(results), key=results.count) if len(results) > 0 else '\t'
 
 # Not currently used, but will be very useful for operator spacing
-def parse_template_expression(input: str):
+def parse_template_expression(input):
     '''
     reads template expression like std::shared_ptr<std::vector<std::map<std::string, int>>>
     >>> parse_template_expression("std::map<std::string, int>")
