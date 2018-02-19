@@ -26,7 +26,13 @@ def check_function_def_above_main(self, clean_lines):
     if function and not prototype and self.outside_main:
         # pattern for return type (with or with ::) and function name (with or without ::)
         match = re.search(r"^\s*(?:\w+\s*\:\:\s*)*([\w_]+)\s+([\w\d_]+::)*([\w_][\w_\d]*)\s*\(", code)
-        function_name = str(match.group(2)) + match.group(3) + '()' if match else code # show whole line if function name isn't found
+
+        function_name = code # show whole line if function name isn't found
+        if match:
+            function_name = match.group(3) + '()'
+            if match.group(2) is not None:
+                function_name = match.group(2) + function_name
+
         self.add_error(label="DEFINITION_ABOVE_MAIN", data={'function': function_name})
 
 def check_statements_per_line(self, clean_lines):
