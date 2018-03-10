@@ -538,16 +538,17 @@ else
 					<li>
 						<p>Use a <code>for</code> loop when the number of repetitions is known (definite); use a <code>while</code> loop when the number of repetitions is unknown (indefinite).</p>
 <pre class="language-cpp good"><code>// repeat exactly size times
-for (int i = 0; i < size; i++)
+for (int iter = 0; iter < size; iter++)
 {
 	// do something
 }
 
 // repeat until there are no more lines
-string str;
-while (cin >> str)
+double value;
+cin &gt;&gt; value;
+while (!cin)
 {
-	// do something
+	// Handle input error and get next input here.
 }</code></pre>
 					</li>
 				</ul>
