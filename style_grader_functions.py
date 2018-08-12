@@ -338,7 +338,7 @@ def check_if_struct_or_class(code):
     return False
 
 def print_success():
-    print('No errors found')
+    print('No code-quality issues detected!')
 
 def erase_string(code):
     # remove contents of literal strings
