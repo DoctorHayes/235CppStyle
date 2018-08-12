@@ -35,7 +35,7 @@ class StyleError(object):
     def __str__(self):
         output_str = ''
         if self.get_line_number():
-            output_str += str(self.get_line_number())
+            output_str += '{:>3}'.format(self.get_line_number())
             if self.get_column_number():
                 output_str += ':' + str(self.get_column_number())
             output_str += '  '

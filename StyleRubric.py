@@ -236,26 +236,36 @@ class StyleRubric(object):
                 self.error_types.pop(error_type, None)
         self.error_tracker[filename] = new_error_list
 
-    def print_errors(self, error_list):
+    # Creates an array that contains the error messages for each file.
+    def get_error_summary(self, error_list = []):
         for filename, errors in self.error_tracker.items():
             error_dictionary = {
                 'filename': filename.split('/')[-1],
                 'errors': []
             }
 
-            print('Analyzing {}...'.format(filename.split('/')[-1]))
-            if len(errors) == 0:
-                 print_success()
             for error in errors:
                 location = ''
                 if error.get_line_number():
-                    print(error)
                     location = str(error.get_line_number())
                     if error.get_column_number():
                         location += ':' + str(error.get_column_number())
                 error_dictionary['errors'].append({'location': location, 'message': error.get_message()})
 
             error_list.append(error_dictionary)
-            print('')
 
         return error_list
+
+    def print_errors(self, error_list = []):
+        for filename, errors in self.error_tracker.items():
+
+            print('Code-Quality Report for \'{}\''.format(filename.split('/')[-1]))
+            if len(errors) == 0:
+                 print_success()
+            for error in errors:
+                if error.get_line_number():
+                    print(error)
+
+            print('')
+
+        return self.get_error_summary(error_list)
