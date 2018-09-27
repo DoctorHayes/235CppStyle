@@ -11,7 +11,7 @@ from copy import deepcopy
 from glob import glob
 import re
 from cpplint import CleansedLines, RemoveMultiLineComments
-from style_grader_functions import check_if_function, print_success, get_soft_tab_length
+from style_grader_functions import check_if_function, check_if_function_prototype, print_success, get_soft_tab_length
 from style_grader_classes import SpacingTracker
 from StyleError import StyleError
 import filename_checks
@@ -153,6 +153,9 @@ class StyleRubric(object):
                 if check_if_function(text):
                     if self.config.get('COMMENT_CHECKS', 'missing_rme').lower() == 'yes':
                         getattr(comment_checks, 'check_missing_rme')(self, raw_data)
+                if check_if_function_prototype(text):
+                    if self.config.get('COMMENT_CHECKS', 'missing_prototype_comments').lower() == 'yes':
+                        getattr(comment_checks, 'check_missing_prototype_comments')(self, clean_lines.lines_without_raw_strings)
                 if self.config.get('COMMENT_CHECKS', 'min_comments').lower() == 'yes':
                     getattr(comment_checks, 'check_min_comments')(self, raw_data, clean_code)
             for function in self.misc_checks: function(self)

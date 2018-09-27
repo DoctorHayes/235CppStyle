@@ -41,6 +41,17 @@ def check_missing_rme(self, lines):
         elif function_signature not in self.all_rme[self.current_file]:
             self.all_rme[self.current_file].add(function_signature)
 
+def check_missing_prototype_comments(self, lines):
+    function = Word(alphanums + '_')
+    function_syntax = function + Literal('(')
+    parsed = function_syntax.searchString(lines[self.current_line_num]).asList()
+    function_name = parsed[0][0]
+    #function_signature = lines[self.current_line_num].strip().replace(';','').strip()
+
+    if lines[self.current_line_num - 1] != '/**/' and not re.search(r'^\s*//', lines[self.current_line_num - 1]):
+        self.add_error("MISSING_PROTOTYPE_COMMENTS", data={'function': function_name})
+        #print( lines[(self.current_line_num - 1) : (self.current_line_num + 1)] )
+
 def check_min_comments(self, all_lines, clean_lines):
     num_lines = len(all_lines) + 1
     num_comments = 0
