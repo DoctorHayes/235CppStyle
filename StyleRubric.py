@@ -146,6 +146,7 @@ class StyleRubric(object):
 
                 for function in self.single_line_checks: function(self, code)
                 for function in self.multi_line_checks: function(self, clean_lines)
+
             # COMMENT CHECKS #TODO
             for self.current_line_num, text in enumerate(raw_data):
                 if self.config.get('COMMENT_CHECKS', 'line_width').lower() == 'yes':
@@ -158,6 +159,7 @@ class StyleRubric(object):
                         getattr(comment_checks, 'check_missing_prototype_comments')(self, clean_lines.lines_without_raw_strings)
                 if self.config.get('COMMENT_CHECKS', 'min_comments').lower() == 'yes':
                     getattr(comment_checks, 'check_min_comments')(self, raw_data, clean_code)
+
             for function in self.misc_checks: function(self)
 
             # Run checks directly from cpplint
@@ -211,7 +213,7 @@ class StyleRubric(object):
 
         # Parse output from cpplint
         for line in output_string.splitlines():
-            result = re.search(filename + '\:(\d+)\:\s+(.*)', line)
+            result = re.search(filename + r'\:(\d+)\:\s+(.*)', line)
             if result:
                 line_num = int(result.group(1))
                 self.add_error(label="CPPLINT_ERROR", line=line_num, data={'message': self.html_escape(result.group(2))})

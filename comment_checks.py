@@ -45,7 +45,10 @@ def check_missing_prototype_comments(self, lines):
     function = Word(alphanums + '_')
     function_syntax = function + Literal('(')
     parsed = function_syntax.searchString(lines[self.current_line_num]).asList()
-    function_name = parsed[0][0]
+    if (len(parsed) > 0):
+        function_name = parsed[0][0]
+    else:
+        return # This must not be a prototype, because the stringSearch failed
     #function_signature = lines[self.current_line_num].strip().replace(';','').strip()
 
     if lines[self.current_line_num - 1] != '/**/' and not re.search(r'^\s*//', lines[self.current_line_num - 1]):
