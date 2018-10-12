@@ -51,9 +51,25 @@ def check_missing_prototype_comments(self, lines):
         return # This must not be a prototype, because the stringSearch failed
     #function_signature = lines[self.current_line_num].strip().replace(';','').strip()
 
-    if lines[self.current_line_num - 1] != '/**/' and not re.search(r'^\s*//', lines[self.current_line_num - 1]):
+    if self.current_line_num != 0 and lines[self.current_line_num - 1] != '/**/' and not re.search(r'^\s*//', lines[self.current_line_num - 1]):
         self.add_error("MISSING_PROTOTYPE_COMMENTS", data={'function': function_name})
         #print( lines[(self.current_line_num - 1) : (self.current_line_num + 1)] )
+
+def check_missing_type_comments(self, lines):
+    type = re.search(r"\b(class|struct|enum)(\s+struct|\s+class)*\s+([\w_][\w_\d)]*)\b",
+        lines[self.current_line_num])
+
+    if (type and (self.current_line_num != 0 and \
+        lines[self.current_line_num - 1] != '/**/' and \
+        not re.search(r'^\s*//', lines[self.current_line_num - 1]))):
+
+        type_name = type.group(0).split()
+        keyword = type_name[0]
+        name = type_name[-1]
+
+        self.add_error("MISSING_TYPE_COMMENT", data={'name': name, 'keyword': keyword})
+        #print( lines[(self.current_line_num - 1) : (self.current_line_num + 1)] )
+
 
 def check_min_comments(self, all_lines, clean_lines):
     num_lines = len(all_lines) + 1

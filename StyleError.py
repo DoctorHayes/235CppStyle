@@ -112,6 +112,7 @@ class StyleError(object):
             "POINTER_REFERENCE_CONSISTENCY": "Your use of spacing surrounding '*' and '&' is inconsistent.",
             "MISSING_RME": "{} is missing a complete RME.".format(self.get_data().get("function")),
             "MISSING_PROTOTYPE_COMMENTS": "{}() needs a comment directly preceding the prototype that describes what the function does.".format(self.get_data().get("function")),
+            "MISSING_TYPE_COMMENT": " {} needs a comment directly preceding it that describes this {}.".format(self.get_data().get("name"), self.get_data().get("keyword")),
             "MIN_COMMENTS": "Potentially too few comments. Found {} {} of comments in {} {} of code.".format(self.get_data().get("comments"),
                                                                                                             'line' if self.get_data().get("comments") == 1 else 'lines',
                                                                                                             self.get_data().get("lines"),

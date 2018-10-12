@@ -8,13 +8,13 @@ import re
 
 def check_int_for_bool(self, code):
     if check_if_function(code):
-        function_regex = re.compile("^\s*(\w+)\s+(\w+)")
+        function_regex = re.compile(r"^\s*(\w+)\s+(\w+)")
         match = function_regex.search(code)
         if match:
             self.current_function = (match.group(1), match.group(2))
     current_function = getattr(self, "current_function", ("", ""))
 
-    return_regex = re.compile("\s*return\s+(\w+)")
+    return_regex = re.compile(r"\s*return\s+(\w+)")
     match = return_regex.search(code)
     if match and match.group(1).isdigit() and current_function[0] == "bool":
         self.add_error(label="INT_FOR_BOOL")
@@ -27,14 +27,14 @@ def check_equals_true(self, code):
 
 def check_float_type(self, code):
     # ToDo: Ignores #include<cfloat>, but should find static_cast<float>().
-    floatPattern = re.compile('(?:^|[\s,;\(])float[\s\*&]')
+    floatPattern = re.compile(r'(?:^|[\s,;\(])float[\s\*&]')
     for match in floatPattern.finditer(code):
         self.add_error(label="FLOAT_TYPE", column=match.span()[0]+1)
 
 def check_goto(self, code):
     # Hacky but gets the job done for now - has holes though
-    q_goto = re.compile('\".*goto.*\"')
-    r_goto = re.compile('(?:\s+|^|\{)goto\s+')
+    q_goto = re.compile(r'\".*goto.*\"')
+    r_goto = re.compile(r'(?:\s+|^|\{)goto\s+')
     if r_goto.search(code) and not q_goto.search(code):
         self.add_error(label="GOTO")
 
@@ -44,8 +44,8 @@ def check_define_statement(self, code):
     if self.allow_define_in_header and re.search(r'\.h$', self.current_file):
         return
 
-    q_define = re.compile('\".*(?:\s+|^)#\s*define\s+.*\"')
-    r_define = re.compile('(?:\s+|^)#\s*define\s+')
+    q_define = re.compile(r'\".*(?:\s+|^)#\s*define\s+.*\"')
+    r_define = re.compile(r'(?:\s+|^)#\s*define\s+')
     if r_define.search(code) and not q_define.search(code):
         words = code.split()
         # They shouldn't be using __MY_HEADER_H__ because __-names are
@@ -57,15 +57,15 @@ def check_define_statement(self, code):
 
 def check_continue(self, code):
     # Hacky but gets the job done for now - has holes though
-    q_continue = re.compile('\".*continue.*\"')
-    r_continue = re.compile('(?:\s+|^|\{)continue\s*;')
+    q_continue = re.compile(r'\".*continue.*\"')
+    r_continue = re.compile(r'(?:\s+|^|\{)continue\s*;')
     if r_continue.search(code) and not q_continue.search(code):
         self.add_error(label="CONTINUE_STATEMENT")
 
 
 def check_ternary_operator(self, code):
-    q_ternary = re.compile('\".*\?.*\"')
-    r_ternary = re.compile('\?')
+    q_ternary = re.compile(r'\".*\?.*\"')
+    r_ternary = re.compile(r'\?')
     if r_ternary.search(code) and not q_ternary.search(code):
         self.add_error(label="TERNARY_OPERATOR")
 
@@ -85,9 +85,9 @@ def check_non_const_global(self, code):
 
     elif self.outside_main:
         function = check_if_function(code)
-        variables = variables = re.compile("^(?:\w|_)+\s+(?:\w|_|\[|\])+\s*=\s*.+;")
-        keywords = re.compile("^\s*(?:using|class|struct)")
-        constants = re.compile("^\s*(?:static\s+)?const")
+        variables = variables = re.compile(r"^(?:\w|_)+\s+(?:\w|_|\[|\])+\s*=\s*.+;")
+        keywords = re.compile(r"^\s*(?:using|class|struct)")
+        constants = re.compile(r"^\s*(?:static\s+)?const")
         if not function and variables.search(code) and \
                 not keywords.search(code) and \
                 not constants.search(code):
@@ -132,7 +132,7 @@ def check_first_char(self, code):
         return
 
     # check if the first char is lower-case alpha or '_'
-    lowercase = re.compile("(?:^|\s+)(?:class|struct|enum)\s+(?:[a-z]|_)\w*")
+    lowercase = re.compile(r"(?:^|\s+)(?:class|struct|enum)\s+(?:[a-z]|_)\w*")
     bad_naming = lowercase.search(code)
 
     if bad_naming:
