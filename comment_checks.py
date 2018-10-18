@@ -56,8 +56,9 @@ def check_missing_prototype_comments(self, lines):
         #print( lines[(self.current_line_num - 1) : (self.current_line_num + 1)] )
 
 def check_missing_type_comments(self, lines):
+    current_line = remove_single_line_comment_content(lines[self.current_line_num])
     type = re.search(r"\b(class|struct|enum)(\s+struct|\s+class)*\s+([\w_][\w_\d)]*)\b",
-        lines[self.current_line_num])
+        current_line)
 
     if (type and (self.current_line_num != 0 and \
         lines[self.current_line_num - 1] != '/**/' and \
@@ -69,7 +70,6 @@ def check_missing_type_comments(self, lines):
 
         self.add_error("MISSING_TYPE_COMMENT", data={'name': name, 'keyword': keyword})
         #print( lines[(self.current_line_num - 1) : (self.current_line_num + 1)] )
-
 
 def check_min_comments(self, all_lines, clean_lines):
     num_lines = len(all_lines) + 1
@@ -85,3 +85,8 @@ def check_min_comments(self, all_lines, clean_lines):
     num_lines -= (blank_lines_at_end + 1)
     if num_comments < num_lines * self.min_comments_ratio:
         self.add_error(label='MIN_COMMENTS', line=0, type="WARNING", data={'comments': num_comments, 'lines': num_lines})
+
+# Keeps the //, but removes everything after that on a line
+def remove_single_line_comment_content(code):
+    #print (re.sub(r'(?<=//)[^\n]*\n', '', code))
+    return (re.sub(r'(?<=//)[^\n]*\n', '', code))
