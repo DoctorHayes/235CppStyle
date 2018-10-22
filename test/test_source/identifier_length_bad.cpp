@@ -1,3 +1,6 @@
+#include <string>
+using namespace std;
+
 for (int i = 0; i < 2; ++i)
 		cout << i << endl;
 int prototype(double foo, long int *h);
@@ -11,6 +14,10 @@ int main ()
 	int a[];
 	bool d;
 	int* p = nullptr;
+	{
+		string::size_type i;
+		std::string::size_type t;
+	}
 
 	char c='c'; // this error will be detected after spacing is fixed;
 	int val = x; // x is bad, but the error goes with the declaration.

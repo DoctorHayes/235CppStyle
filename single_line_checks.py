@@ -112,7 +112,7 @@ def check_identifier_length(self, code):
         return
 
     # check for any parameter or variable declaration that is a type followed by 1 or more identifiers
-    declaration_check = re.compile(r'(?:^|\s+|\(|\{)(?:class|struct|enum|void|bool|char|short|long|int|float|double|string|std::string|auto)[\*&\s]+([\w_][\w\d_]*[\[;,\s\(\)\*\&$]+)+')
+    declaration_check = re.compile(r'(?:^|\s+|\(|\{)(?:class|struct|enum|void|bool|char|short|long|int|float|double|string|std::string|string::size_type|std::string::size_type|auto)[\*&\s]+([\w_][\w\d_]*[\[;,\s\(\)\*\&$]+)+')
     declaration_match = declaration_check.search(code)
 
     if declaration_match:

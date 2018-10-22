@@ -127,8 +127,8 @@ class RegressionTesting(unittest.TestCase):
     def test_identifier_case_bad(self): self.assertEqual(27, self.rubric.error_types['FIRST_CHAR'])
     @load_code_segment('identifier_length_bad.cpp')
     def test_check_identifier_length(self):
-        self.assertEqual(10, self.rubric.error_types['IDENTIFIER_LENGTH'])
-        self.assertEqual(1, self.rubric.error_types['IDENTIFIER_I'])
+        self.assertEqual(11, self.rubric.error_types['IDENTIFIER_LENGTH'])
+        self.assertEqual(2, self.rubric.error_types['IDENTIFIER_I'])
 
     @load_code_segment('system_call_bad.cpp')
     def test_bad_system_call(self): self.assertEqual(1, self.rubric.error_types['SYSTEM_CALL'])
