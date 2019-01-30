@@ -78,6 +78,8 @@ int main ()
 	const short noGood;
 	constval test;
 	auto Bad_Name2 = 3;
+	ifstream BadIStream;
+	ofstream BadOStream;
 
 	string Name;
 	const string name;
