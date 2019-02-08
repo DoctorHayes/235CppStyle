@@ -50,6 +50,11 @@ int main() {
     if (num < 0)
         return -1;
 
+    if (!(true))
+        ;
+    -(1 + 10);
+    +(1 + 10);
+
     strPtr->name;
 
     static_cast<int>(4.9);

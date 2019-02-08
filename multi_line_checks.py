@@ -241,7 +241,7 @@ def check_operator_spacing(self, clean_lines):
                     line = trueLoc['lineNum'],
                     column=trueLoc['col'],
                     data={'operator': code[operator_index]})
-            elif code[operator_index + 1] and code[operator_index + 1] in list('\t \r\n('):
+            elif code[operator_index + 1] and code[operator_index + 1] in list('\t \r\n'):
                 # There should be no space after a unary operator
                 self.add_error(label='OPERATOR_SPACING',
                     line = trueLoc['lineNum'],
