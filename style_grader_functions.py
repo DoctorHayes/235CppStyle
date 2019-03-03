@@ -110,10 +110,8 @@ def check_if_function_prototype(code):
 
     results = grammar.searchString(code)
 
-    # should not be preceded by the keyword 'new'
-    if len(results) and 'new' not in (results[0]).asList():
-        return True
-    return False
+    # should not be preceded by the keyword 'new' or 'return'
+    return len(results) and not set(['new', 'return']).intersection((results[0]).asList())
 
 def check_if_switch_statement(code):
     statement = Keyword('switch')

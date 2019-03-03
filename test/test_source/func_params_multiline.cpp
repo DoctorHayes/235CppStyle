@@ -31,5 +31,5 @@ void myfunc(int *x, char &y, bool arr[]) {
 }
 
 void myfunc(int x, char y, bool z) {
-
+    return myfunc(x, y, z);
 }
