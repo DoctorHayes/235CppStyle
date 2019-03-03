@@ -161,7 +161,8 @@ class StyleRubric(object):
                     getattr(comment_checks, 'check_min_comments')(self, raw_data, clean_code)
                 if self.config.get('COMMENT_CHECKS', 'missing_type_comments').lower() == 'yes':
                     getattr(comment_checks, 'check_missing_type_comments')(self, clean_lines.lines_without_raw_strings)
-
+                if self.config.get('COMMENT_CHECKS', 'comment_spacing').lower() == 'yes':
+                   getattr(comment_checks, 'check_comment_spacing')(self, clean_lines.lines_without_raw_strings)
             for function in self.misc_checks: function(self)
 
             # Run checks directly from cpplint

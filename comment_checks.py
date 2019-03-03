@@ -51,9 +51,37 @@ def check_missing_prototype_comments(self, lines):
         return # This must not be a prototype, because the stringSearch failed
     #function_signature = lines[self.current_line_num].strip().replace(';','').strip()
 
-    if self.current_line_num != 0 and lines[self.current_line_num - 1] != '/**/' and not re.search(r'^\s*//', lines[self.current_line_num - 1]):
+    comment_line = self.current_line_num - 1
+    if self.current_line_num != 0 and lines[comment_line] != '/**/' and not re.search(r'^\s*//', lines[comment_line]):
         self.add_error("MISSING_PROTOTYPE_COMMENTS", data={'function': function_name})
         #print( lines[(self.current_line_num - 1) : (self.current_line_num + 1)] )
+
+def check_comment_spacing(self, lines):
+    comment_line = self.current_line_num
+    prev_line = comment_line - 1
+
+    if self.current_line_num == 0 or (lines[comment_line] != '/**/' and not re.search(r'^\s*//', lines[comment_line])):
+        return
+
+    # Check that there is a blank link above a comment.
+    if (lines[prev_line] != '/**/' and not re.search(r'^\s*//', lines[prev_line]) and \
+        not re.search(r'[\}\{]\s*$', lines[prev_line]) and \
+        (not lines[prev_line].isspace() and lines[prev_line])):
+            # Add 1 to line number because indexes start with 0
+            self.add_error("MISSING_COMMENT_SEPERATION", line = comment_line + 1)
+
+    # Check if there is a blank line below a comment.
+    next_line = comment_line + 1
+    if (len(lines) < next_line and (lines[next_line].isspace() or not lines[next_line])):
+        # Make sure this is not the top comment
+        while prev_line > 0 and (lines[prev_line] == '/**/' or re.search(r'^\s*//', lines[prev_line])):
+            prev_line = prev_line - 1
+            #print(prev_line, ": ", lines[prev_line])
+
+        if prev_line > 0:
+            self.add_error("EXTRA_COMMENT_SEPERATION", line = comment_line + 1)
+            #print("Line ", next_line, ": ", lines[next_line])
+
 
 def check_missing_type_comments(self, lines):
     current_line = remove_single_line_comment_content(lines[self.current_line_num])

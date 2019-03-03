@@ -110,6 +110,8 @@ class StyleError(object):
             "IDENTIFIER_I": "Rename variable 'i' to be 'index' or 'iter'. 'i' is a commonly used loop variable. However, our coding style prohibits the use of single-letter identifiers.",
             "OPERATOR_CONSISTENCY": "Your spacing around operators is inconsistent. Pick left, right or both for spacing and stick to it.",
             "POINTER_REFERENCE_CONSISTENCY": "Your use of spacing surrounding '*' and '&' is inconsistent.",
+            "MISSING_COMMENT_SEPERATION": "Put a blank line above this comment so that it clearly pairs up with the code that it describes.",
+            "EXTRA_COMMENT_SEPERATION": "Don't put a blank line below this comment. It should clearly pair up with the code below.",
             "MISSING_RME": "{} is missing a complete RME.".format(self.get_data().get("function")),
             "MISSING_PROTOTYPE_COMMENTS": "{}() needs a comment directly preceding the prototype that describes what the function does.".format(self.get_data().get("function")),
             "MISSING_TYPE_COMMENT": " {} needs a comment directly preceding it that describes this {}.".format(self.get_data().get("name"), self.get_data().get("keyword")),

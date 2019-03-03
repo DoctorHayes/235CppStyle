@@ -39,6 +39,11 @@ class RegressionTesting(unittest.TestCase):
     def test_define_bad(self): self.assertEqual(2, self.rubric.error_types['DEFINE_STATEMENT'])
     @load_code_segment('ternary_good.cpp')
     def test_ternary_good(self): self.assertEqual(0, self.rubric.error_types['TERNARY_OPERATOR'])
+    @load_code_segment('func_params_multiline.cpp')
+    def test_prototype_comment_bad(self):
+        self.assertEqual(0, self.rubric.error_types['MISSING_PROTOTYPE_COMMENTS'])
+        self.assertEqual(1, self.rubric.error_types['MISSING_COMMENT_SEPERATION'])
+
 
     @load_code_segment('ternary_bad.cpp')
     def test_ternary_bad(self):
@@ -59,7 +64,7 @@ class RegressionTesting(unittest.TestCase):
     #@load_code_segment('global_good.cpp')
     #def test_global_good(self): self.assertEqual(0, self.rubric.error_types['NON_CONST_GLOBAL'])
     #@load_code_segment('global_bad.cpp')
-    #def test_global_bad(self): self.assertEqual(3, self.rubric.error_types['NON_CONST_GLOBAL'])
+    #def test_global_bad(self): self.assertEqual(13, self.rubric.error_types['NON_CONST_GLOBAL'])
     @load_code_segment('main_good.cpp')
     def test_main_good(self): self.assertEqual(0, self.rubric.error_types['MAIN_SYNTAX'])
     @load_code_segment('main_bad.cpp')

@@ -19,7 +19,7 @@ void myfunc2(int *x,char &y,bool arr[]);
 void otherfunc(int x,
     char y,
     bool z);
-
+// This comment should have a blank line above it.
 bool onMoreFun();
 
 int main() {
