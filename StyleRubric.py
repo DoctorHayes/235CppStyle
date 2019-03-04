@@ -112,7 +112,7 @@ class StyleRubric(object):
         self.all_rme[filename] = set()
         self.missing_rme[filename] = set()
         self.local_includes[filename] = list()
-        self.current_file_indentation = get_soft_tab_length(open(filename, 'rU'))
+        self.current_file_indentation = get_soft_tab_length(open(filename, 'r'))
 
     def add_error(self, label=None, line=-1, column=0, type='ERROR', data=dict()):
         self.total_errors += 1

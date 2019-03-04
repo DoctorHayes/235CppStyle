@@ -1,13 +1,7 @@
-Flask-WTF
-Jinja2
+Flask
 Werkzeug
-blinker
-decorator
-flup6
 gunicorn
 configparser
-cov-core
-coverage
 cpplint
 pyparsing
 pytest

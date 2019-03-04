@@ -10,7 +10,7 @@ This is a fork of [cppStyle](https://github.com/Bwolfing/cppstyle), used at the 
 
 ## Setup for Web Development
 
-Currently the app supports use with both Python 2.7 and 3.6.
+Currently the app supports use with both Python 2.7 and 3.7.
 
 * Download pip the package manager.  
   http://pip.readthedocs.org/en/latest/installing.html
