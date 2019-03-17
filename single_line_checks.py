@@ -151,7 +151,7 @@ def check_first_char(self, code):
         return
 
     # Make sure the first letter of non-const variable names are lowercase.
-    uppercase = re.compile(r'(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w\d_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\(\)\{;=]')
+    uppercase = re.compile(r'(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w\d_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\[\(\)\{;=]')
     bad_naming = uppercase.search(code)
     uppercase_unsigned = re.compile(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:bool|char|short|long|int|float|double)[\*\&\s]+(?:[\w\d_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\(\)\{;=]')
 

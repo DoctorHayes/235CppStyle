@@ -10,6 +10,10 @@ const int no_Good99;
 
 const long _i;
 
+const int badArray[10];
+const int GOOD_ARRAY[10];
+const int badInitializedArray[] = {0, 1, 2};
+
 class GoodClass
 {
 
@@ -85,6 +89,10 @@ int main ()
 	const string name;
 	const int max = 2;
 	const unsigned int seed = static_cast<unsigned int>(time(nullptr));
+
+	const int badArray[10];
+	const int badArray2[] = {1, 2, 3, 4};
+	int BAD_ARRAY[] = {1, 2, 3, 4};
 
 	return 0;
 }
