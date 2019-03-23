@@ -65,7 +65,7 @@ def check_comment_spacing(self, lines):
 
     # Check that there is a blank link above a comment.
     if (lines[prev_line] != '/**/' and not re.search(r'^\s*//', lines[prev_line]) and \
-        not re.search(r'[\}\{]\s*$', lines[prev_line]) and \
+        not re.search(r'[\}\{\:]\s*$', lines[prev_line]) and \
         (not lines[prev_line].isspace() and lines[prev_line])):
             # Add 1 to line number because indexes start with 0
             self.add_error("MISSING_COMMENT_SEPERATION", line = comment_line + 1)
