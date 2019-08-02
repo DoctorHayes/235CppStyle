@@ -24,7 +24,7 @@ Currently the app supports use with both Python 2.7 and 3.7.
   On Mac/Linux: `source ENV/bin/activate`
 
 * Install Dependencies  
-  `pip install -r requirements.txt` (Mac replace Scripts with bin)
+  `pip install -r requirements.txt`
 
 * Launch the webapp locally  
   `python ./run.py`
