@@ -70,9 +70,9 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('main_bad.cpp')
     def test_main_bad(self): self.assertEqual(2, self.rubric.error_types['MAIN_SYNTAX'])
     @load_code_segment('first_char_good.cpp')
-    def test_first_char_good(self): self.assertEqual(0, self.rubric.error_types['FIRST_CHAR'])
+    def test_first_char_good(self): self.assertEqual(0, self.rubric.error_types['IDENTIFIER_CASE'])
     @load_code_segment('first_char_bad.cpp')
-    def test_first_char_bad(self): self.assertEqual(6, self.rubric.error_types['FIRST_CHAR'])
+    def test_first_char_bad(self): self.assertEqual(6, self.rubric.error_types['IDENTIFIER_CASE'])
 
     @load_code_segment('semicolon_comma_spacing_bad.cpp')
     def test_semicolon_spacing_bad1(self): self.assertEqual(4, self.rubric.error_types['ISOLATED_SEMICOLON'])
@@ -129,7 +129,7 @@ class RegressionTesting(unittest.TestCase):
 
     # Check identifier style
     @load_code_segment('identifier_case_bad.cpp')
-    def test_identifier_case_bad(self): self.assertEqual(34, self.rubric.error_types['FIRST_CHAR'])
+    def test_identifier_case_bad(self): self.assertEqual(36, self.rubric.error_types['IDENTIFIER_CASE'])
     @load_code_segment('identifier_length_bad.cpp')
     def test_check_identifier_length(self):
         self.assertEqual(11, self.rubric.error_types['IDENTIFIER_LENGTH'])

@@ -84,6 +84,8 @@ int main ()
 	auto Bad_Name2 = 3;
 	ifstream BadIStream;
 	ofstream BadOStream;
+	int bad_1;
+	int bad_2;
 
 	string Name;
 	const string name;

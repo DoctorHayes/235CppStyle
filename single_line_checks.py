@@ -112,7 +112,7 @@ def check_identifier_length(self, code):
         return
 
     # check for any parameter or variable declaration that is a type followed by 1 or more identifiers
-    declaration_check = re.compile(r'(?:^|\s+|\(|\{)(?:class|struct|enum|void|bool|char|short|long|int|float|double|string|std::string|string::size_type|std::string::size_type|auto)[\*&\s]+([\w_][\w\d_]*[\[;,\s\(\)\*\&$]+)+')
+    declaration_check = re.compile(r'(?:^|\s+|\(|\{)(?:class|struct|enum|void|bool|char|short|long|int|float|double|string|std::string|string::size_type|std::string::size_type|auto)[\*&\s]+([\w_][\w_]*[\[;,\s\(\)\*\&$]+)+')
     declaration_match = declaration_check.search(code)
 
     if declaration_match:
@@ -127,7 +127,8 @@ def check_identifier_length(self, code):
             else:
                 self.add_error(label="IDENTIFIER_LENGTH", data={"found": str(result)})
 
-def check_first_char(self, code):
+
+def check_identifier_case(self, code):
     if code.isspace():
         return
 
@@ -143,20 +144,23 @@ def check_first_char(self, code):
             expected = 'A Descriptive Name'
         if (expected and expected[0] == '_'): # Remove leading _ from expected input
             expected = expected[1:]
-        self.add_error(label="FIRST_CHAR",
-                       data={"keyword": result[0],
-                             "style": "capitalized",
+        self.add_error(label="IDENTIFIER_CASE",
+                       data={"style": "camel case (starting with a capital letter)",
+                             "type": result[0],
                              "expected": expected[0].capitalize() + (expected[1:] if len(expected) > 1 else ''),
                              "found": str(result[1])})
         return
 
     # Make sure the first letter of non-const variable names are lowercase.
-    uppercase = re.compile(r'(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w\d_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\[\(\)\{;=]')
+    uppercase = re.compile(r'(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\[\(\)\{;=]')
     bad_naming = uppercase.search(code)
-    uppercase_unsigned = re.compile(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:bool|char|short|long|int|float|double)[\*\&\s]+(?:[\w\d_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\(\)\{;=]')
+    uppercase_unsigned = re.compile(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:bool|char|short|long|int|float|double)[\*\&\s]+(?:[\w_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\(\)\{;=]')
+    bad_underscore = re.search(r'(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w_]+\:\:)*((?:[\w_])\w*_\d+\w*)\s*[,\[\(\)\{;=]',
+        code)
 
-    if bad_naming and not uppercase_unsigned.search(code):
-        result = bad_naming.group(1)
+    if (bad_naming and not uppercase_unsigned.search(code)) or bad_underscore:
+
+        result = bad_naming.group(1) if bad_naming else bad_underscore.group(1)
 
         # Create an expected constant name where underscores are converted to camel case
         try:
@@ -175,22 +179,22 @@ def check_first_char(self, code):
             if (expected and expected[0] == '_'): # Remove leading _ from expected input
                 expected = expected[1:]
 
-            self.add_error(label="FIRST_CHAR",
-                           data={"keyword": 'non-constant variable or function',
-                                 "style": "lowercase",
+            self.add_error(label="IDENTIFIER_CASE",
+                           data={"type": 'non-constant variables or function',
+                                 "style": "camel case (starting with a lowercase letter)",
                                  "expected": ((expected[:1].lower() + expected[1:]) if expected else '') if len(expected) > 1 else "a descriptive name",
                                  "found": str(result)})
         except IndexError:
             # probably means that this is an std:: parameter, they don't need to be capitalized.
-            print("Something weird happened in check_first_char with '", code, "'.")
+            print("Something weird happened in check_identifier_case with '", code, "'.")
             return
         return
 
     # Make sure const variables are all caps
     if not check_if_function_prototype(code) and not check_if_function(code):
-        const_var = re.compile(r"(?:^|\s+)const\s+(?:void|bool|char|short|long|int|float|double|string|std::string|auto)\s*[\*\&\s]*\s*(?:[\w]|_)\w+")
+        const_var = re.compile(r"(?:^|\s+)const\s+(?:void|bool|char|short|long|int|float|double|string|std::string|auto)\s*[\*\&\s]*\s*(?:\w|_)\w+")
         const_var = const_var.search(code)
-        unsigned_const_var = re.search(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:char|short|long|long\s+long|int)\s*[\*\&\s]*\s*(?:[\w]|_)\w+', code)
+        unsigned_const_var = re.search(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:char|short|long|long\s+long|int)\s*[\*\&\s]*\s*(?:\w|_)\w+', code)
         if const_var or unsigned_const_var:
             if const_var:
                 const_var = str(const_var.group(0).split()[-1])
@@ -209,9 +213,9 @@ def check_first_char(self, code):
             if (expected and expected[0] == '_'): # Remove leading _ from expected input
                 expected = expected[1:]
             if not const_var.isupper():
-                self.add_error(label="FIRST_CHAR",
-                       data={"keyword": 'constant variable',
-                             "style": "uppercase",
+                self.add_error(label="IDENTIFIER_CASE",
+                       data={"type": 'constant variable',
+                             "style": "all caps (separating words with an underscore)",
                              "expected": expected if len(expected) > 1 else "a descriptive name",
                              "found": const_var})
 
@@ -324,6 +328,6 @@ def check_for_loop_semicolon_spacing(self, code):
 
 def check_system_call(self, code):
     # Check for system calls.
-    sys_call = re.search("(?:^|\s+|\}|\{|;)system\s*\(\s*\"", code)
+    sys_call = re.search(r"(?:^|\s+|\}|\{|;)system\s*\(\s*\"", code)
     if sys_call:
         self.add_error(label="SYSTEM_CALL")
