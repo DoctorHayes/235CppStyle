@@ -155,7 +155,7 @@ def check_identifier_case(self, code):
     uppercase = re.compile(r'(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\[\(\)\{;=]')
     bad_naming = uppercase.search(code)
     uppercase_unsigned = re.compile(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:bool|char|short|long|int|float|double)[\*\&\s]+(?:[\w_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\(\)\{;=]')
-    bad_underscore = re.search(r'(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w_]+\:\:)*((?:[\w_])\w*_\d+\w*)\s*[,\[\(\)\{;=]',
+    bad_underscore = re.search(r'(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w_]+\:\:)*((?:[\w_])\w*_[\w_]*)\s*[,\[\(\)\{;=]',
         code)
 
     if (bad_naming and not uppercase_unsigned.search(code)) or bad_underscore:

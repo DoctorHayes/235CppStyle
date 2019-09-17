@@ -86,6 +86,8 @@ int main ()
 	ofstream BadOStream;
 	int bad_1;
 	int bad_2;
+	double bad_name;
+	double bad_Name;
 
 	string Name;
 	const string name;
