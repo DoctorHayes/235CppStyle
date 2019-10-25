@@ -1,5 +1,5 @@
 from os import path
-from flask import render_template, request, send_from_directory, jsonify
+from flask import render_template, request, send_from_directory, jsonify, escape
 from app import app
 from werkzeug import secure_filename
 from style_grader_main import style_grader_driver
@@ -50,6 +50,12 @@ def add_numbers():
 
 
     response = style_grader_driver(filenames)
+
+    # HTML-escape the error message responses here before making it json
+    for file in response:
+        for error in file['errors']:
+            error['message'] = escape(error['message'])
+
     # if response != []:
     #     sub = Submission(user_id = g.user.id, passed_grader = False)
     # else:
