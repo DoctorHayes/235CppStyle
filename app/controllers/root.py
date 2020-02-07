@@ -1,7 +1,7 @@
 from os import path
 from flask import render_template, request, send_from_directory, jsonify, escape
 from app import app
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 from style_grader_main import style_grader_driver
 
 app.config['UPLOAD_FOLDER'] = 'uploads/'
