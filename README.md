@@ -12,18 +12,20 @@ This is a fork of [cppStyle](https://github.com/Bwolfing/cppstyle), used at the 
 
 Currently the app supports use with both Python 2.7 and 3.7.
 
-* Download pip the package manager.  
-  http://pip.readthedocs.org/en/latest/installing.html
+* We recommend upgrade pip (the Python package manager) prior to installing the required Python packages.
+  -  On Linux or macOS:  
+     `pip install -U pip`
+  - On Windows:  
+    `python -m pip install -U pip`
 
-* Download virtual environment:  
-  `pip install virtualenv`
+* Setup and activate a virtual environment with pipenv (optional step)  
+  1.  Install pipenv: `pip install pipenv`
+  2.  Initialize the virtual environment: `pipenv install`
+  3.  To activate this project's virtualenv, run `pipenv shell`.  
+      Alternatively, run a command inside the virtualenv with `pipenv run`.
+  4.  Exit the environment with `exit` when finished.
 
-* Activate the virtual environment (optional step)  
-  `virtualevn ENV`  
-  In Windows: `ENV\Scripts\activate`  
-  On Mac/Linux: `source ENV/bin/activate`
-
-* Install Dependencies  
+* Install dependencies (if not using pipenv) 
   `pip install -r requirements.txt`
 
 * Launch the webapp locally  

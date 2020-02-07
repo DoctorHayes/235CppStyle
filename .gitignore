@@ -1,3 +1,6 @@
 *.pyc
+/.cache
 .idea
-app/uploads/
+/.pytest_cache
+/app/uploads/
+
