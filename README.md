@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/DoctorHayes/235CppStyle.svg?branch=master)](https://travis-ci.org/DoctorHayes/235CppStyle)
+![GitHub Pipenv locked Python version](https://img.shields.io/github/pipenv/locked/python-version/DoctorHayes/235CppStyle)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/DoctorHayes/235CppStyle/master/LICENSE)
 
 235CppStyle
@@ -10,7 +11,7 @@ This is a fork of [cppStyle](https://github.com/Bwolfing/cppstyle), used at the 
 
 ## Setup for Web Development
 
-Currently the app supports use with both Python 2.7 and 3.7.
+Currently the app supports use with both Python 2.7.x and 3.x, but development is moving to 3.x.
 
 * We recommend upgrade pip (the Python package manager) prior to installing the required Python packages.
   -  On Linux or macOS:  
