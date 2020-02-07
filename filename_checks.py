@@ -1,5 +1,5 @@
 import re
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 
 def check_filename_spaces(self, filename):
 	"""
