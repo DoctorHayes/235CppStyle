@@ -131,8 +131,10 @@ blockquote {
 	font-size: 11pt;
 }
 
-.bib p {
+.bib p,
+div.csl-entry {
 	text-align: left;
 	text-indent: -2em;
 	padding-left: 2em;
+	margin-bottom: 0.5em;
 }
