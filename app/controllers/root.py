@@ -80,6 +80,10 @@ def syllabus():
 def syllabusPDF():
     return app.send_static_file('syllabus.pdf')
 
+@app.route('/covid19')
+def syllabusCOVID():
+    return app.send_static_file('covid19.html')
+
 # -------- Style Guide -----
 @app.route('/style-guide')
 def style_guide():
