@@ -4,7 +4,7 @@ def adjust_rme_in_header(self):
         extension = filename.split('.')[-1]
         if extension == 'cpp':
             name = filename.split('.')[0]
-            full_header_filename = name + '.h'
+            full_header_filename = name + '.hpp'
             # dealing with file paths
             short_header_filename = full_header_filename.split('/')[-1]
 

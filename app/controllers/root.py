@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from style_grader_main import style_grader_driver
 
 app.config['UPLOAD_FOLDER'] = 'uploads/'
-app.config['ALLOWED_EXTENSIONS'] = set(['cpp', 'h'])
+app.config['ALLOWED_EXTENSIONS'] = set(['cpp', 'h', 'hpp'])
 
 # @app.before_request
 # def before_request():

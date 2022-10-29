@@ -48,7 +48,7 @@ $(function() {
 			showPreview: false,
 			showUpload: false,
 			required: true,
-			allowedFileExtensions: ['cpp', 'h', 'cc', 'c'],
+			allowedFileExtensions: ['cpp', 'h', 'hh', 'hpp', 'cc', 'c'],
 			browseLabel: "Select files …"}
 	);
 

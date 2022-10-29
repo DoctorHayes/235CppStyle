@@ -126,7 +126,7 @@ class StyleRubric(object):
 
     def grade_student_file(self, filename, original_filename):
         extension = filename.split('.')[-1]
-        if extension not in ['h', 'cpp']:
+        if extension not in ['h', 'hpp', 'cpp']:
             sys.stderr.write('Failed to parse {}: incorrect file type.\n'.format(filename))
             return
         data = safely_open(filename)
