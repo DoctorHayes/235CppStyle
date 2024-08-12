@@ -263,3 +263,14 @@ class StyleRubric(object):
             print('')
 
         return self.get_error_summary(error_list)
+
+    def print_errors_for_parsing(self, error_list = []):
+        for filename, errors in self.error_tracker.items():
+
+            if len(errors) == 0:
+                 print_success()
+            for error in errors:
+                if error.get_line_number():
+                    print(filename, error.get_line_number(), error.get_column_number(), error.get_message(), sep=':')
+
+        return self.get_error_summary(error_list)

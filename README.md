@@ -3,17 +3,17 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/DoctorHayes/235CppStyle/master/LICENSE)
 
 235CppStyle
-================
+===========
 
-This is a Python web application partially evaluates the coding style of students' .cpp and .h files for CSCI 235, a computer science course at [Charleston Southern University](http://www.csuniv.edu/).
+This is a Python web application that partially evaluates the coding style of students' .cpp and .h files for CSCI 235, a computer science course at [Charleston Southern University](http://www.csuniv.edu/).
 
 This is a fork of [cppStyle](https://github.com/Bwolfing/cppstyle), used at the University of Michigan.
 
 ## Setup for Web Development
 
-Currently the app supports use with both Python 2.7.x and 3.x, but development is moving to 3.x.
+Currently, the app supports use with both Python 2.7.x and 3.x, but development is moving to 3.x.
 
-* We recommend upgrade pip (the Python package manager) prior to installing the required Python packages.
+* We recommend upgrading pip (the Python package manager) before installing the required Python packages.
   -  On Linux or macOS:  
      `pip install -U pip`
   - On Windows:  
