@@ -87,7 +87,7 @@ def check_non_const_global(self, code):
         function = check_if_function(code)
         variables = variables = re.compile(r"^(?:\w|_)+\s+(?:\w|_|\[|\])+\s*=\s*.+;")
         keywords = re.compile(r"^\s*(?:using|class|struct)")
-        constants = re.compile(r"^\s*(?:static\s+)?const")
+        constants = re.compile(r"^\s*(?:static\s+)?(?:const|constexpr)")
         if not function and variables.search(code) and \
                 not keywords.search(code) and \
                 not constants.search(code):
@@ -99,7 +99,7 @@ def check_main_syntax(self, code):
     parser = Literal("int") + Literal("main") + Literal("(") + SkipTo(Literal(")")) + Literal(")")
     if len(parser.searchString(code)):
         main_prefix = Literal("int") + Literal("main") + Literal("(")
-        full_use = Literal("int") + "argc" + "," + Optional("const") + "char" + "*" + "argv" + "[" + "]" + ")"
+        full_use = Literal("int") + "argc" + "," + Optional(Literal("const") | Literal("constexpr")) + "char" + "*" + "argv" + "[" + "]" + ")"
         # 3 options for main() syntax
         if not len((main_prefix + Literal(")")).searchString(code)) and \
                 not len((main_prefix + Literal("void") + Literal(")")).searchString(code)) and \
@@ -152,11 +152,17 @@ def check_identifier_case(self, code):
         return
 
     # Make sure the first letter of non-const variable names are lowercase.
-    uppercase = re.compile(r'(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\[\(\)\{;=]')
-    bad_naming = uppercase.search(code)
-    uppercase_unsigned = re.compile(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:bool|char|short|long|int|float|double)[\*\&\s]+(?:[\w_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\(\)\{;=]')
-    bad_underscore = re.search(r'(?:^|\s+)(?<!const\s)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w_]+\:\:)*((?:[\w_])\w*_[\w_]*)\s*[,\[\(\)\{;=]',
-        code)
+    # If the line contains 'const' or 'constexpr', skip the non-const checks.
+    is_const = re.search(r'\b(?:const|constexpr)\b', code)
+    if not is_const:
+        uppercase = re.compile(r'(?:^|\s+)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\[\(\)\{;=]')
+        bad_naming = uppercase.search(code)
+        bad_underscore = re.search(r'(?:^|\s+)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w_]+\:\:)*((?:[\w_])\w*_[\w_]*)\s*[,\[\(\)\{;=]', code)
+    else:
+        bad_naming = None
+        bad_underscore = None
+
+    uppercase_unsigned = re.compile(r'(?:^|\s+)(?:const|constexpr)\s+(?:signed|unsigned)\s+(?:bool|char|short|long|int|float|double)[\*\&\s]+(?:[\w_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\(\)\{;=]')
 
     if (bad_naming and not uppercase_unsigned.search(code)) or bad_underscore:
 
@@ -166,10 +172,10 @@ def check_identifier_case(self, code):
         try:
             expected = ''
             var_length = len(result)
-            cap_next = False;
+            cap_next = False
             for i, ch in enumerate(result):
                 if ch == '_':
-                    cap_next = True;
+                    cap_next = True
                 elif cap_next:
                     expected += ch.upper()
                     cap_next = False
@@ -192,9 +198,9 @@ def check_identifier_case(self, code):
 
     # Make sure const variables are all caps
     if not check_if_function_prototype(code) and not check_if_function(code):
-        const_var = re.compile(r"(?:^|\s+)const\s+(?:void|bool|char|short|long|int|float|double|string|std::string|auto)\s*[\*\&\s]*\s*(?:\w|_)\w+")
+        const_var = re.compile(r"(?:^|\s+)(?:const|constexpr)\s+(?:void|bool|char|short|long|int|float|double|string|std::string|auto)\s*[\*\&\s]*\s*(?:\w|_)\w+")
         const_var = const_var.search(code)
-        unsigned_const_var = re.search(r'(?:^|\s+)const\s+(?:signed|unsigned)\s+(?:char|short|long|long\s+long|int)\s*[\*\&\s]*\s*(?:\w|_)\w+', code)
+        unsigned_const_var = re.search(r'(?:^|\s+)(?:const|constexpr)\s+(?:signed|unsigned)\s+(?:char|short|long|long\s+long|int)\s*[\*\&\s]*\s*(?:\w|_)\w+', code)
         if const_var or unsigned_const_var:
             if const_var:
                 const_var = str(const_var.group(0).split()[-1])

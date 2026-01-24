@@ -129,7 +129,7 @@ class RegressionTesting(unittest.TestCase):
 
     # Check identifier style
     @load_code_segment('identifier_case_bad.cpp')
-    def test_identifier_case_bad(self): self.assertEqual(38, self.rubric.error_types['IDENTIFIER_CASE'])
+    def test_identifier_case_bad(self): self.assertEqual(39, self.rubric.error_types['IDENTIFIER_CASE'])
     @load_code_segment('identifier_length_bad.cpp')
     def test_check_identifier_length(self):
         self.assertEqual(11, self.rubric.error_types['IDENTIFIER_LENGTH'])

@@ -93,10 +93,14 @@ int main ()
 	const string name;
 	const int max = 2;
 	const unsigned int seed = static_cast<unsigned int>(time(nullptr));
+	const unsigned int ARRAY_LENGTH = 62;
 
 	const int badArray[10];
 	const int badArray2[] = {1, 2, 3, 4};
 	int BAD_ARRAY[] = {1, 2, 3, 4};
+
+	constexpr int BadConstExpr = 5;
+	constexpr int GOOD_CONST_EXPR = 10;
 
 	return 0;
 }
