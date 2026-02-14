@@ -1,8 +1,9 @@
 from os import path
-from flask import render_template, request, send_from_directory, jsonify, escape
+from flask import render_template, request, send_from_directory, jsonify
 from app import app
 from werkzeug.utils import secure_filename
 from style_grader_main import style_grader_driver
+import json
 
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 app.config['ALLOWED_EXTENSIONS'] = set(['cpp', 'h', 'hpp'])
@@ -54,7 +55,7 @@ def add_numbers():
     # HTML-escape the error message responses here before making it json
     for file in response:
         for error in file['errors']:
-            error['message'] = escape(error['message'])
+            error['message'] = json.dumps(error['message'])
 
     # if response != []:
     #     sub = Submission(user_id = g.user.id, passed_grader = False)
@@ -70,19 +71,6 @@ def add_numbers():
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
-
-# -------- syllabus -----
-@app.route('/syllabus')
-def syllabus():
-    return render_template('syllabus.html',
-                            title = 'CSCI 235: Syllabus')
-@app.route('/syllabus.pdf')
-def syllabusPDF():
-    return app.send_static_file('syllabus.pdf')
-
-@app.route('/covid19')
-def syllabusCOVID():
-    return app.send_static_file('covid19.html')
 
 # -------- Style Guide -----
 @app.route('/style-guide')

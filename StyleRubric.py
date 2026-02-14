@@ -61,7 +61,7 @@ class StyleRubric(object):
         self.comment_checks = self.load_functions(comment_checks)
         self.misc_checks = self.load_functions(misc_checks)
         self.adjustments = self.load_functions(adjustments, prefix='adjust')
-        self.global_in_object = False;
+        self.global_in_object = False
         self.global_object_braces = []
         self.global_in_object_index = 0
         self.file_has_a_main = {}
