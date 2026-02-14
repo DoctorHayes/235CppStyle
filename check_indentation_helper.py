@@ -14,10 +14,18 @@ def validate_statement_indentation(self, code_lines, line_index, indent_min = 0,
 
     # Check for unclosed () and {}
     start_stack_len = len(enclosure_stack)
-    increase = enclosure_nesting(code_lines.elided[line_index], enclosure_stack, expected)
+
+    # Check if preceding line suggests enum (e.g. "enum Foo")
+    preceding_line_is_enum = False
+    if line_index > 0:
+        prev_line = code_lines.elided[line_index - 1]
+        if re.search(r'\benum\b', prev_line) and '{' not in prev_line:
+             preceding_line_is_enum = True
+
+    increase = enclosure_nesting(code_lines.elided[line_index], enclosure_stack, expected, preceding_line_is_enum)
 
     # Setup for next line based on how this one ends
-    isNextNewStatement = is_complete_expression(line_index, code_lines, isNewStatement)
+    isNextNewStatement = is_complete_expression(line_index, code_lines, isNewStatement, enclosure_stack)
 
     if (not isNewStatement) or line_index >= code_lines.num_lines: # Statement start on previous line
         return line_index # Let the previous recursive call handle the next line.
@@ -42,7 +50,7 @@ def validate_statement_indentation(self, code_lines, line_index, indent_min = 0,
             return line_index
 
         increase = len(enclosure_stack) - start_stack_len
-        isNextNewStatement = is_complete_expression(line_index, code_lines, isNextNewStatement)
+        isNextNewStatement = is_complete_expression(line_index, code_lines, isNextNewStatement, enclosure_stack)
 
 
     #if isMultiLine:
@@ -66,19 +74,28 @@ def validate_statement_indentation(self, code_lines, line_index, indent_min = 0,
     #    line_index = validate_statement_indentation(self, code_lines, line_index + 1, expected, expected, enclosure_stack, True)
     #    line_index += 1
 
-def enclosure_nesting(line_elided, enclosure_stack = [], current_indent = 0):
+def enclosure_nesting(line_elided, enclosure_stack = [], current_indent = 0, previous_line_is_enum = False):
     # Check for unclosed () and {}
     start_stack_len = len(enclosure_stack)
     line_elided = line_elided.strip()
     for i, c in enumerate(line_elided):
         if c in list('{'):
-            enclosure_stack.append({'indent': current_indent})
+            # Check for enum
+            is_enum = previous_line_is_enum
+            if not is_enum:
+                 # Check content before brace on this line
+                 prefix = line_elided[:i]
+                 if re.search(r'\benum\b', prefix):
+                     is_enum = True
+            
+            enclosure_stack.append({'indent': current_indent, 'is_enum': is_enum})
+            previous_line_is_enum = False # Consumed
         elif c in list('}') and len(enclosure_stack): # assume they all match up?
             enclosure_stack.pop()
 
     return len(enclosure_stack) - start_stack_len
 
-def is_complete_expression(line_index, code_lines, isPreviousStatementNew):
+def is_complete_expression(line_index, code_lines, isPreviousStatementNew, enclosure_stack=[]):
     if line_index >= code_lines.num_lines:
         return isPreviousStatementNew
 
@@ -87,7 +104,10 @@ def is_complete_expression(line_index, code_lines, isPreviousStatementNew):
     if not just_code:
         return isPreviousStatementNew
     else:
-        return (just_code and just_code[-1] in list(';{}'))
+        terminators = list(';{}')
+        if enclosure_stack and enclosure_stack[-1].get('is_enum'):
+            terminators.append(',')
+        return (just_code and just_code[-1] in terminators)
 
 def indent_line_check(self, code_lines, line_index, indent_min = 0, indent_max = 0, isNewStatement = True, enclosure_stack = []):
     tab_size = self.current_file_indentation
@@ -142,11 +162,16 @@ def indent_line_check(self, code_lines, line_index, indent_min = 0, indent_max =
 
     if line_index >= code_lines.num_lines:
         return line_index, 0, 0, 0
+    
+    if line_index >= code_lines.num_lines:
+        return line_index, 0, 0, 0
 
 
     # TODO Make the check its own function.
     leading_whitespace = re.match(r'^(\t*|\s+)\S', code_lines.raw_lines[line_index])
     indent_len = count_whitespace(leading_whitespace.group() if leading_whitespace else '')
+    
+    print("DEBUG: Checking line {}: '{}' (min={}, max={}, found_len={})".format(line_index + 1, code_lines.raw_lines[line_index].strip(), indent_min, indent_max, indent_len))
 
     #if not isNewStatement:
     #    indent_min = indent_max = indent_min + 1
