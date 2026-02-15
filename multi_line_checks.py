@@ -303,12 +303,18 @@ def check_cin_cout_newline(self, clean_lines):
     # Use .lines instead of .elided to preserve string contents
     cleansed_line = clean_lines.lines[self.current_line_num]
     
-    # Check if current line contains cin >>
-    if 'cin' not in cleansed_line or '>>' not in cleansed_line:
+    # Check if current line contains cin >> or getline(cin, ...)
+    has_cin = 'cin' in cleansed_line and '>>' in cleansed_line
+    has_getline = 'getline' in cleansed_line and 'cin' in cleansed_line
+    
+    if not has_cin and not has_getline:
         return
     
-    # Make sure it's actually a cin statement, not just a variable with cin in the name
-    if re.search(r'\bcin\s*>>', cleansed_line):
+    # Make sure it's actually a cin/getline statement
+    is_input_statement = re.search(r'\bcin\s*>>', cleansed_line) or \
+                        re.search(r'\bgetline\s*\(\s*cin\s*,', cleansed_line)
+    
+    if is_input_statement:
         # Look backwards for a preceding cout statement
         prev_line_num = self.current_line_num - 1
         while prev_line_num >= 0:

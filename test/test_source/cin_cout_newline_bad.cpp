@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <string>
 using namespace std;
 
 int main()
@@ -30,9 +31,13 @@ int main()
     cout << "Another number: " << endl;
     cin >> num;
 
-    // BAD: Escaped newline in prompt (error 5)
+    // BAD: Character literal newlines ('\n') (error 5)
     cout << "Enter a value: " << '\n';
     cin >> value;
+
+    // BAD: Using getline with newline in prompt (error 6)
+    cout << "Enter your name: \n";
+    getline(cin, name);
 
     return 0;
 }

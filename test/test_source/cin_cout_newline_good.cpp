@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <string>
 using namespace std;
 
 int main()
@@ -39,6 +40,11 @@ int main()
     // GOOD: Newline after cin
     cout << "Welcome to the program!\nEnter a number: ";
     cin >> num;
+    cout << endl;
+
+    // GOOD: Using getline with newline after cin
+    cout << "Enter your name: ";
+    getline(cin, name);
     cout << endl;
 
     return 0;

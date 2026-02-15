@@ -156,5 +156,5 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('cin_cout_newline_good.cpp')
     def test_cin_cout_newline_good(self): self.assertEqual(0, self.rubric.error_types['CIN_COUT_NEWLINE'])
     @load_code_segment('cin_cout_newline_bad.cpp')
-    def test_cin_cout_newline_bad(self): self.assertEqual(5, self.rubric.error_types['CIN_COUT_NEWLINE'])
+    def test_cin_cout_newline_bad(self): self.assertEqual(6, self.rubric.error_types['CIN_COUT_NEWLINE'])
 
