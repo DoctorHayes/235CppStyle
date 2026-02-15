@@ -295,6 +295,86 @@ def check_successive_blank_lines(self, clean_lines):
         else:
             previousBlank = errorFlagged = False
 
+def check_cin_cout_newline(self, clean_lines):
+    """
+    Check that cout prompts for cin statements have newlines after the cin,
+    not in the prompt itself.
+    """
+    # Use .lines instead of .elided to preserve string contents
+    cleansed_line = clean_lines.lines[self.current_line_num]
+    
+    # Check if current line contains cin >>
+    if 'cin' not in cleansed_line or '>>' not in cleansed_line:
+        return
+    
+    # Make sure it's actually a cin statement, not just a variable with cin in the name
+    if re.search(r'\bcin\s*>>', cleansed_line):
+        # Look backwards for a preceding cout statement
+        prev_line_num = self.current_line_num - 1
+        while prev_line_num >= 0:
+            prev_line = clean_lines.lines[prev_line_num]
+            
+            # Skip blank lines
+            if not prev_line or prev_line.isspace():
+                prev_line_num -= 1
+                continue
+            
+            # Check if this line has a cout statement
+            if re.search(r'\bcout\s*<<', prev_line):
+                # Check if the cout line has a newline character (\\n inside a string) or endl
+                # Pattern 1: String with \n anywhere in it before semicolon (e.g., "text\n")
+                # Pattern 2: endl before semicolon (e.g., << endl;)
+                # Pattern 3: Character literal '\n' (e.g., << '\n')
+                has_newline = False
+                
+                # Check for \n inside a string literal
+                if re.search(r'<<\s*"[^"]*\\n[^"]*"', prev_line):
+                    has_newline = True
+                # Check for character literal '\n'
+                elif re.search(r"<<\s*'\\n'", prev_line):
+                    has_newline = True
+                # Check for endl
+                elif re.search(r'<<\s*endl\s*;', prev_line):
+                    has_newline = True
+                
+                if has_newline:
+                    # This cout has a newline in it, now check if there's a newline after the cin
+                    # Look forward for a cout << endl or cout << "\n" after the cin
+                    next_line_num = self.current_line_num + 1
+                    found_newline_after = False
+                    
+                    # Only check the next few lines (up to 2 lines ahead)
+                    for check_line_num in range(next_line_num, min(next_line_num + 3, len(clean_lines.lines))):
+                        check_line = clean_lines.lines[check_line_num]
+                        
+                        # Skip blank lines
+                        if not check_line or check_line.isspace():
+                            continue
+                        
+                        # Check for a newline output (cout << endl or cout << "\n")
+                        if re.search(r'\bcout\s*<<\s*endl', check_line) or \
+                           re.search(r'\bcout\s*<<\s*"\\n"', check_line):
+                            found_newline_after = True
+                            break
+                        
+                        # If we hit another statement (not just blank), stop looking
+                        if ';' in check_line:
+                            break
+                    
+                    # If newline was in the prompt but not after cin, report error
+                    if not found_newline_after:
+                        self.add_error(label='CIN_COUT_NEWLINE', line=prev_line_num + 1)
+                
+                # Stop after finding the first cout (don't look further back)
+                break
+            
+            # Stop if we hit another statement or declaration
+            if ';' in prev_line or '{' in prev_line or '}' in prev_line:
+                break
+            
+            prev_line_num -= 1
+
+
 def find_function_end(code, current_line):
     # Go to the next line if we are not on the last line and there is no '{'
     while (current_line < len(code) - 1) and code[current_line].find('{') == -1:
