@@ -39,5 +39,15 @@ int main()
     cout << "Enter your name: \n";
     getline(cin, name);
 
+    // BAD: Using endl in prompt with getline (error 7)
+	cout << "What is your name? \n";
+	getline(cin, name);
+    cout << endl;
+
+    // BAD: Newline in prompt even with newline after (error 8)
+    cout << "Enter another number: \n";
+    cin >> num;
+    cout << endl;
+
     return 0;
 }

@@ -327,14 +327,17 @@ def check_cin_cout_newline(self, clean_lines):
             
             # Check if this line has a cout statement
             if re.search(r'\bcout\s*<<', prev_line):
-                # Check if the cout line has a newline character (\\n inside a string) or endl
-                # Pattern 1: String with \n anywhere in it before semicolon (e.g., "text\n")
-                # Pattern 2: endl before semicolon (e.g., << endl;)
-                # Pattern 3: Character literal '\n' (e.g., << '\n')
+                # Check if the cout line has a newline character at/near the END
+                # This catches prompts that end with \n or endl, which is the anti-pattern
+                # We allow \n in the middle of strings for formatting (e.g., "Line1\nLine2\nPrompt: ")
+                # Pattern 1: String ending with \n (e.g., "text\n")
+                # Pattern 2: Character literal '\n' (e.g., << '\n')
+                # Pattern 3: endl (e.g., << endl;)
                 has_newline = False
                 
-                # Check for \n inside a string literal
-                if re.search(r'<<\s*"[^"]*\\n[^"]*"', prev_line):
+                # Check for \n at the end of a string literal (before closing quote)
+                # This matches strings ending with \n like "Enter name: \n"
+                if re.search(r'<<\s*"[^"]*\\n"\s*;', prev_line):
                     has_newline = True
                 # Check for character literal '\n'
                 elif re.search(r"<<\s*'\\n'", prev_line):
@@ -343,33 +346,10 @@ def check_cin_cout_newline(self, clean_lines):
                 elif re.search(r'<<\s*endl\s*;', prev_line):
                     has_newline = True
                 
+                # If the prompt has a newline at the end, that's an error
+                # (newlines should appear AFTER cin/getline, not in the prompt)
                 if has_newline:
-                    # This cout has a newline in it, now check if there's a newline after the cin
-                    # Look forward for a cout << endl or cout << "\n" after the cin
-                    next_line_num = self.current_line_num + 1
-                    found_newline_after = False
-                    
-                    # Only check the next few lines (up to 2 lines ahead)
-                    for check_line_num in range(next_line_num, min(next_line_num + 3, len(clean_lines.lines))):
-                        check_line = clean_lines.lines[check_line_num]
-                        
-                        # Skip blank lines
-                        if not check_line or check_line.isspace():
-                            continue
-                        
-                        # Check for a newline output (cout << endl or cout << "\n")
-                        if re.search(r'\bcout\s*<<\s*endl', check_line) or \
-                           re.search(r'\bcout\s*<<\s*"\\n"', check_line):
-                            found_newline_after = True
-                            break
-                        
-                        # If we hit another statement (not just blank), stop looking
-                        if ';' in check_line:
-                            break
-                    
-                    # If newline was in the prompt but not after cin, report error
-                    if not found_newline_after:
-                        self.add_error(label='CIN_COUT_NEWLINE', line=prev_line_num + 1)
+                    self.add_error(label='CIN_COUT_NEWLINE', line=prev_line_num + 1)
                 
                 # Stop after finding the first cout (don't look further back)
                 break
@@ -379,6 +359,8 @@ def check_cin_cout_newline(self, clean_lines):
                 break
             
             prev_line_num -= 1
+
+
 
 
 def find_function_end(code, current_line):

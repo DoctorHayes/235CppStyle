@@ -126,7 +126,7 @@ class StyleError(object):
             "SUCCESSIVE_BLANK_LINES": "Do NOT have consecutive empty lines. Separate sections of code with a single empty line.",
             "ISOLATED_SEMICOLON": "Remove the space directly preceding the semicolon",
             "CPPLINT_ERROR": self.get_data().get('message'),
-            "CIN_COUT_NEWLINE": "Newline should appear after cin statement, not in the cout prompt before it.",
+            "CIN_COUT_NEWLINE": "Newline should be output after cin statement, not in the cout prompt before it.",
 
             "FILENAME_SPACES": "Remove spaces from the filename '{}'. Suggested filename: '{}'.".format(self.get_data().get("filename"),
                                                                                                     self.get_data().get("suggestion"))
