@@ -148,6 +148,9 @@ class StyleRubric(object):
                 for function in self.multi_line_checks: function(self, clean_lines)
 
             # COMMENT CHECKS #TODO
+            if self.config.get('COMMENT_CHECKS', 'top_comment').lower() == 'yes':
+                getattr(comment_checks, 'check_top_comment')(self, raw_data)
+
             for self.current_line_num, text in enumerate(raw_data):
                 if self.config.get('COMMENT_CHECKS', 'line_width').lower() == 'yes':
                     getattr(comment_checks, 'check_line_width')(self, text)

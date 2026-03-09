@@ -118,3 +118,49 @@ def check_min_comments(self, all_lines, clean_lines):
 def remove_single_line_comment_content(code):
     #print (re.sub(r'(?<=//)[^\n]*\n', '', code))
     return (re.sub(r'(?<=//)[^\n]*\n', '', code))
+
+def check_top_comment(self, raw_lines):
+    if not raw_lines:
+        self.add_error(label="TOP_COMMENT", line=1)
+        return
+
+    first_line = raw_lines[0].lstrip()
+    
+    # Must start with a comment
+    if not first_line.startswith('//') and not first_line.startswith('/*'):
+        self.add_error(label="TOP_COMMENT", line=1)
+        return
+
+    comment_text = ""
+    is_multi = first_line.startswith('/*')
+    
+    if is_multi:
+        in_comment = True
+        for line in raw_lines:
+            if not in_comment:
+                break
+            
+            line_str = line.strip()
+            if '*/' in line_str:
+                end_idx = line_str.find('*/')
+                comment_text += line_str[:end_idx]
+                in_comment = False
+            else:
+                comment_text += line_str
+    else:
+        for line in raw_lines:
+            line_str = line.lstrip()
+            if line_str.startswith('//'):
+                comment_text += line_str
+            elif not line_str:
+                # empty lines might break the comment block, but we only care about the first contiguous block
+                break
+            else:
+                break
+                
+    # Strip all asterisks, slashes, and whitespace to see if there's actual content
+    cleaned = re.sub(r'[\s/*]', '', comment_text)
+    
+    if not cleaned: # Empty or only symbols
+        self.add_error(label="TOP_COMMENT", line=1)
+

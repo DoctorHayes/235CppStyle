@@ -65,6 +65,19 @@ class RegressionTesting(unittest.TestCase):
     #def test_global_good(self): self.assertEqual(0, self.rubric.error_types['NON_CONST_GLOBAL'])
     #@load_code_segment('global_bad.cpp')
     #def test_global_bad(self): self.assertEqual(13, self.rubric.error_types['NON_CONST_GLOBAL'])
+
+    @load_code_segment('top_comment_good.cpp')
+    def test_top_comment_good(self): self.assertEqual(0, self.rubric.error_types['TOP_COMMENT'])
+
+    @load_code_segment('top_comment_bad_missing.cpp')
+    def test_top_comment_bad_missing(self): self.assertEqual(1, self.rubric.error_types['TOP_COMMENT'])
+
+    @load_code_segment('top_comment_bad_empty.cpp')
+    def test_top_comment_bad_empty(self): self.assertEqual(1, self.rubric.error_types['TOP_COMMENT'])
+
+    @load_code_segment('top_comment_bad_symbols.cpp')
+    def test_top_comment_bad_symbols(self): self.assertEqual(1, self.rubric.error_types['TOP_COMMENT'])
+
     @load_code_segment('main_good.cpp')
     def test_main_good(self): self.assertEqual(0, self.rubric.error_types['MAIN_SYNTAX'])
     @load_code_segment('main_bad.cpp')

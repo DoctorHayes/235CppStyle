@@ -127,6 +127,7 @@ class StyleError(object):
             "ISOLATED_SEMICOLON": "Remove the space directly preceding the semicolon",
             "CPPLINT_ERROR": self.get_data().get('message'),
             "CIN_COUT_NEWLINE": "Newline should be output after cin statement, not in the cout prompt before it.",
+            "TOP_COMMENT": "A comment must be at the very top of the file describing the program and includes your name.",
 
             "FILENAME_SPACES": "Remove spaces from the filename '{}'. Suggested filename: '{}'.".format(self.get_data().get("filename"),
                                                                                                     self.get_data().get("suggestion"))
