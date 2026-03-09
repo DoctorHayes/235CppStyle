@@ -164,3 +164,30 @@ def check_top_comment(self, raw_lines):
     if not cleaned: # Empty or only symbols
         self.add_error(label="TOP_COMMENT", line=1)
 
+def check_todo_comment(self, raw_lines):
+    # Regex to capture any 'todo', 'to do', or 'fixme' with boundaries
+    todo_regex = re.compile(r'\b(todo|to\s*do|fixme)\b', re.IGNORECASE)
+    
+    in_multi_line = False
+    for i, line in enumerate(raw_lines):
+        line_num = i + 1
+        
+        # Check starting multi-line
+        if '/*' in line:
+            in_multi_line = True
+            
+        # If we are in a multi-line comment or hit a single-line comment,
+        # extract the text that is actually part of the comment.
+        comment_text = ""
+        if in_multi_line:
+            # Check if it ends on this line
+            if '*/' in line:
+                in_multi_line = False
+            comment_text = line # Simple approximation: check whole line if a comment touches it
+        elif '//' in line:
+            comment_text = line[line.find('//'):]
+            
+        if comment_text and todo_regex.search(comment_text):
+            self.add_error(label="TODO_COMMENT", line=line_num)
+
+

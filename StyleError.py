@@ -128,6 +128,7 @@ class StyleError(object):
             "CPPLINT_ERROR": self.get_data().get('message'),
             "CIN_COUT_NEWLINE": "Newline should be output after cin statement, not in the cout prompt before it.",
             "TOP_COMMENT": "A comment must be at the very top of the file describing the program and including your name.",
+            "TODO_COMMENT": "Comments starting with 'ToDo' or similar indicators of work in progress should be addressed. If completed, remove the 'ToDo'.",
 
             "FILENAME_SPACES": "Remove spaces from the filename '{}'. Suggested filename: '{}'.".format(self.get_data().get("filename"),
                                                                                                     self.get_data().get("suggestion"))

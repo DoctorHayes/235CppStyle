@@ -78,6 +78,18 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('top_comment_bad_symbols.cpp')
     def test_top_comment_bad_symbols(self): self.assertEqual(1, self.rubric.error_types['TOP_COMMENT'])
 
+    @load_code_segment('todo_good.cpp')
+    def test_todo_good(self): self.assertEqual(0, self.rubric.error_types['TODO_COMMENT'])
+
+    @load_code_segment('todo_bad_todo.cpp')
+    def test_todo_bad_todo(self): self.assertEqual(1, self.rubric.error_types['TODO_COMMENT'])
+
+    @load_code_segment('todo_bad_to_do.cpp')
+    def test_todo_bad_to_do(self): self.assertEqual(1, self.rubric.error_types['TODO_COMMENT'])
+
+    @load_code_segment('todo_bad_fixme.cpp')
+    def test_todo_bad_fixme(self): self.assertEqual(1, self.rubric.error_types['TODO_COMMENT'])
+
     @load_code_segment('main_good.cpp')
     def test_main_good(self): self.assertEqual(0, self.rubric.error_types['MAIN_SYNTAX'])
     @load_code_segment('main_bad.cpp')

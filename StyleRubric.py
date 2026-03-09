@@ -150,6 +150,8 @@ class StyleRubric(object):
             # COMMENT CHECKS #TODO
             if self.config.get('COMMENT_CHECKS', 'top_comment').lower() == 'yes':
                 getattr(comment_checks, 'check_top_comment')(self, raw_data)
+            if self.config.get('COMMENT_CHECKS', 'todo_comment').lower() == 'yes':
+                getattr(comment_checks, 'check_todo_comment')(self, raw_data)
 
             for self.current_line_num, text in enumerate(raw_data):
                 if self.config.get('COMMENT_CHECKS', 'line_width').lower() == 'yes':
