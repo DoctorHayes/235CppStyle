@@ -143,6 +143,13 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('indent_enum_bad.cpp')
     def test_indent_enums_bad(self): self.assertEqual(2, self.rubric.error_types['BLOCK_INDENTATION'])
 
+    @load_code_segment('indent_for_good.cpp')
+    def test_indent_for_good(self): self.assertEqual(0, self.rubric.error_types['BLOCK_INDENTATION'])
+
+    @load_code_segment('indent_multiline_parenthesis_good.cpp')
+    def test_indent_multiline_parenthesis_good(self): self.assertEqual(0, self.rubric.error_types['BLOCK_INDENTATION'])
+    @load_code_segment('indent_multiline_parenthesis_bad.cpp')
+    def test_indent_multiline_parenthesis_bad(self): self.assertEqual(7, self.rubric.error_types['BLOCK_INDENTATION'])
     # Test for too long lines based on the setting in the config (valid for line lengths that are multiples of 10 between 30 and 120)
     @load_code_segment('long_lines.cpp')
     def test_check_line_width(self):

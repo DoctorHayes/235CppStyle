@@ -74,13 +74,17 @@ def enclosure_nesting(line_elided, enclosure_stack = None, current_indent = 0, p
     line_elided = line_elided.strip()
     
     for i, c in enumerate(line_elided):
-        if c in list('{'):
+        if c == '{':
             # Check if this brace belongs to an enum
             prefix = line_elided[:i]
             is_enum = previous_line_is_enum or is_enum_declaration(prefix)
             
-            enclosure_stack.append({'indent': current_indent, 'is_enum': is_enum})
-        elif c in list('}') and len(enclosure_stack):
+            enclosure_stack.append({'char': '{', 'indent': current_indent, 'is_enum': is_enum})
+        elif c == '(':
+            enclosure_stack.append({'char': '(', 'indent': current_indent, 'is_enum': False})
+        elif c == '}' and len(enclosure_stack) and enclosure_stack[-1].get('char', '{') == '{':
+            enclosure_stack.pop()
+        elif c == ')' and len(enclosure_stack) and enclosure_stack[-1].get('char') == '(':
             enclosure_stack.pop()
 
     return len(enclosure_stack) - start_stack_len
@@ -108,6 +112,10 @@ def is_complete_expression(line_index, code_lines, isPreviousStatementNew, enclo
     if not just_code:
         return isPreviousStatementNew
     else:
+        # If we are inside parentheses, expression is not complete
+        if any(enc.get('char') == '(' for enc in enclosure_stack):
+            return False
+
         terminators = list(';{}')
         # In enums, commas terminate declarations
         if enclosure_stack and enclosure_stack[-1].get('is_enum'):
@@ -257,8 +265,8 @@ def indent_line_check(self, code_lines, line_index, indent_min = 0, indent_max =
 
         return indent_line_check(self, code_lines, line_index + 1, indent_min, indent_max, isNewStatement, enclosure_stack)
 
-    # Check if ending a multi-line block
-    elif re.match(r'\s*\}', code_lines.elided[line_index]):
+    # Check if ending a multi-line block or parenthesis
+    elif re.match(r'\s*[\}\)]', code_lines.elided[line_index]):
         indent_min = enclosure_stack[-1]['indent'] if enclosure_stack else indent_min - 1
         #if not isNewStatement:
         #    indent_min -= 1 # Obviously this is the end of the statement
