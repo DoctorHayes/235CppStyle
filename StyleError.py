@@ -131,5 +131,6 @@ class StyleError(object):
             "TODO_COMMENT": "Comments starting with 'ToDo' or similar indicators of work in progress should be addressed. If completed, remove the 'ToDo'.",
 
             "FILENAME_SPACES": "Remove spaces from the filename '{}'. Suggested filename: '{}'.".format(self.get_data().get("filename"),
-                                                                                                    self.get_data().get("suggestion"))
+                                                                                                    self.get_data().get("suggestion")),
+            "SWITCH_PREFERENCE": "Multiple '==' operators used in succession with the same operand. Use a switch statement instead."
         }[label]

@@ -500,3 +500,35 @@ def operator_helper(compound, code, index):
     else:
         return (not code[index + 1] or code[index + 1] in list(' \t\r\n')) and \
             (not code[index - 1] or code[index - 1] in [' ', '\t'])
+
+def check_switch_preferred(self, clean_lines):
+    # only run this check once
+    if self.current_line_num != 0:
+        return
+
+    consecutive_count = 0
+    last_operand = None
+    last_line = -1
+
+    for line_num, line in enumerate(clean_lines.elided):
+        # find all `var ==` and `== var` in the line
+        matches = list(re.finditer(r"\b([a-zA-Z_]\w*)\s*==", line))
+        matches += list(re.finditer(r"==\s*([a-zA-Z_]\w*)\b", line))
+        
+        for m in matches:
+            operand = m.group(1)
+            # Skip boolean literals and pointer nulls
+            if operand in ['true', 'false', 'NULL', 'nullptr']:
+                continue
+                
+            if operand == last_operand and abs(line_num - last_line) <= 3:
+                consecutive_count += 1
+            else:
+                consecutive_count = 1
+
+            last_operand = operand
+            last_line = line_num
+
+            if consecutive_count == 3:
+                self.add_error(label='SWITCH_PREFERENCE', line=line_num + 1)
+

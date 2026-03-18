@@ -190,3 +190,8 @@ class RegressionTesting(unittest.TestCase):
     @load_code_segment('cin_cout_newline_bad.cpp')
     def test_cin_cout_newline_bad(self): self.assertEqual(8, self.rubric.error_types['CIN_COUT_NEWLINE'])
 
+    @load_code_segment('switch_preferred.cpp')
+    def test_switch_preferred_bad(self): self.assertEqual(2, self.rubric.error_types['SWITCH_PREFERENCE'])
+    
+    @load_code_segment('switch_preferred_good.cpp')
+    def test_switch_preferred_good(self): self.assertEqual(0, self.rubric.error_types['SWITCH_PREFERENCE'])
