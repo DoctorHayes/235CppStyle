@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/DoctorHayes/235CppStyle.svg?branch=master)](https://travis-ci.org/DoctorHayes/235CppStyle)
-![GitHub Pipenv locked Python version](https://img.shields.io/github/pipenv/locked/python-version/DoctorHayes/235CppStyle)
+![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/DoctorHayes/235CppStyle/master/LICENSE)
 
 235CppStyle
@@ -9,50 +9,86 @@ This is a Python web application that partially evaluates the coding style of st
 
 This is a fork of [cppStyle](https://github.com/Bwolfing/cppstyle), used at the University of Michigan.
 
-## Setup for Web Development
+Requires **Python 3.12+**. Dependencies are managed via `pyproject.toml` using standard Python packaging tools — no Pipenv or requirements.txt needed.
 
-Currently, the app supports use with both Python 2.7.x and 3.x, but development is moving to 3.x.
+## Installation
 
-* We recommend upgrading pip (the Python package manager) before installing the required Python packages.
-  -  On Linux or macOS:  
-     `pip install -U pip`
-  - On Windows:  
-    `python -m pip install -U pip`
+First, create and activate a virtual environment (recommended):
 
-* Setup and activate a virtual environment with pipenv (optional step)  
-  1.  Install pipenv: `pip install pipenv`
-  2.  Initialize the virtual environment: `pipenv install`
-  3.  To activate this project's virtualenv, run `pipenv shell`.  
-      Alternatively, run a command inside the virtualenv with `pipenv run`.
-  4.  Exit the environment with `exit` when finished.
+```shell
+python -m venv .venv
 
-* Install dependencies (if not using pipenv) 
-  `pip install -r requirements.txt`
+# Linux / macOS
+source .venv/bin/activate
 
-* Launch the webapp locally  
-  `python ./run.py`
+# Windows (CMD)
+.venv\Scripts\activate
+```
 
-* Run the application in debug mode (in Windows)  
-  ```batch
-  SET FLASK_APP=run.py
-  SET FLASK_DEBUG=1
-  python -m flask run
-  ```
+Then install the appropriate dependency set for your use case:
 
-* Run the application in debug mode (in Linux)  
-  ```shell
-  export FLASK_APP=run.py
-  export FLASK_DEBUG=1
-  python -m flask run
-  ```
+### CLI only (`run_local.py` / `run_local_for_parsing.py`)
+
+Installs the core dependencies (`cpplint`, `pyparsing`) needed to grade files from the command line:
+
+```shell
+pip install -e .
+```
+
+### Web application (`run.py`)
+
+Installs core dependencies plus Flask, Werkzeug, and Gunicorn:
+
+```shell
+pip install -e ".[web]"
+```
+
+### Development (tests + web)
+
+Installs everything including `pytest`:
+
+```shell
+pip install -e ".[web,dev]"
+```
+
+## Running the Application
+
+### Command-line grader
+
+```shell
+python ./run_local.py path/to/file.cpp
+python ./run_local_for_parsing.py path/to/file.cpp
+```
+
+### Web application (local dev server)
+
+```shell
+python ./run.py
+```
+
+### Web application (debug mode — Windows)
+
+```batch
+SET FLASK_APP=run.py
+SET FLASK_DEBUG=1
+python -m flask run
+```
+
+### Web application (debug mode — Linux / macOS)
+
+```shell
+export FLASK_APP=run.py
+export FLASK_DEBUG=1
+python -m flask run
+```
 
 ## Run Regression Tests
 
-* Install pytest.  
-  `pip install -U pytest`
+Install the `dev` extras (see above), then:
+
 * Execute all the tests.  
   `pytest`
-* To stop at first failed assertion.  
+* Stop at the first failed assertion.  
   `pytest -x`
-* Example of running one specific test.  
+* Run one specific test.  
   `pytest -k test_good_operator_spacing`

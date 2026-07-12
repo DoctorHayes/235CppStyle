@@ -1,7 +1,0 @@
-Flask
-Werkzeug>=1.0
-gunicorn
-configparser
-cpplint
-pyparsing
-pytest

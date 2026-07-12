@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "235CppStyle"
+version = "0.1.0"
+description = "Charleston Southern University CSCI 235 C++ style grader."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.12"
+
+# Core dependencies needed for CLI usage (e.g., `python run_local_for_parsing.py`)
+# Note: `configparser` is part of the Python 3 standard library and is not listed here.
+dependencies = [
+    "cpplint",
+    "pyparsing",
+]
+
+[project.optional-dependencies]
+# Web server dependencies — install with: pip install -e ".[web]"
+# Includes Flask, Werkzeug, and gunicorn for running the web app via run.py / Procfile.
+web = [
+    "Flask",
+    "Werkzeug>=1.0",
+    "gunicorn",
+]
+
+# Development dependencies — install with: pip install -e ".[dev]"
+dev = [
+    "pytest",
+]
+
+[tool.setuptools.packages.find]
+# Auto-discover the `app` package alongside the top-level modules.
+where = ["."]
+
+[tool.setuptools.package-data]
+"*" = ["rubric.ini"]
