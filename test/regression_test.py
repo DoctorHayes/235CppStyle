@@ -165,7 +165,24 @@ class RegressionTesting(unittest.TestCase):
 
     # Check identifier style
     @load_code_segment('identifier_case_bad.cpp')
-    def test_identifier_case_bad(self): self.assertEqual(39, self.rubric.error_types['IDENTIFIER_CASE'])
+    def test_identifier_case_bad(self): self.assertEqual(40, self.rubric.error_types['IDENTIFIER_CASE'])
+    
+    # Improved identifier case tests
+    @load_code_segment('identifier_case_good.cpp')
+    def test_identifier_case_good(self): self.assertEqual(0, self.rubric.error_types['IDENTIFIER_CASE'])
+    
+    @load_code_segment('identifier_case_improved_bad.cpp')
+    def test_identifier_case_improved_bad(self): self.assertEqual(16, self.rubric.error_types['IDENTIFIER_CASE'])
+    
+    @load_code_segment('identifier_case_edge_cases.cpp')
+    def test_identifier_case_edge_cases(self): self.assertEqual(9, self.rubric.error_types['IDENTIFIER_CASE'])
+    
+    @load_code_segment('identifier_case_snake_to_convert.cpp')
+    def test_identifier_case_snake_to_convert(self): self.assertEqual(6, self.rubric.error_types['IDENTIFIER_CASE'])
+    
+    @load_code_segment('identifier_case_pascal_to_convert.cpp')
+    def test_identifier_case_pascal_to_convert(self): self.assertEqual(6, self.rubric.error_types['IDENTIFIER_CASE'])
+    
     @load_code_segment('identifier_length_bad.cpp')
     def test_check_identifier_length(self):
         self.assertEqual(11, self.rubric.error_types['IDENTIFIER_LENGTH'])

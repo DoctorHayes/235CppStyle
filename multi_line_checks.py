@@ -14,7 +14,7 @@ def check_function_def_above_main(self, clean_lines):
         return
 
     # Ignore statements after main().
-    if len(Literal("int main").searchString(code)):
+    if len(Literal("int main").search_string(code)):
         return
 
     # Prototypes and function declarations may have headers that span multiple lines

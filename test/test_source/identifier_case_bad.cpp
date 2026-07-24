@@ -1,30 +1,30 @@
-const int* ptr = new int();
-const int _No_Good;
-const int No_Good;
-const int Bad;
-const double bad;
-const string GOOD_GOING;
-const int& nop = bad;
+const int* ptr = new int(); // Bad
+const int _No_Good; // Bad
+const int No_Good; // Bad
+const int Bad; // Bad
+const double bad; // Bad
+const string GOOD_GOING; // Good
+const int& nop = bad; // Bad
 
-const int no_Good99;
+const int no_Good99; // Bad
 
-const long _i;
+const long _i; // Bad
 
-const int badArray[10];
-const int GOOD_ARRAY[10];
-const int badInitializedArray[] = {0, 1, 2};
+const int badArray[10]; // Bad
+const int GOOD_ARRAY[10]; // Bad
+const int badInitializedArray[] = {0, 1, 2}; // Bad
 
-class GoodClass
+class GoodClass // Good
 {
 
 };
 
-class badClass
+class badClass // Bad
 {
 
 };
 
-struct badStruct
+struct badStruct // Bad
 {
 
 };
@@ -34,83 +34,83 @@ struct GoodStruct
 
 };
 
-const Class test;
+const Class test; // ????
 
-class ForwardDec;
+class ForwardDec; // Good
 
-class c_class
+class c_class // Bad
 {
 
 };
 
-class c
+class c // Bad
 {
 
 };
 
-class _
+class _ // Bad
 {
 
 };
 
-struct _badName
+struct _badName // Bad
 {
 
 };
 
-enum badColorType {RED, GREEN, BLUE};
+enum badColorType {RED, GREEN, BLUE}; // Bad Enum type name
 
-int fun(const int thisIsFine);
+int fun(const int thisIsFine); // Good
 
-int fineFunc(const std::string& goodConstParam);
+int fineFunc(const std::string& goodConstParam); // Good
 
-void test(int NotOkay); // does not test for this yet.
+void test(int NotOkay); // Bad: does not test for this yet.
 
-void GoodNamespace::goodFunName(int ok);
-void GoodNamespace::BadFunName(int ok);
+void GoodNamespace::goodFunName(int ok); // Good
+void GoodNamespace::BadFunName(int ok); // Bad
 
 int main ()
 {
+	constexpr int bAD_BUT_MOSTLY_Good {2}; // Bad
+	int Bad; // Bad
+	int Bad_Name; // Bad
+	int good; // Good
+	signed char BAD_SIGNED_CHAR; // Bad
+	unsigned double BAD_DUB; // Bad
+	const bool IS_GOOD; // Good
+	const int GOOD; // Good
+	const short noGood; // Good
+	constval test; // Good: Custom type with "const" in the name
+	auto Bad_Name2 = 3; // Bad
+	ifstream BadIStream; // Bad
+	ofstream BadOStream; // Bad
+	int bad_1; // Bad
+	int bad_2; // Bad
+	double bad_name; // Bad
+	double bad_Name; // Bad
 
-	int Bad;
-	int Bad_Name;
-	int good;
-	signed char BAD_SIGNED_CHAR;
-	unsigned double BAD_DUB;
-	const bool IS_GOOD;
-	const int GOOD;
-	const short noGood;
-	constval test;
-	auto Bad_Name2 = 3;
-	ifstream BadIStream;
-	ofstream BadOStream;
-	int bad_1;
-	int bad_2;
-	double bad_name;
-	double bad_Name;
+	string Name; // Bad
+	const string name; // Bad
+	const int max = 2; // Bad
+	const unsigned int seed = static_cast<unsigned int>(time(nullptr)); // Bad
+	const unsigned int ARRAY_LENGTH = 62; // Bad
 
-	string Name;
-	const string name;
-	const int max = 2;
-	const unsigned int seed = static_cast<unsigned int>(time(nullptr));
-	const unsigned int ARRAY_LENGTH = 62;
+	const int badArray[10]; // Bad
+	const int badArray2[] = {1, 2, 3, 4}; // Bad
+	int BAD_ARRAY[] = {1, 2, 3, 4}; // Bad
 
-	const int badArray[10];
-	const int badArray2[] = {1, 2, 3, 4};
-	int BAD_ARRAY[] = {1, 2, 3, 4};
-
-	constexpr int BadConstExpr = 5;
-	constexpr int GOOD_CONST_EXPR = 10;
+	constexpr int BadConstExpr = 5; // Bad
+	constexpr int GOOD_CONST_EXPR = 10; // Good
 
 	return 0;
 }
 
-void BadFunc (int goodParam)
+void BadFunc (int goodParam) // Bad function name
 {
 
 }
 
-void goodFunc (int BadParam)
+void goodFunc (int BadParam) // Bad parameter name
 {
 
 }

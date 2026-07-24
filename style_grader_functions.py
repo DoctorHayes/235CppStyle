@@ -75,7 +75,7 @@ def parse_template_expression(input):
     expr = Forward()
     expr << cpp_name + Optional(Group(Suppress(open_bracket) + delimitedList(expr) + Suppress(close_bracket)))
 
-    result = expr.parseString(input, parseAll=True)
+    result = expr.parse_string(input, parseAll=True)
     def rec_mktpl(lst):
         if isinstance(lst, ParseResults):
             return tuple([rec_mktpl(l) for l in lst])
@@ -93,7 +93,7 @@ def check_if_function(code):
     function_close = Literal("}")
     function_declaration = Optional(srange("[a-z]")) + return_type + function_name + Optional(template) + "(" + Optional(args) + Optional(Word(' const'))
     grammar = function_declaration + Optional(function_open)
-    results = grammar.searchString(code)
+    results = grammar.search_string(code)
     if len(results) and 'new' not in (results[0]).asList():
         return True
     return False
@@ -108,7 +108,7 @@ def check_if_function_prototype(code):
     args = Word(alphanums + ':,_[]&*<> ="\'') # identifiers are not required, just types
     grammar = Optional(srange('[a-z]')) + return_type + function_name + "(" + Optional(args) + ")" + Optional(Word(' const')) + Optional(" ") + ";"
 
-    results = grammar.searchString(code)
+    results = grammar.search_string(code)
 
     # should not be preceded by the keyword 'new' or 'return'
     return len(results) and not set(['new', 'return']).intersection((results[0]).asList())
@@ -118,27 +118,25 @@ def check_if_switch_statement(code):
     args = Word(alphanums + '_')
     grammar = statement + Optional(" ") + "(" + args + ")"
     try:
-        grammar.parseString(code)
+        grammar.parse_string(code)
         return True
     except ParseException:
         return False
 
 def check_if_statement(code):
     statement = Keyword('if')
-    args = Word(alphanums + ',_[]&*!=+-%&|/() ')
     grammar = statement + "("
     try:
-        grammar.parseString(code)
+        grammar.parse_string(code)
         return True
     except ParseException:
         return False
 
 def check_else_if(code):
     statement = Keyword('else if')
-    args = Word(alphanums + ',_[]&* ')
     grammar = statement + Optional(" ") + "("
     try:
-        grammar.parseString(code)
+        grammar.parse_string(code)
         return True
     except ParseException:
         return False
@@ -147,14 +145,14 @@ def check_else(code):
     statement = Keyword('else')
     grammar = statement + Optional(Word("{"))
     try:
-        grammar.parseString(code)
+        grammar.parse_string(code)
         return True and not check_else_if(code)
     except:
         return False
 
 def check_if_case_arg(code):
     statement = (Keyword('case') | Keyword('default'))
-    if len(statement.searchString(code)):
+    if len(statement.search_string(code)):
         return True
     else:
         return False
@@ -164,7 +162,7 @@ def check_if_cout_block(code):
     grammar = statement + Optional(" ")
 
     try:
-        grammar.parseString(code)
+        grammar.parse_string(code)
         if code.find(';') == -1:
             return True
         else:
@@ -309,7 +307,7 @@ def check_if_public_or_private(code):
 
     grammar = (private | public)
 
-    if len(grammar.searchString(code)) >= 1:
+    if len(grammar.search_string(code)) >= 1:
         return True
     else:
         return False
@@ -320,7 +318,7 @@ def check_if_break_statement(code):
     statement = Keyword('break')
     grammar = statement + Optional(" ") + ";"
     try:
-        grammar.parseString(code)
+        grammar.parse_string(code)
         return True
     except ParseException:
         return False
@@ -331,7 +329,7 @@ def check_if_struct_or_class(code):
     name = Word(alphanums + '_')
     statement = (class_type + name | struct_type + name)
 
-    if len(statement.searchString(code)):
+    if len(statement.search_string(code)):
         return True
     return False
 

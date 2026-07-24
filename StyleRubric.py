@@ -2,7 +2,6 @@
 Style Grader class with instance-method plugin-based functionality.
 '''
 
-import codecs
 from configparser import ConfigParser
 from collections import defaultdict
 import os
@@ -27,7 +26,7 @@ LOCAL_DIR = os.path.dirname(os.path.realpath(__file__))
 
 def safely_open(filename):
     try:
-        dirty_text = codecs.open(filename, 'r', 'utf8', 'replace').readlines()
+        dirty_text = open(filename, 'r', encoding='utf8', errors='replace').readlines()
         for num, line in enumerate(dirty_text):
             dirty_text[num] = line.rstrip('\r')
         return dirty_text

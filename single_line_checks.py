@@ -22,7 +22,7 @@ def check_int_for_bool(self, code):
 def check_equals_true(self, code):
     keyword = Literal("true") | Literal("false")
     statement_parser = Group("==" + keyword) | Group(keyword + "==")
-    if len(statement_parser.searchString(code)):
+    if len(statement_parser.search_string(code)):
         self.add_error(label="EQUALS_TRUE")
 
 def check_float_type(self, code):
@@ -74,13 +74,13 @@ def check_while_true(self, code):
     keyword = Literal("true") | Literal("1")
 
     statement_parser = Literal("while") + Literal("(") + keyword + Literal(")")
-    if len(statement_parser.searchString(code)):
+    if len(statement_parser.search_string(code)):
         self.add_error(label="WHILE_TRUE")
 
 
 def check_non_const_global(self, code):
     inside = Literal("int main")
-    if len(inside.searchString(code)):
+    if len(inside.search_string(code)):
         self.outside_main = False
 
     elif self.outside_main:
@@ -97,13 +97,13 @@ def check_non_const_global(self, code):
 def check_main_syntax(self, code):
     # Return value for main is optional in C++11
     parser = Literal("int") + Literal("main") + Literal("(") + SkipTo(Literal(")")) + Literal(")")
-    if len(parser.searchString(code)):
+    if len(parser.search_string(code)):
         main_prefix = Literal("int") + Literal("main") + Literal("(")
         full_use = Literal("int") + "argc" + "," + Optional(Literal("const") | Literal("constexpr")) + "char" + "*" + "argv" + "[" + "]" + ")"
         # 3 options for main() syntax
-        if not len((main_prefix + Literal(")")).searchString(code)) and \
-                not len((main_prefix + Literal("void") + Literal(")")).searchString(code)) and \
-                not len((main_prefix + full_use).searchString(code)):
+        if not len((main_prefix + Literal(")")).search_string(code)) and \
+                not len((main_prefix + Literal("void") + Literal(")")).search_string(code)) and \
+                not len((main_prefix + full_use).search_string(code)):
             self.add_error(label="MAIN_SYNTAX")
 
 # Make sure identifiers are more than 1 character in length
@@ -128,109 +128,179 @@ def check_identifier_length(self, code):
                 self.add_error(label="IDENTIFIER_LENGTH", data={"found": str(result)})
 
 
+def _to_pascal_case(identifier: str) -> str:
+    # Split on underscores first
+    chunks = re.split(r'_+', identifier.strip())
+    words = []
+
+    for chunk in chunks:
+        if not chunk:
+            continue
+
+        # Extract:
+        # - sequences of capitals not followed by a lowercase (acronyms)
+        # - normal words (optionally followed by lowercase runs)
+        #
+        # Examples:
+        #   "HTTPServer" -> ["HTTP", "Server"]
+        #   "myVarName"  -> ["my", "Var", "Name"]
+        #   "MyVarName"  -> ["My", "Var", "Name"]
+        tokens = re.findall(r'[A-Z]+(?![a-z])|[A-Z]?[a-z]+|[0-9]+', chunk)
+        words.extend(tokens)
+
+    # Capitalize each extracted word for PascalCase
+    # If you want to preserve full acronyms like "HTTP", keep them uppercase.
+    def cap(word: str) -> str:
+        return word if word.isupper() else word.capitalize()
+
+    return ''.join(cap(w) for w in words)
+
+def _to_camel_case(identifier: str) -> str:
+    """Convert identifier to camelCase (variableName, functionName)."""
+    if not identifier:
+        return identifier
+    
+    # Remove leading underscores, then convert
+    clean_id = identifier.lstrip('_')
+    if not clean_id:
+        return identifier
+    
+    # Replace underscores with spaces, capitalize each word except first, remove spaces
+    chunks = re.split(r'_+', clean_id.strip())
+    words = []
+
+    for chunk in chunks:
+        if not chunk:
+            continue
+
+        # Extract:
+        # - sequences of capitals not followed by a lowercase (acronyms)
+        # - normal words (optionally followed by lowercase runs)
+        #
+        # Examples:
+        #   "HTTPServer" -> ["HTTP", "Server"]
+        #   "myVarName"  -> ["my", "Var", "Name"]
+        #   "MyVarName"  -> ["My", "Var", "Name"]
+        tokens = re.findall(r'[A-Z]+(?![a-z])|[A-Z]?[a-z]+|[0-9]+', chunk)
+        words.extend(tokens)
+
+    first = words[0].lower()
+    rest = ''.join(word.capitalize() for word in words[1:] if word)
+    return first + rest
+
+def _to_upper_snake_case(identifier: str) -> str:
+    """Convert identifier to UPPER_SNAKE_CASE (CONSTANT_NAME, MAX_VALUE)."""
+
+    _TOKEN_RE = re.compile(r'[A-Z]+(?![a-z])|[A-Z]?[a-z]+|[0-9]+')
+
+    if not identifier:
+        return identifier
+
+    # Remove prior leading/trailing underscores (strip, then re-check)
+    clean_id = identifier.strip('_')
+    if not clean_id:
+        return identifier
+
+    # Identifiers won't have dashes/spaces, but there may be repeated/mixed underscores.
+    chunks = re.split(r'_+', clean_id)
+
+    tokens = []
+    for chunk in chunks:
+        if not chunk:
+            continue
+        tokens.extend(_TOKEN_RE.findall(chunk))
+
+    return '_'.join(t.upper() for t in tokens)
+
 def check_identifier_case(self, code):
     if code.isspace():
         return
 
-    # check if the first char is lower-case alpha or '_'
-    lowercase = re.compile(r"(?:^|\s+)(?:class|struct|enum)\s+(?:[a-z]|_)\w*")
-    bad_naming = lowercase.search(code)
-
-    if bad_naming:
-        result = bad_naming.group(0).split()
-        expected = str(result[1])
-
-        if len(expected) == 1:
-            expected = 'A Descriptive Name'
-        if (expected and expected[0] == '_'): # Remove leading _ from expected input
-            expected = expected[1:]
-        self.add_error(label="IDENTIFIER_CASE",
-                       data={"style": "camel case (starting with a capital letter)",
-                             "type": result[0],
-                             "expected": expected[0].capitalize() + (expected[1:] if len(expected) > 1 else ''),
-                             "found": str(result[1])})
-        return
-
-    # Make sure the first letter of non-const variable names are lowercase.
-    # If the line contains 'const' or 'constexpr', skip the non-const checks.
-    is_const = re.search(r'\b(?:const|constexpr)\b', code)
-    if not is_const:
-        uppercase = re.compile(r'(?:^|\s+)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\[\(\)\{;=]')
-        bad_naming = uppercase.search(code)
-        bad_underscore = re.search(r'(?:^|\s+)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)[\*\&\s]+(?:[\w_]+\:\:)*((?:[\w_])\w*_[\w_]*)\s*[,\[\(\)\{;=]', code)
-    else:
-        bad_naming = None
-        bad_underscore = None
-
-    uppercase_unsigned = re.compile(r'(?:^|\s+)(?:const|constexpr)\s+(?:signed|unsigned)\s+(?:bool|char|short|long|int|float|double)[\*\&\s]+(?:[\w_]+\:\:)*((?:[A-Z]|_)\w+)\s*[,\(\)\{;=]')
-
-    if (bad_naming and not uppercase_unsigned.search(code)) or bad_underscore:
-
-        result = bad_naming.group(1) if bad_naming else bad_underscore.group(1)
-
-        # Create an expected constant name where underscores are converted to camel case
-        try:
-            expected = ''
-            var_length = len(result)
-            cap_next = False
-            for i, ch in enumerate(result):
-                if ch == '_':
-                    cap_next = True
-                elif cap_next:
-                    expected += ch.upper()
-                    cap_next = False
-                else:
-                    expected += ch
-
-            if (expected and expected[0] == '_'): # Remove leading _ from expected input
-                expected = expected[1:]
-
-            self.add_error(label="IDENTIFIER_CASE",
-                           data={"type": 'non-constant variables or function',
-                                 "style": "camel case (starting with a lowercase letter)",
-                                 "expected": ((expected[:1].lower() + expected[1:]) if expected else '') if len(expected) > 1 else "a descriptive name",
-                                 "found": str(result)})
-        except IndexError:
-            # probably means that this is an std:: parameter, they don't need to be capitalized.
-            print("Something weird happened in check_identifier_case with '", code, "'.")
+    # ===== Check class/struct/enum names - should be PascalCase =====
+    type_pattern = re.compile(r"(?:^|\s+)(?:class|struct|enum)\s+([\w_]+)")
+    type_match = type_pattern.search(code)
+    
+    if type_match:
+        found_name = type_match.group(1)
+        keyword = type_match.group(0).split()[-2]  # 'class', 'struct', or 'enum'
+        
+        # Check if not in PascalCase (should start with uppercase letter)
+        # Flag errors for: lowercase start or underscore start
+        if found_name:
+            if found_name[0].islower() or found_name[0] == '_':
+                expected_name = _to_pascal_case(found_name)
+                self.add_error(
+                    label="IDENTIFIER_CASE",
+                    data={
+                        "type": keyword,
+                        "style": "PascalCase (ClassName, StructName)",
+                        "expected": expected_name if len(expected_name) > 1 else "A Descriptive Name",
+                        "found": found_name
+                    }
+                )
             return
-        return
 
-    # Make sure const variables are all caps
+    # ===== Check non-const variables and parameters =====
+    # Skip if line contains 'const' or 'constexpr'
+    is_const = re.search(r'\b(?:const|constexpr)\b', code)
+    
+    if not is_const:
+        # Pattern for type declarations (variables/parameters)
+        var_pattern = re.compile(
+            r'(?:^|\s+)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)'
+            r'[\*\&\s]+(?:[\w_]+\:\:)*([\w_]+)\s*[,\[\(\)\{;=]'
+        )
+        var_match = var_pattern.search(code)
+        
+        if var_match:
+            found_name = var_match.group(1)
+            
+            # Check if not in camelCase (should start lowercase and not have underscores)
+            if found_name and (found_name[0].isupper() or '_' in found_name):
+                expected_name = _to_camel_case(found_name)
+                self.add_error(
+                    label="IDENTIFIER_CASE",
+                    data={
+                        "type": "non-constant variable or parameter",
+                        "style": "camelCase (variableName, paramName)",
+                        "expected": expected_name if len(expected_name) > 1 else "a descriptive name",
+                        "found": found_name
+                    }
+                )
+            return
+
+    # ===== Check const variables - should be UPPER_SNAKE_CASE =====
     if not check_if_function_prototype(code) and not check_if_function(code):
-        const_var = re.compile(r"(?:^|\s+)(?:const|constexpr)\s+(?:void|bool|char|short|long|int|float|double|string|std::string|auto)\s*[\*\&\s]*\s*(?:\w|_)\w+")
-        const_var = const_var.search(code)
-        unsigned_const_var = re.search(r'(?:^|\s+)(?:const|constexpr)\s+(?:signed|unsigned)\s+(?:char|short|long|long\s+long|int)\s*[\*\&\s]*\s*(?:\w|_)\w+', code)
-        if const_var or unsigned_const_var:
-            if const_var:
-                const_var = str(const_var.group(0).split()[-1])
-            else:
-                const_var = str(unsigned_const_var.group(0).split()[-1])
-
-            # Create an expected constant name where camel case is converted to all caps with underscores
-            expected = ''
-            var_length = len(const_var)
-            for i, ch in enumerate(reversed(const_var)):
-                if ch.isupper() and ch != '_' and i < var_length - 1 and i > 0 and const_var[var_length - i - 2] != '_':
-                    expected = '_' + ch + expected
-                else:
-                    expected = ch.upper() + expected
-
-            if (expected and expected[0] == '_'): # Remove leading _ from expected input
-                expected = expected[1:]
-            if not const_var.isupper():
-                self.add_error(label="IDENTIFIER_CASE",
-                       data={"type": 'constant variable',
-                             "style": "all caps (separating words with an underscore)",
-                             "expected": expected if len(expected) > 1 else "a descriptive name",
-                             "found": const_var})
+        # Pattern for const variable declarations
+        const_pattern = re.compile(
+            r"(?:^|\s+)(?:const|constexpr)\s+"
+            r"(?:(?:signed|unsigned)\s+)?(?:void|bool|char|short|long|int|float|double|string|std::string|auto)[\*\&\s]*\s*"
+            r"([\w_]+)"
+        )
+        const_match = const_pattern.search(code)
+        
+        if const_match:
+            found_name = const_match.group(1)
+            
+            # Check if not in UPPER_SNAKE_CASE
+            if found_name and not found_name.isupper():
+                expected_name = _to_upper_snake_case(found_name)
+                self.add_error(
+                    label="IDENTIFIER_CASE",
+                    data={
+                        "type": "constant variable",
+                        "style": "UPPER_SNAKE_CASE (CONSTANT_NAME, MAX_VALUE)",
+                        "expected": expected_name if len(expected_name) > 1 else "A Descriptive Name",
+                        "found": found_name
+                    }
+                )
 
 
 
 def check_unnecessary_include(self, code):
     grammar = Literal('#') + Literal('include') + Literal('<') + Word(alphanums + '.' + '_') + Literal('>')
     try:
-        grammar.parseString(code)
+        grammar.parse_string(code)
         begin = code.find("<")
         end = code.find(">")
         included_library = code[begin + 1:end]
@@ -243,7 +313,7 @@ def check_unnecessary_include(self, code):
 def check_local_include(self, code):
     grammar = Literal('#') + Literal('include') + Literal('"') + Word(alphanums)
     try:
-        grammar.parseString(code)
+        grammar.parse_string(code)
         begin = code.find('"')
         included_file = code[begin + 1:]
         end = included_file.find('"')

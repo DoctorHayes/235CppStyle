@@ -16,7 +16,7 @@ def check_missing_rme(self, lines):
     # RME = A function comment with 3 sections: Requires, Modifies, Effects
     function = Word(alphanums + '_')
     function_syntax = function + Literal('(')
-    parsed = function_syntax.searchString(lines[self.current_line_num]).asList()
+    parsed = function_syntax.search_string(lines[self.current_line_num]).asList()
     function_name = parsed[0][0]
     function_signature = lines[self.current_line_num].strip().replace(';','').strip()
     if function_name != 'main':
@@ -44,7 +44,7 @@ def check_missing_rme(self, lines):
 def check_missing_prototype_comments(self, lines):
     function = Word(alphanums + '_')
     function_syntax = function + Literal('(')
-    parsed = function_syntax.searchString(lines[self.current_line_num]).asList()
+    parsed = function_syntax.search_string(lines[self.current_line_num]).asList()
     if (len(parsed) > 0):
         function_name = parsed[0][0]
     else:
