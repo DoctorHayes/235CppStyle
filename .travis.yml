@@ -1,8 +1,0 @@
-language: python
-python:
-  - "3.12"
-  - "3.13"
-# command to install dependencies
-install: "pip install -e .[dev]"
-# command to run tests
-script: pytest

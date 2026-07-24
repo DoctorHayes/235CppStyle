@@ -1,4 +1,4 @@
-[![Build Status](https://app.travis-ci.com/DoctorHayes/235CppStyle.svg?token=DRcs5Nipce5x3JwKd5Wo)](https://app.travis-ci.com/DoctorHayes/235CppStyle)
+[![Python Tests](https://github.com/DoctorHayes/235CppStyle/actions/workflows/python-tests.yml/badge.svg)](https://github.com/DoctorHayes/235CppStyle/actions/workflows/python-tests.yml)
 ![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/DoctorHayes/235CppStyle/master/LICENSE)
 
