@@ -407,3 +407,24 @@ def check_system_call(self, code):
     sys_call = re.search(r"(?:^|\s+|\}|\{|;)system\s*\(\s*\"", code)
     if sys_call:
         self.add_error(label="SYSTEM_CALL")
+
+def check_const_literal(self, code):
+    if 'constexpr' in code:
+        return
+    match = re.search(r'\bconst\s+([a-zA-Z0-9_:\s<>*&]+?)\s+([a-zA-Z0-9_]+)\s*=\s*(.*?)\s*;', code)
+    if match:
+        val = match.group(3).strip()
+        is_literal = False
+        if val in ['true', 'false']:
+            is_literal = True
+        elif val.startswith('"') and val.endswith('"'):
+            is_literal = True
+        elif val.startswith("'") and val.endswith("'"):
+            is_literal = True
+        else:
+            num_re = r'^-?(?:0x[\da-fA-F]+|0b[01]+|\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)[uUlLfFzZ]*$'
+            if re.match(num_re, val):
+                is_literal = True
+        
+        if is_literal:
+            self.add_error(label="CONST_LITERAL")
