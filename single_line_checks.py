@@ -232,9 +232,11 @@ def check_identifier_case(self, code):
     if code.isspace():
         return
 
-    # `using namespace ...;` is an aliasing directive, not a declaration.
-    # It should never participate in identifier-case validation.
-    if re.match(r'^\s*using\s+namespace\b', code, re.IGNORECASE):
+    # These statements are keyword-driven control/aliasing constructs, not type
+    # declarations.  Let them bypass the declaration-only identifier regexes so
+    # a `return` line like `return SUNDAY;` and a `typedef` line like
+    # `typedef int NUM;` cannot be mistaken for variable declarations.
+    if re.match(r'^\s*(?:return|typedef|using|typename|sizeof|alignof|alignas|decltype|static_assert|consteval|constinit)\b', code, re.IGNORECASE):
         return
 
     # Skip simple assignments to existing variables (e.g., x = y * Z;)

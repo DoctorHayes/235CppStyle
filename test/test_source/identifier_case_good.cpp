@@ -26,6 +26,9 @@ namespace Action
 
 // Non-const variables should be camelCase
 int main() {
+
+    enum Weekday {SUNDAY, MONDAY, TUESDAY};
+
     int myVariable = 5;
     double temperature = 98.6;
     string studentName = "John";
@@ -50,6 +53,11 @@ int main() {
     double costOfClothesAndAcc;
      
     costOfClothesAndAcc = netIncome * CLOTHES_AND_ACC;
+
+    typedef int Num;
+    typedef Weekday DayType;
+
+    Num number;
     
-    return 0;
+    return SUNDAY;
 }
