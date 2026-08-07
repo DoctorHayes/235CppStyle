@@ -133,5 +133,6 @@ class StyleError(object):
             "FILENAME_SPACES": "Remove spaces from the filename '{}'. Suggested filename: '{}'.".format(self.get_data().get("filename"),
                                                                                                     self.get_data().get("suggestion")),
             "SWITCH_PREFERENCE": "Multiple '==' operators used in succession with the same operand. Use a switch statement instead.",
-            "CONST_LITERAL": "Use 'constexpr' instead of 'const' if the value is known at compile-time."
+            "CONST_LITERAL": "Use 'constexpr' instead of 'const' if the value is known at compile-time.",
+            "MAIN_RETURN": "Although optional in modern C++, add return 0; at the end of main() to reinforce that main() returns an exit status to the operating system, with 0 indicating success."
         }[label]

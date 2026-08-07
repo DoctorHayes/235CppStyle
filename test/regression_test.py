@@ -217,4 +217,10 @@ class RegressionTesting(unittest.TestCase):
     def test_const_literal_good(self): self.assertEqual(0, self.rubric.error_types['CONST_LITERAL'])
 
     @load_code_segment('const_literal_bad.cpp')
-    def test_const_literal_bad(self): self.assertEqual(8, self.rubric.error_types['CONST_LITERAL'])
+    def test_const_literal_bad(self): self.assertEqual(10, self.rubric.error_types['CONST_LITERAL'])
+
+    @load_code_segment('main_return_good.cpp')
+    def test_main_return_good(self): self.assertEqual(0, self.rubric.error_types['MAIN_RETURN'])
+
+    @load_code_segment('main_return_bad.cpp')
+    def test_main_return_bad(self): self.assertEqual(1, self.rubric.error_types['MAIN_RETURN'])

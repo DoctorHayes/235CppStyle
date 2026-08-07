@@ -6,3 +6,5 @@ const string NAME = "hello";
 const char CH = 'A';
 const float HALF = 0.5f;
 const long long BIG_NUM = 1234567890LL;
+const double DOUBLE_NUM = {3.14};
+const double DOUBLE_NUM_2 {3.14};

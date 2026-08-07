@@ -532,3 +532,39 @@ def check_switch_preferred(self, clean_lines):
             if consecutive_count == 3:
                 self.add_error(label='SWITCH_PREFERENCE', line=line_num + 1)
 
+def check_main_return(self, clean_lines):
+    code = clean_lines.elided[self.current_line_num]
+    
+    if "int main" in code and not check_if_function_prototype(code):
+        brace_count = 0
+        started = False
+        end_line_num = -1
+        
+        for i in range(self.current_line_num, clean_lines.num_lines):
+            line = clean_lines.elided[i]
+            
+            if '{' in line:
+                brace_count += line.count('{')
+                started = True
+                
+            if '}' in line:
+                brace_count -= line.count('}')
+                
+            if started and brace_count == 0:
+                end_line_num = i
+                break
+                
+        if end_line_num != -1:
+            has_return = False
+            for i in range(end_line_num, self.current_line_num, -1):
+                line = clean_lines.elided[i].strip()
+                line = re.sub(r'\}', '', line).strip()
+                if line == '':
+                    continue
+                
+                if line.startswith('return') or 'return' in line:
+                    has_return = True
+                break
+                
+            if not has_return:
+                self.add_error(label="MAIN_RETURN", line=end_line_num + 1)

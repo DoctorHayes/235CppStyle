@@ -411,7 +411,7 @@ def check_system_call(self, code):
 def check_const_literal(self, code):
     if 'constexpr' in code:
         return
-    match = re.search(r'\bconst\s+([a-zA-Z0-9_:\s<>*&]+?)\s+([a-zA-Z0-9_]+)\s*=\s*(.*?)\s*;', code)
+    match = re.search(r'\bconst\s+([a-zA-Z0-9_:\s<>*&]+?)\s+([a-zA-Z0-9_]+)\s*(?:=\s*\{?|\{)\s*(.*?)\s*\}?\s*;', code)
     if match:
         val = match.group(3).strip()
         is_literal = False
