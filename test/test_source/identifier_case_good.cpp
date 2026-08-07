@@ -11,6 +11,19 @@ struct DataPoint {};
 enum Color { RED, GREEN, BLUE };
 enum ErrorCode { SUCCESS, ERROR, FAILED };
 
+namespace Action
+{
+	/**
+	 * The shapes that a player can make in this game.
+	 */
+	enum Shape { ROCK, PAPER, SCISSORS, INVALID_SHAPE };
+
+	/**
+	 * Converts a character abbreviation of shape to the shape type
+	 */
+	Shape charToShape(char selection);
+} // End Action
+
 // Non-const variables should be camelCase
 int main() {
     int myVariable = 5;

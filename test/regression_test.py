@@ -182,6 +182,9 @@ class RegressionTesting(unittest.TestCase):
     
     @load_code_segment('identifier_case_pascal_to_convert.cpp')
     def test_identifier_case_pascal_to_convert(self): self.assertEqual(6, self.rubric.error_types['IDENTIFIER_CASE'])
+
+    @load_code_segment('identifier_case_namespace_bad.cpp')
+    def test_identifier_case_namespace_bad(self): self.assertEqual(1, self.rubric.error_types['IDENTIFIER_CASE'])
     
     @load_code_segment('identifier_length_bad.cpp')
     def test_check_identifier_length(self):

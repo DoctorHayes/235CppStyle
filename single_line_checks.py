@@ -232,6 +232,11 @@ def check_identifier_case(self, code):
     if code.isspace():
         return
 
+    # `using namespace ...;` is an aliasing directive, not a declaration.
+    # It should never participate in identifier-case validation.
+    if re.match(r'^\s*using\s+namespace\b', code, re.IGNORECASE):
+        return
+
     # Skip simple assignments to existing variables (e.g., x = y * Z;)
     # This prevents misidentifying multiplication as pointer declarations.
     if re.match(r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*=(?!=)', code):
@@ -241,8 +246,8 @@ def check_identifier_case(self, code):
     type_with_template = rf'(?:{type_token})(?:\s*<[^>]+>\s*)?'
     declaration_start = r'(?:^|[\s(,])'
 
-    # ===== Check class/struct/enum names - should be PascalCase =====
-    type_pattern = re.compile(r"(?:^|\s+)(?:class|struct|enum)\s+([\w_]+)")
+    # ===== Check class/struct/enum/namespace names - should be PascalCase =====
+    type_pattern = re.compile(r"(?:^|\s+)(?:class|struct|enum|namespace)\s+([\w_]+)")
     type_match = type_pattern.search(code)
     
     if type_match:
