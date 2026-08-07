@@ -11,7 +11,7 @@ const int no_Good99; // Bad
 const long _i; // Bad
 
 const int badArray[10]; // Bad
-const int GOOD_ARRAY[10]; // Bad
+const int GOOD_ARRAY[10]; // Good
 const int badInitializedArray[] = {0, 1, 2}; // Bad
 
 class GoodClass // Good
@@ -34,7 +34,7 @@ struct GoodStruct
 
 };
 
-const Class test; // ????
+const Class test; // Bad
 
 class ForwardDec; // Good
 

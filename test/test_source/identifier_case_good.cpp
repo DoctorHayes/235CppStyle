@@ -29,6 +29,8 @@ int main() {
     // Const expressions
     constexpr int BUFFER_SIZE = 256;
     constexpr double GOLDEN_RATIO = 1.618;
+
+    constexpr string_view VOWELS {"aeiouAEIOU"}; // all of the vowels.
     
     return 0;
 }

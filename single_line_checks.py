@@ -212,9 +212,29 @@ def _to_upper_snake_case(identifier: str) -> str:
 
     return '_'.join(t.upper() for t in tokens)
 
+
+def _get_function_name(code: str):
+    if not (check_if_function(code) or check_if_function_prototype(code)):
+        return None
+
+    match = re.search(r'([A-Za-z_][A-Za-z0-9_]*)\s*\(', code)
+    if not match:
+        return None
+
+    name = match.group(1)
+    if name in {'if', 'for', 'while', 'switch', 'return', 'main'}:
+        return None
+
+    return name
+
+
 def check_identifier_case(self, code):
     if code.isspace():
         return
+
+    type_token = r'(?:[A-Za-z_][A-Za-z0-9_]*::)*[A-Za-z_][A-Za-z0-9_]*'
+    type_with_template = rf'(?:{type_token})(?:\s*<[^>]+>\s*)?'
+    declaration_start = r'(?:^|[\s(,])'
 
     # ===== Check class/struct/enum names - should be PascalCase =====
     type_pattern = re.compile(r"(?:^|\s+)(?:class|struct|enum)\s+([\w_]+)")
@@ -240,6 +260,19 @@ def check_identifier_case(self, code):
                 )
             return
 
+    function_name = _get_function_name(code)
+    if function_name and (function_name[0].isupper() or '_' in function_name):
+        expected_name = _to_camel_case(function_name)
+        self.add_error(
+            label="IDENTIFIER_CASE",
+            data={
+                "type": "function",
+                "style": "camelCase (functionName, methodName)",
+                "expected": expected_name if len(expected_name) > 1 else "a descriptive name",
+                "found": function_name
+            }
+        )
+
     # ===== Check non-const variables and parameters =====
     # Skip if line contains 'const' or 'constexpr'
     is_const = re.search(r'\b(?:const|constexpr)\b', code)
@@ -247,8 +280,7 @@ def check_identifier_case(self, code):
     if not is_const:
         # Pattern for type declarations (variables/parameters)
         var_pattern = re.compile(
-            r'(?:^|\s+)\s*(?:void|bool|char|short|long|int|float|double|string|std::string|auto|ifstream|ofstream)'
-            r'[\*\&\s]+(?:[\w_]+\:\:)*([\w_]+)\s*[,\[\(\)\{;=]'
+            rf'{declaration_start}(?:{type_with_template})[\*\&\s]+([A-Za-z_][A-Za-z0-9_]*)\s*(?:[,\[\)\{{;=]|$)'
         )
         var_match = var_pattern.search(code)
         
@@ -273,9 +305,7 @@ def check_identifier_case(self, code):
     if not check_if_function_prototype(code) and not check_if_function(code):
         # Pattern for const variable declarations
         const_pattern = re.compile(
-            r"(?:^|\s+)(?:const|constexpr)\s+"
-            r"(?:(?:signed|unsigned)\s+)?(?:void|bool|char|short|long|int|float|double|string|std::string|auto)[\*\&\s]*\s*"
-            r"([\w_]+)"
+            rf'{declaration_start}(?:const|constexpr)\s+(?:(?:signed|unsigned)\s+)?(?:{type_with_template})[\*\&\s]*([A-Za-z_][A-Za-z0-9_]*)'
         )
         const_match = const_pattern.search(code)
         
@@ -413,6 +443,11 @@ def check_const_literal(self, code):
         return
     match = re.search(r'\bconst\s+([a-zA-Z0-9_:\s<>*&]+?)\s+([a-zA-Z0-9_]+)\s*(?:=\s*\{?|\{)\s*(.*?)\s*\}?\s*;', code)
     if match:
+        # constexpr std::string cannot be initialized.
+        type_str = match.group(1).strip()
+        if type_str in ['string', 'std::string']:
+            return
+            
         val = match.group(3).strip()
         is_literal = False
         if val in ['true', 'false']:
@@ -427,4 +462,4 @@ def check_const_literal(self, code):
                 is_literal = True
         
         if is_literal:
-            self.add_error(label="CONST_LITERAL")
+            self.add_error(label="CONST_LITERAL")
