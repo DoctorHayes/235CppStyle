@@ -31,6 +31,12 @@ int main() {
     constexpr double GOLDEN_RATIO = 1.618;
 
     constexpr string_view VOWELS {"aeiouAEIOU"}; // all of the vowels.
+
+    constexpr double CLOTHES_AND_ACC = 0.12;
+    double netIncome = 4;
+    double costOfClothesAndAcc;
+     
+    costOfClothesAndAcc = netIncome * CLOTHES_AND_ACC;
     
     return 0;
 }

@@ -232,6 +232,11 @@ def check_identifier_case(self, code):
     if code.isspace():
         return
 
+    # Skip simple assignments to existing variables (e.g., x = y * Z;)
+    # This prevents misidentifying multiplication as pointer declarations.
+    if re.match(r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*=(?!=)', code):
+        return
+
     type_token = r'(?:[A-Za-z_][A-Za-z0-9_]*::)*[A-Za-z_][A-Za-z0-9_]*'
     type_with_template = rf'(?:{type_token})(?:\s*<[^>]+>\s*)?'
     declaration_start = r'(?:^|[\s(,])'
