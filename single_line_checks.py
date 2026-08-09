@@ -232,112 +232,434 @@ def check_identifier_case(self, code):
     if code.isspace():
         return
 
-    # These statements are keyword-driven control/aliasing constructs, not type
-    # declarations.  Let them bypass the declaration-only identifier regexes so
-    # a `return` line like `return SUNDAY;` and a `typedef` line like
-    # `typedef int NUM;` cannot be mistaken for variable declarations.
-    if re.match(r'^\s*(?:return|typedef|using|typename|sizeof|alignof|alignas|decltype|static_assert|consteval|constinit)\b', code, re.IGNORECASE):
+    # -------------------------------------------------------------------------
+    # Statements that are definitely not variable declarations
+    # -------------------------------------------------------------------------
+
+    if re.match(
+        r'^\s*(?:return|typedef|using|typename|sizeof|alignof|alignas|'
+        r'decltype|static_assert|consteval|constinit)\b',
+        code,
+        re.IGNORECASE
+    ):
         return
 
-    # Skip simple assignments to existing variables (e.g., x = y * Z;)
-    # This prevents misidentifying multiplication as pointer declarations.
-    if re.match(r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*=(?!=)', code):
+    # Simple assignment to an existing variable.
+    if re.match(
+        r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*=(?!=)',
+        code
+    ):
         return
 
-    type_token = r'(?:[A-Za-z_][A-Za-z0-9_]*::)*[A-Za-z_][A-Za-z0-9_]*'
-    type_with_template = rf'(?:{type_token})(?:\s*<[^>]+>\s*)?'
-    declaration_start = r'(?:^|[\s(,])'
+    # -------------------------------------------------------------------------
+    # Class/struct/enum/namespace names - PascalCase
+    # -------------------------------------------------------------------------
 
-    # ===== Check class/struct/enum/namespace names - should be PascalCase =====
-    type_pattern = re.compile(r"(?:^|\s+)(?:class|struct|enum|namespace)\s+([\w_]+)")
-    type_match = type_pattern.search(code)
-    
+    identifier = r'[A-Za-z_][A-Za-z0-9_]*'
+
+    type_match = re.search(
+        rf'(?:^|\s+)(class|struct|enum|namespace)\s+({identifier})',
+        code
+    )
+
     if type_match:
-        found_name = type_match.group(1)
-        keyword = type_match.group(0).split()[-2]  # 'class', 'struct', or 'enum'
-        
-        # Check if not in PascalCase (should start with uppercase letter)
-        # Flag errors for: lowercase start or underscore start
-        if found_name:
-            if found_name[0].islower() or found_name[0] == '_':
-                expected_name = _to_pascal_case(found_name)
-                self.add_error(
-                    label="IDENTIFIER_CASE",
-                    data={
-                        "type": keyword,
-                        "style": "PascalCase (ClassName, StructName)",
-                        "expected": expected_name if len(expected_name) > 1 else "A Descriptive Name",
-                        "found": found_name
-                    }
-                )
-            return
+        keyword = type_match.group(1)
+        found_name = type_match.group(2)
+
+        if found_name[0].islower() or found_name[0] == '_':
+            expected_name = _to_pascal_case(found_name)
+
+            self.add_error(
+                label="IDENTIFIER_CASE",
+                data={
+                    "type": keyword,
+                    "style": "PascalCase (ClassName, StructName)",
+                    "expected": (
+                        expected_name
+                        if len(expected_name) > 1
+                        else "A Descriptive Name"
+                    ),
+                    "found": found_name
+                }
+            )
+
+        return
+
+    # -------------------------------------------------------------------------
+    # Function names - camelCase
+    # -------------------------------------------------------------------------
 
     function_name = _get_function_name(code)
-    if function_name and (function_name[0].isupper() or '_' in function_name):
+
+    if function_name and (
+        function_name[0].isupper() or '_' in function_name
+    ):
         expected_name = _to_camel_case(function_name)
+
         self.add_error(
             label="IDENTIFIER_CASE",
             data={
                 "type": "function",
                 "style": "camelCase (functionName, methodName)",
-                "expected": expected_name if len(expected_name) > 1 else "a descriptive name",
+                "expected": (
+                    expected_name
+                    if len(expected_name) > 1
+                    else "a descriptive name"
+                ),
                 "found": function_name
             }
         )
 
-    # ===== Check non-const variables and parameters =====
-    # Skip if line contains 'const' or 'constexpr'
-    is_const = re.search(r'\b(?:const|constexpr)\b', code)
-    
-    if not is_const:
-        # Pattern for type declarations (variables/parameters)
-        var_pattern = re.compile(
-            rf'{declaration_start}(?:{type_with_template})[\*\&\s]+([A-Za-z_][A-Za-z0-9_]*)\s*(?:[,\[\)\{{;=]|$)'
-        )
-        var_match = var_pattern.search(code)
-        
-        if var_match:
-            found_name = var_match.group(1)
-            
-            # Check if not in camelCase (should start lowercase and not have underscores)
-            if found_name and (found_name[0].isupper() or '_' in found_name):
-                expected_name = _to_camel_case(found_name)
-                self.add_error(
-                    label="IDENTIFIER_CASE",
-                    data={
-                        "type": "non-constant variable or parameter",
-                        "style": "camelCase (variableName, paramName)",
-                        "expected": expected_name if len(expected_name) > 1 else "a descriptive name",
-                        "found": found_name
-                    }
-                )
-            return
+    # -------------------------------------------------------------------------
+    # Variable declarations
+    #
+    # We deliberately recognize only the declaration forms needed by the
+    # course/style checker:
+    #
+    #     int value;
+    #     int value = 10;
+    #     int foo, bar;
+    #     const int VALUE = 10;
+    #     int const VALUE = 10;
+    #     int *ptr;
+    #     int * const PTR;
+    #     const int *ptr;
+    #     int &ref;
+    #     std::string name;
+    #     std::vector<int> values;
+    #
+    # The critical requirement is that a declaration contains:
+    #
+    #     TYPE [declarator operators] VARIABLE
+    #
+    # The variable identifier cannot simply be another identifier appearing
+    # somewhere later in the expression.
+    # -------------------------------------------------------------------------
 
-    # ===== Check const variables - should be UPPER_SNAKE_CASE =====
-    if not check_if_function_prototype(code) and not check_if_function(code):
-        # Pattern for const variable declarations
-        const_pattern = re.compile(
-            rf'{declaration_start}(?:const|constexpr)\s+(?:(?:signed|unsigned)\s+)?(?:{type_with_template})[\*\&\s]*([A-Za-z_][A-Za-z0-9_]*)'
-        )
-        const_match = const_pattern.search(code)
-        
-        if const_match:
-            found_name = const_match.group(1)
-            
-            # Check if not in UPPER_SNAKE_CASE
-            if found_name and not found_name.isupper():
+    declarations = _find_cpp_declarations(self, code)
+
+    for declaration in declarations:
+        found_name = declaration["name"]
+
+        if declaration["is_const"]:
+            # Constant variables must use UPPER_SNAKE_CASE.
+            if found_name != found_name.upper():
                 expected_name = _to_upper_snake_case(found_name)
+
                 self.add_error(
                     label="IDENTIFIER_CASE",
                     data={
                         "type": "constant variable",
                         "style": "UPPER_SNAKE_CASE (CONSTANT_NAME, MAX_VALUE)",
-                        "expected": expected_name if len(expected_name) > 1 else "A Descriptive Name",
+                        "expected": (
+                            expected_name
+                            if len(expected_name) > 1
+                            else "A Descriptive Name"
+                        ),
                         "found": found_name
                     }
                 )
 
+        else:
+            # Non-constant variables and parameters use camelCase.
+            if found_name[0].isupper() or '_' in found_name:
+                expected_name = _to_camel_case(found_name)
 
+                self.add_error(
+                    label="IDENTIFIER_CASE",
+                    data={
+                        "type": "non-constant variable or parameter",
+                        "style": "camelCase (variableName, paramName)",
+                        "expected": (
+                            expected_name
+                            if len(expected_name) > 1
+                            else "a descriptive name"
+                        ),
+                        "found": found_name
+                    }
+                )
+
+def _find_cpp_declarations(self, code):
+    """Find simple C++ variable declarations and function parameters."""
+
+    identifier = r'[A-Za-z_][A-Za-z0-9_]*'
+
+    # -------------------------------------------------------------------------
+    # C++ type names
+    # -------------------------------------------------------------------------
+
+    builtin_type = (
+        r'(?:'
+        r'bool|char|char8_t|char16_t|char32_t|wchar_t|'
+        r'short|int|long|float|double|void|'
+        r'signed|unsigned'
+        r')'
+    )
+
+    qualified_type = (
+        rf'(?:{identifier}\s*::\s*)*'
+        rf'{identifier}'
+    )
+
+    template_type = (
+        rf'{qualified_type}'
+        rf'\s*<[^<>()|&=;]+>'
+    )
+
+    type_name = (
+        rf'(?:{template_type}|{builtin_type}|{qualified_type})'
+    )
+
+    # -------------------------------------------------------------------------
+    # Declaration specifiers.
+    #
+    # constinit is a declaration specifier, but does NOT make the variable
+    # constant.
+    #
+    # consteval is intentionally excluded because it applies to functions.
+    # -------------------------------------------------------------------------
+
+    declaration_specifier = (
+        r'(?:'
+        r'const|constexpr|constinit|static|inline|'
+        r'thread_local|volatile|mutable'
+        r')'
+    )
+
+    declaration_prefix = (
+        rf'(?:{declaration_specifier}\s+)*'
+        rf'(?:unsigned\s+|signed\s+|short\s+|long\s+)*'
+        rf'{type_name}'
+    )
+
+    # -------------------------------------------------------------------------
+    # A complete declaration prefix + first declarator.
+    #
+    # IMPORTANT:
+    #
+    # The * and & are included here rather than being handled by a separate
+    # lookahead. This correctly handles all of:
+    #
+    #     int* ptr
+    #     int *ptr
+    #     int * ptr
+    #     int& ref
+    #     int &ref
+    #     const int* ptr
+    #     int* const ptr
+    #
+    # There must ultimately be an identifier after the type/declarator
+    # operators.
+    # -------------------------------------------------------------------------
+
+    first_declarator_pattern = re.compile(
+        rf'''
+        (?<![A-Za-z0-9_])
+
+        (?P<prefix>
+            {declaration_prefix}
+        )
+
+        # The type name must end at a word boundary so that "qualified_type"
+        # cannot greedily consume part of the variable name as the type.
+        \b
+
+        (?P<operators>
+            (?:
+                \s*
+                (?:[*&])
+                \s*
+            )*
+            (?:
+                const\s*
+            )?
+        )
+
+        # When there are no pointer/reference operators the prefix and name
+        # must still be separated by whitespace.
+        (?(operators)|\ )\s*
+
+        (?P<name>
+            {identifier}
+        )
+
+        (?=
+            \s*
+            (?:
+                = |
+                \[ |
+                \{{ |
+                , |
+                ; |
+                \) |
+                $
+            )
+        )
+        ''',
+        re.VERBOSE
+    )
+
+    declarations = []
+
+    for match in first_declarator_pattern.finditer(code):
+        prefix = match.group("prefix")
+        operators = match.group("operators")
+        name = match.group("name")
+
+        start = match.start()
+        end = match.end()
+
+        # ---------------------------------------------------------------------
+        # Don't recognize a declaration embedded in an expression.
+        #
+        # For example:
+        #
+        #     difficulty < 1 || difficulty > MAX
+        #
+        # must not be interpreted as:
+        #
+        #     difficulty < 1
+        #
+        # being a declaration.
+        # ---------------------------------------------------------------------
+
+        before = code[:start].rstrip()
+
+        if before and before[-1] in '+-*/%<>=!&|?:':
+            continue
+
+        # ---------------------------------------------------------------------
+        # Determine whether this is a function parameter.
+        #
+        # Top-level `const` on a parameter (e.g., `void f(const int x)`) is an
+        # implementation detail and does NOT impose UPPER_SNAKE_CASE on the
+        # parameter name.  We detect a parameter context by checking whether the
+        # text before this match ends with `(` or `,`.
+        # ---------------------------------------------------------------------
+
+        is_parameter = bool(
+            re.search(r'[,(]\s*$', before)
+        )
+
+        # ---------------------------------------------------------------------
+        # Determine whether the declaration itself contains constexpr/const.
+        #
+        # For naming purposes we treat any declaration that has `const` anywhere
+        # in its prefix (including `const T*` and `const T&`) as a constant
+        # that requires UPPER_SNAKE_CASE — UNLESS it is a function parameter,
+        # in which case the `const` is just an implementation detail.
+        # ---------------------------------------------------------------------
+
+        is_constexpr = bool(
+            re.search(r'\bconstexpr\b', prefix)
+        )
+
+        prefix_const = bool(
+            re.search(r'\bconst\b', prefix)
+        )
+
+        declarator_const = bool(
+            re.search(r'\bconst\b', operators)
+        )
+
+        # constinit does NOT make the variable const.
+        declaration_is_constant = is_constexpr
+
+        is_const = (
+            not is_parameter
+            and (
+                declaration_is_constant
+                or declarator_const
+                or prefix_const
+            )
+        )
+
+        declarations.append({
+            "name": name,
+            "is_const": is_const
+        })
+
+        # ---------------------------------------------------------------------
+        # Handle additional comma-separated declarators.
+        #
+        # Examples:
+        #
+        #     int foo, BAR;
+        #     int *foo, *BAR;
+        #     const int VALUE, OTHER_VALUE;
+        #
+        # Start immediately after the first declarator and look for:
+        #
+        #     , [* & const ...] identifier
+        #
+        # ---------------------------------------------------------------------
+
+        remainder = code[end:]
+
+        comma_pattern = re.compile(
+            rf'''
+            ^\s*,\s*
+
+            (?P<operators>
+                (?:
+                    [*&]\s*
+                )*
+                (?:
+                    const\s*
+                )?
+            )
+
+            (?P<name>{identifier})
+
+            (?=
+                \s*
+                (?:
+                    = |
+                    \[ |
+                    , |
+                    ; |
+                    \) |
+                    $
+                )
+            )
+            ''',
+            re.VERBOSE
+        )
+
+        while True:
+            comma_match = comma_pattern.match(remainder)
+
+            if not comma_match:
+                break
+
+            operators = comma_match.group("operators")
+            name = comma_match.group("name")
+
+            has_pointer_or_reference = bool(
+                re.search(r'[*&]', operators)
+            )
+
+            declarator_const = bool(
+                re.search(r'\bconst\b', operators)
+            )
+
+            is_const = (
+                declaration_is_constant
+                or declarator_const
+                or (
+                    prefix_const
+                    and not has_pointer_or_reference
+                )
+            )
+
+            declarations.append({
+                "name": name,
+                "is_const": is_const
+            })
+
+            remainder = remainder[comma_match.end():]
+
+    return declarations
 
 def check_unnecessary_include(self, code):
     grammar = Literal('#') + Literal('include') + Literal('<') + Word(alphanums + '.' + '_') + Literal('>')

@@ -1,5 +1,8 @@
 // Test cases for correctly named identifiers
+#include <iostream>
 #include <string>
+#include <string_view>
+
 using namespace std;
 
 // Classes and structs should be PascalCase
@@ -11,53 +14,72 @@ struct DataPoint {};
 enum Color { RED, GREEN, BLUE };
 enum ErrorCode { SUCCESS, ERROR, FAILED };
 
-namespace Action
-{
-	/**
-	 * The shapes that a player can make in this game.
-	 */
-	enum Shape { ROCK, PAPER, SCISSORS, INVALID_SHAPE };
+namespace Action {
+/**
+ * The shapes that a player can make in this game.
+ */
+enum Shape { ROCK, PAPER, SCISSORS, INVALID_SHAPE };
 
-	/**
-	 * Converts a character abbreviation of shape to the shape type
-	 */
-	Shape charToShape(char selection);
-} // End Action
+/**
+ * Converts a character abbreviation of shape to the shape type
+ */
+Shape charToShape(char selection);
+} // namespace Action
 
 // Non-const variables should be camelCase
 int main() {
 
-    enum Weekday {SUNDAY, MONDAY, TUESDAY};
+  enum Weekday { SUNDAY, MONDAY, TUESDAY };
 
-    int myVariable = 5;
-    double temperature = 98.6;
-    string studentName = "John";
-    bool isValid = true;
-    
-    // Function parameters in camelCase
-    auto calculateSum = [](int value1, int value2) { return value1 + value2; };
-    
-    // Const variables should be UPPER_SNAKE_CASE
-    const int MAX_SIZE = 100;
-    const double PI = 3.14159;
-    const string DEFAULT_NAME = "Unknown";
-    
-    // Const expressions
-    constexpr int BUFFER_SIZE = 256;
-    constexpr double GOLDEN_RATIO = 1.618;
+  int myVariable = 5;
+  double temperature = 98.6;
+  string studentName = "John";
+  bool isValid = true;
 
-    constexpr string_view VOWELS {"aeiouAEIOU"}; // all of the vowels.
+  // Function parameters in camelCase
+  auto calculateSum = [](int value1, int value2) { return value1 + value2; };
 
-    constexpr double CLOTHES_AND_ACC = 0.12;
-    double netIncome = 4;
-    double costOfClothesAndAcc;
-     
-    costOfClothesAndAcc = netIncome * CLOTHES_AND_ACC;
+  // Const variables should be UPPER_SNAKE_CASE
+  const int MAX_SIZE = 100;
+  const double PI = 3.14159;
+  const string DEFAULT_NAME = "Unknown";
 
-    typedef int Num;
-    typedef Weekday DayType;
+  // Const expressions
+  constexpr int BUFFER_SIZE = 256;
+  constexpr double GOLDEN_RATIO = 1.618;
 
-    Num number;
-    
-    return SUNDAY;
+  constexpr string_view VOWELS{"aeiouAEIOU"}; // all of the vowels.
+
+  constexpr double CLOTHES_AND_ACC = 0.12;
+  double netIncome = 4;
+  double costOfClothesAndAcc;
+
+  costOfClothesAndAcc = netIncome * CLOTHES_AND_ACC;
+
+  typedef int Num;
+  typedef Weekday DayType;
+
+  Num number;
+
+  return SUNDAY;
+}
+
+int getDifficultyLevel() {
+  constexpr int NUM_OF_DIFFICULTY_LEVELS{3};
+  int difficulty;
+
+  while (!cin || difficulty < 1 || difficulty > NUM_OF_DIFFICULTY_LEVELS) {
+    cin.clear();
+    cin.ignore(INT_MAX, '\n');
+
+    cout << "Please choose a difficulty level between 1 and "
+         << NUM_OF_DIFFICULTY_LEVELS << ": ";
+    cin >> difficulty;
+    cout << '\n';
+  }
+
+  // This line was previously flagged as a variable declaration.
+  !cin || difficulty<1 || difficulty> NUM_OF_DIFFICULTY_LEVELS;
+
+  return difficulty - 1;
 }

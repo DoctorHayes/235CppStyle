@@ -175,7 +175,7 @@ class RegressionTesting(unittest.TestCase):
     def test_identifier_case_improved_bad(self): self.assertEqual(16, self.rubric.error_types['IDENTIFIER_CASE'])
     
     @load_code_segment('identifier_case_edge_cases.cpp')
-    def test_identifier_case_edge_cases(self): self.assertEqual(9, self.rubric.error_types['IDENTIFIER_CASE'])
+    def test_identifier_case_edge_cases(self): self.assertEqual(10, self.rubric.error_types['IDENTIFIER_CASE'])
     
     @load_code_segment('identifier_case_snake_to_convert.cpp')
     def test_identifier_case_snake_to_convert(self): self.assertEqual(6, self.rubric.error_types['IDENTIFIER_CASE'])
