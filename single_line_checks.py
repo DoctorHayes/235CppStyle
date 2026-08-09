@@ -244,6 +244,13 @@ def check_identifier_case(self, code):
     ):
         return
 
+    # Statements that start with # are preprocessor directives, not declarations.
+    if re.match(
+        r'^\s*#',
+        code
+    ):
+        return
+
     # Simple assignment to an existing variable.
     if re.match(
         r'^\s*[A-Za-z_][A-Za-z0-9_]*\s*=(?!=)',

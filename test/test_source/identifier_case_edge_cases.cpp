@@ -7,6 +7,8 @@ class productHandler {}; // BAD: starts with lowercase
 struct Node {};      // GOOD: PascalCase
 struct leaf_node {}; // BAD: uses underscores
 
+#define PREPROCESSOR_DEFINE
+
 // Const with unsigned types
 int main() {
   const unsigned int SEED = 42;     // GOOD: UPPER_SNAKE_CASE
