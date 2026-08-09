@@ -348,6 +348,12 @@ def check_identifier_case(self, code):
     for declaration in declarations:
         found_name = declaration["name"]
 
+        # Explicit API exception: the conventional `argv` parameter on `main()`
+        # is part of the declaration syntax of the standard entry point and must
+        # never be subject to identifier-case validation.
+        if found_name == 'argv' and re.search(r'\bint\s+main\s*\(', code, re.IGNORECASE):
+            continue
+
         if declaration["is_const"]:
             # Constant variables must use UPPER_SNAKE_CASE.
             if found_name != found_name.upper():
@@ -549,6 +555,22 @@ def _find_cpp_declarations(self, code):
         )
 
         # ---------------------------------------------------------------------
+        # The conventional `argv` parameter of `main()` is a special standard
+        #-library convention; it is exempt from identifier-case checking.
+        # Encourage the parser to understand that without ever forwarding it to
+        # the reporting loop as a candidate variable name.
+        # ---------------------------------------------------------------------
+
+        is_main_argv = (
+            name == 'argv'
+            and is_parameter
+            and re.search(r'\bint\s+main\s*\(', code, re.IGNORECASE)
+        )
+
+        if is_main_argv:
+            continue
+
+        # ---------------------------------------------------------------------
         # Determine whether the declaration itself contains constexpr/const.
         #
         # For naming purposes we treat any declaration that has `const` anywhere
@@ -573,17 +595,18 @@ def _find_cpp_declarations(self, code):
         declaration_is_constant = is_constexpr
 
         is_const = (
-            not is_parameter
-            and (
+            # not is_parameter
+            # and (
                 declaration_is_constant
                 or declarator_const
                 or prefix_const
-            )
+            # )
         )
 
         declarations.append({
             "name": name,
-            "is_const": is_const
+            "is_const": is_const,
+            "is_parameter": is_parameter
         })
 
         # ---------------------------------------------------------------------
@@ -661,7 +684,8 @@ def _find_cpp_declarations(self, code):
 
             declarations.append({
                 "name": name,
-                "is_const": is_const
+                "is_const": is_const,
+                "is_parameter": is_parameter
             })
 
             remainder = remainder[comma_match.end():]

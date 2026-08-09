@@ -47,9 +47,8 @@ struct _badName // Bad
 
 enum badColorType { RED, GREEN, BLUE }; // Bad Enum type name
 
-int fun(const int thisIsFine); // Good
-
-int fineFunc(const std::string &goodConstParam); // Good
+int fun(const int thisIsNotFine); // Bad
+int fineFuncBad(const std::string &badConstParam); // Bad
 
 void test(int NotOkay); // Bad: does not test for this yet.
 

@@ -165,7 +165,7 @@ class RegressionTesting(unittest.TestCase):
 
     # Check identifier style
     @load_code_segment('identifier_case_bad.cpp')
-    def test_identifier_case_bad(self): self.assertEqual(43, self.rubric.error_types['IDENTIFIER_CASE'])
+    def test_identifier_case_bad(self): self.assertEqual(45, self.rubric.error_types['IDENTIFIER_CASE'])
     
     # Improved identifier case tests
     @load_code_segment('identifier_case_good.cpp')

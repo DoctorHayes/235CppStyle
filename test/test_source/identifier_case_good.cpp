@@ -26,6 +26,9 @@ enum Shape { ROCK, PAPER, SCISSORS, INVALID_SHAPE };
 Shape charToShape(char selection);
 } // namespace Action
 
+int fun(const int THIS_IS_FINE); // Good
+int fineFunc(const std::string &GOOD_CONST_PARAM); // Good
+
 // Non-const variables should be camelCase
 int main() {
 
